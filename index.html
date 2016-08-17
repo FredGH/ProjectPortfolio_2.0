@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- toturials
+    React
+        https://facebook.github.io/react/docs/jsx-in-depth.html
+    Load data in datatable
+        https://gist.github.com/checkraiser/8555856
+    -->
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -71,6 +78,7 @@
                         <a href="#page-top"></a>
                     </li>
                 </ul>
+                <!-- nav list -->
                 <div id="nav-item-contact"></div>
                 <div id="nav-item-about"></div>
                 <div id="nav-item-portfolio"></div>
@@ -85,7 +93,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <!--<img class="img-responsive" src="img/NetworkPhoto.jpg" alt="">-->
                     <div class="intro-text">
 						<span class="skills">Full Stack .NET Developer - Data Scientist - Data Engineer</span>
 						<hr class="star-light">						
@@ -142,24 +149,11 @@
 							<li>
 								<a href="https://uk.linkedin.com/in/fredericmarechal" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
                             </li>
-                            <!--<li>
-                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-google-plus"></i></a>
-                            </li>-->
-                            <!--<li>
-                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-twitter"></i></a>
-                            </li>-->
                             <li>
 								<a href="http://www.facebook.com/frederic.marechal.963"class="btn-social btn-outline"><i class="fa fa-fw fa-facebook"></i></a>
                             </li>	
-                            <!--<li>
-                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-dribbble"></i></a>
-                            </li>-->
                         </ul>
                     </div>
-                    <!--<div class="footer-col col-md-4">
-                        <h3>About Freelancer</h3>
-                        <p></a>.</p>
-                    </div>-->
                 </div>
             </div>
         </div>
@@ -182,32 +176,9 @@
     </div>
 
     <!-- Portfolio Modals -->
-    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Machine Learning</h2>
-                            <hr class="star-primary">
-                            <!--<img src="img/NetworkPhoto.jpg" class="img-responsive img-centered" alt="">-->	
-							<p>Each project listed in the table below contains a '.pdf' that defines the problem domain as well as the well documented resolution. It also contains the Python code that you can run locally on your box.</p>
-							<hr />
-							<table width="100%" class="display" id="example"></table>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="modal-view-machine-learning" />
+
+    <div class="portfolio-modal modal fade" id="bigDataEngineeringModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
             <div class="close-modal" data-dismiss="modal">
                 <div class="lr">
@@ -230,7 +201,7 @@
             </div>
         </div>
     </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="portfolio-modal modal fade" id="webTechnologiesModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
             <div class="close-modal" data-dismiss="modal">
                 <div class="lr">
@@ -350,75 +321,13 @@
             </div>
         </div>
     </div>
+
 	<!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 	<!-- DataTable -->
  	<script type="text/javascript" src="https://cdn.datatables.net/r/bs-3.3.5/jqc-1.11.3,dt-1.10.8/datatables.min.js"></script>
-	<!-- Load data -->
-	<!-- With JSON http://stackoverflow.com/questions/32190690/how-to-create-hyperlink-or-clickable-cell-inside-a-bootstrap-datatable/32253099-->
-	<script type="text/javascript" charset="utf-8">
-	var dataSet = [
-		[ 	"Supervised Learning" , 
-			"Predicting Boston Housing Prices" , 
-			"Apply basic machine learning concepts on data collected for housing prices in the Boston, Massachusetts area to predict the selling price of a new home." , 
-			"projects/machine_learning/supervised_learning/predicting_boston_housing_prices/doc/Predicting%20Boston%20Housing%20Prices.pdf" , 
-			"Python" , 
-			"projects/machine_learning/supervised_learning/predicting_boston_housing_prices/code" ],
-		[ 	"Supervised Learning1" , 
-			"Predicting Boston Housing Prices" , 
-			"Apply basic machine learning concepts on data collected for housing prices in the Boston, Massachusetts area to predict the selling price of a new home." , 
-			"http://www.lemonde.fr" , 
-			"Python" , 
-			"http://www.google.fr" ]
-	];
 
-	$(document).ready(function() {
-		$('#example').DataTable( {
-			data: dataSet,
-			columns: [
-				{ title: "Category" }, 		// col 0
-				{ title: "Name" }, 			// col 1
-				{ title: "Description" },	// col 2
-				{ title: "Pdf" },			// col 3
-				{ title: "Code" },			// col 4
-				{ title: "Code Uri" }		// col 5
-			],
-			columnDefs: [
-            {
-                // The `data` parameter refers to the data for the cell (defined by the
-                // `data` option, which defaults to the column being worked with, in
-                // this case `data: 0`.
-                render: function ( data, type, row, obj ) {
-					var git_hub_base_uri = 'http://rawgit.com/FredGH/ProjectPortfolio_2.0/master/'
-					var idx = 0
-					var msg = "NA"
-					if (obj.col === 3) {
-						idx = 3
-						msg = ".pdf"
-						}
-					if (obj.col === 4) {
-						idx = 5
-						msg = row[4]
-					}
-					uri = git_hub_base_uri + row[idx]
-					return '<a target="_blank" href=' +  row[idx] + '>' + msg + '</a>'
-                },
-                targets: [3,4] // target columns
-            },
-            { visible: false,  targets: [ 5 ] } //required to hide a column
-        ]
-		} );
-	} );
-	</script>
-	<!-- start - boostrap datatable 3.0 -->	
-	<script type="text/javascript">
-	// For demo to fit into DataTables site builder...
-	$('#example')
-		.removeClass( 'display' )
-		.addClass('table table-striped table-bordered');
-	</script>
-	<!-- end - boostrap datatable 3.0 -->
-
+    <script src="data/machine_learning_projects.js"></script>
 
     <!-- JSX components-->
     <!-- All inlined instead of broken down
@@ -427,7 +336,6 @@
     http, data, chrome, chrome-extension, https, chrome-extension-resource.'
     -->
     <script type="text/babel">
-
         var AboutContent = React.createClass({
           render: function() {
             return (
@@ -491,7 +399,6 @@
                                     </div>
                                     <div className="form-group">
                                       <div>
-
                                         <button className="btn btn-custom " name="submit" type="submit"> Submit </button>
                                       </div>
                                     </div>
@@ -538,17 +445,17 @@
         });
 
         ReactDOM.render(
-            <PortfolioItem title="Machine Learning" img_src="img/portfolio/ml.jpg" item_href="#portfolioModal1"  />,
+            <PortfolioItem title="Machine Learning" img_src="img/portfolio/ml.jpg" item_href="#machineLearningModal"  />,
             document.getElementById('portfolio-item-machine-learning')
         );
 
         ReactDOM.render(
-                <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#portfolioModal2"  />,
+                <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#bigDataEngineeringModal"  />,
                 document.getElementById('portfolio-item-big-data-engineering')
         );
 
         ReactDOM.render(
-                <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#portfolioModal3"  />,
+                <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#webTechnologiesModal"  />,
                 document.getElementById('portfolio-item-web_technologies')
         );
 
@@ -586,6 +493,98 @@
         ReactDOM.render(
         <NavItem content = "Contact" a_href="#contact"/>,
                 document.getElementById('nav-item-contact')
+        );
+
+        var ModelView = React.createClass({
+
+            getDefaultProps: function(){
+                return {
+                    modal_id: "Not_Available",
+                    summary_text: "Not_Available",
+                    table_id: "Not_Available",
+                    title: "Not_Available",
+                    table_data: []
+                }
+            },
+            componentDidMount: function(){
+                var self = this;
+                $('#datatable').DataTable( {
+                    data: this.props.project_data,
+                    columns: [
+                        { title: "Category" }, 		// col 0
+                        { title: "Name" }, 			// col 1
+                        { title: "Description" },	// col 2
+                        { title: "Pdf" },			// col 3
+                        { title: "Code" },			// col 4
+                        { title: "Code Uri" }		// col 5
+                    ],
+                    columnDefs: [
+                        {
+                            // The `data` parameter refers to the data for the cell (defined by the
+                            // `data` option, which defaults to the column being worked with, in
+                            // this case `data: 0`.
+                            render: function ( data, type, row, obj ) {
+                                var git_hub_base_uri = 'http://rawgit.com/FredGH/ProjectPortfolio_2.0/master/'
+                                var idx = 0
+                                var msg = "NA"
+                                if (obj.col === 3) {
+                                    idx = 3
+                                    msg = ".pdf"
+                                }
+                                if (obj.col === 4) {
+                                    idx = 5
+                                    msg = row[4]
+                                }
+                                var uri = git_hub_base_uri + row[idx]
+                                return '<a target="_blank" href=' +  row[idx] + '>' + msg + '</a>'
+                            },
+                            targets: [3,4] // target columns
+                        },
+                        { visible: false,  targets: [ 5 ] } //required to hide a column
+                    ]
+                } );
+
+                $('#datatable')
+                        .removeClass( 'display' )
+                        .addClass('table table-striped table-bordered');
+            },
+            render: function() {
+                return (
+                      <div className="portfolio-modal modal fade" id={this.props.modal_id} tabindex="-1" role="dialog" aria-hidden="true">
+                        <div className="modal-content">
+                            <div className="close-modal" data-dismiss="modal">
+                                <div className="lr">
+                                    <div className="rl">
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-lg-8 col-lg-offset-2">
+                                        <div className="modal-body">
+                                            <h2>{this.props.title}</h2>
+                                            <hr className="star-primary" />
+                                            <p>{this.props.summary_text}</p>
+                                            <hr />
+                                            <table width="100%" className="display" id={this.props.table_id}></table>
+                                            <button type="button" className="btn btn-default" data-dismiss="modal"><i className="fa fa-times"></i> Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        });
+
+        ReactDOM.render(
+                <ModelView  title = "machine learning"
+                            modal_id = "machineLearningModal"
+                            summary_text = "Each project listed in the table below contains a '.pdf' that defines the problem domain as well as the well documented resolution. It also contains the Python code that you can run locally on your box."
+                            table_id =   "datatable"
+                            project_data = {machine_learning_projects}/>,
+                document.getElementById('modal-view-machine-learning')
         );
 
 </script>
