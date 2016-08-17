@@ -51,7 +51,7 @@
 
 <body id="page-top" class="index">
 
-<!-- Navigation -->
+    <!-- Navigation -->
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -70,16 +70,10 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
-                    <li class="page-scroll">
-                        <a href="#portfolio">Portfolio</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#about">About</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#contact">Contact</a>
-                    </li>
                 </ul>
+                <div id="nav-item-contact"></div>
+                <div id="nav-item-about"></div>
+                <div id="nav-item-portfolio"></div>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -549,15 +543,51 @@
         );
 
         ReactDOM.render(
-        <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#portfolioModal2"  />,
+                <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#portfolioModal2"  />,
                 document.getElementById('portfolio-item-big-data-engineering')
         );
 
         ReactDOM.render(
-        <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#portfolioModal3"  />,
+                <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#portfolioModal3"  />,
                 document.getElementById('portfolio-item-web_technologies')
         );
-    </script>
 
+        var NavItem = React.createClass({
+            getDefaultProps: function(){
+                return {
+                    content: "Not_Available",
+                    a_href: "Not_Available",
+		            li_class: "page-scroll"
+                }
+            },
+            render: function() {
+                return (
+                        <div>
+                            <ul className="nav navbar-nav navbar-right">
+                                <li className={this.props.li_class}>
+                                    <a href={this.props.a_href}>{this.props.content}</a>
+                                </li>
+                            </ul>
+                        </div>
+                );
+            }
+        });
+
+        ReactDOM.render(
+                <NavItem content = "Portfolio" a_href="#portfolio"/>,
+                document.getElementById('nav-item-portfolio')
+        );
+
+        ReactDOM.render(
+                <NavItem content = "About" a_href="#about"/>,
+                document.getElementById('nav-item-about')
+        );
+
+        ReactDOM.render(
+        <NavItem content = "Contact" a_href="#contact"/>,
+                document.getElementById('nav-item-contact')
+        );
+
+</script>
 </body>
 </html>
