@@ -35,6 +35,10 @@
 	<script src="https://formden.com/static/cdn/formden.js"></script>
 	<script type="text/javascript" src="https://formden.com/static/cdn/formden.js"></script>
 
+    <--! React -->
+    <script src="https://fb.me/react-15.0.0.js"></script>
+    <script src="https://fb.me/react-dom-15.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -42,12 +46,12 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-j
+
 </head>
 
 <body id="page-top" class="index">
 
-    <!-- Navigation -->
+<!-- Navigation -->
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -97,7 +101,6 @@ j
         </div>
     </header>
 	
-
     <!-- Portfolio Grid Section -->
     <section id="portfolio">
         <div class="container">
@@ -107,160 +110,23 @@ j
                     <hr class="star-primary">
                 </div>
             </div>
+            <!-- display project list -->
             <div class="row">
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/ml.jpg" class="img-responsive"  alt="">
-                    </a>
-					<h3>Machine Learning</h3>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/bd.jpg" class="img-responsive" alt="">
-                    </a>
-					<h3>Big Data Engineering</h3>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/wb.jpg" class="img-responsive" alt="">
-                    </a>
-					<h3>Web Technologies</h3>
-                </div>
-                <!--<div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/game.png" class="img-responsive" alt="">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/safe.png" class="img-responsive" alt="">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/submarine.png" class="img-responsive" alt="">
-                    </a>
-                </div>-->
+                <div id="portfolio-item-machine-learning"></div>
+                <div id="portfolio-item-big-data-engineering"></div>
+                <div id="portfolio-item-web_technologies"></div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
     <section class="success" id="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>About</h2>
-                    <hr class="star-light">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-lg-offset-2">
-                    <p>This web site is dedicated to project I have been working on recently in the Data Sciences and Web technologies sapce.</p>
-                </div>
-				<div class="col-lg-4 col-lg-offset-2">
-					<p>Please do not hesitate to contact me should you require more information on any of my projects.</p>
-                </div>
-            </div>
-        </div>
+        <div id="about-content"></div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Contact Me</h2>
-                    <hr class="star-primary">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
-                    <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
-                    
-				<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
-				<div class="bootstrap-iso">
-				 <div class="container-fluid">
-				  <div class="row">
-				   <div class="col-md-6 col-sm-6 col-xs-12">
-					<form action="https://formden.com/post/2Zvlj6AV/" method="post">
-					 <div class="form-group ">
-					  <label class="control-label " for="name">
-					   Name
-					  </label>
-					  <input class="form-control" id="name" name="name" type="text"/>
-					 </div>
-					 <div class="form-group ">
-					  <label class="control-label requiredField" for="email">
-					   Email
-					   <span class="asteriskField">
-						*
-					   </span>
-					  </label>
-					  <input class="form-control" id="email" name="email" type="text"/>
-					 </div>
-					 <div class="form-group ">
-					  <label class="control-label " for="subject">
-					   Subject
-					  </label>
-					  <input class="form-control" id="subject" name="subject" type="text"/>
-					 </div>
-					 <div class="form-group ">
-					  <label class="control-label " for="message">
-					   Message
-					  </label>
-					  <textarea class="form-control" cols="40" id="message" name="message" rows="10"></textarea>
-					 </div>
-					 <div class="form-group">
-					  <div>
-					   <input name="_honey" style="display:none" type="text"/>
-					   <button class="btn btn-custom " name="submit" type="submit">
-						Submit
-					   </button>
-					  </div>
-					 </div>
-					</form>
-				   </div>
-				  </div>
-				 </div>
-				</div>
-
-
-						
-                </div>
-            </div>
-        </div>
+        <div id="contact-me"></div>
     </section>
 
     <!-- Footer -->
@@ -361,7 +227,7 @@ j
                         <div class="modal-body">
                             <h2>Project Title</h2>
                             <hr class="star-primary">
-                            <img src="img/portfolio/cake.png" class="img-responsive img-centered" alt="">
+                            <img src="" class="img-responsive img-centered" alt="">
                             <p>Work in progress... Coming Soon...</p>
                             <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
@@ -384,7 +250,7 @@ j
                         <div class="modal-body">
                             <h2>Project Title</h2>
                             <hr class="star-primary">
-                            <img src="img/portfolio/circus.png" class="img-responsive img-centered" alt="">
+                            <img src="" class="img-responsive img-centered" alt="">
                             <p>Work in progress... Coming Soon...</p>
                             <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
@@ -407,7 +273,7 @@ j
                         <div class="modal-body">
                             <h2>Project Title</h2>
                             <hr class="star-primary">
-                            <img src="img/portfolio/game.png" class="img-responsive img-centered" alt="">
+                            <img src="" class="img-responsive img-centered" alt="">
                             <p>Work in progress... Coming Soon...</p>
                             <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                         </div>
@@ -467,7 +333,7 @@ j
                         <div class="modal-body">
                             <h2>Project Title</h2>
                             <hr class="star-primary">
-                            <img src="img/portfolio/submarine.png" class="img-responsive img-centered" alt="">
+                            <img src="" class="img-responsive img-centered" alt="">
                             <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
                             <ul class="list-inline item-details">
                                 <li>Client:
@@ -490,8 +356,6 @@ j
             </div>
         </div>
     </div>
-	
-		
 	<!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 	<!-- DataTable -->
@@ -503,9 +367,9 @@ j
 		[ 	"Supervised Learning" , 
 			"Predicting Boston Housing Prices" , 
 			"Apply basic machine learning concepts on data collected for housing prices in the Boston, Massachusetts area to predict the selling price of a new home." , 
-			"http://www.lemonde.fr" , 
+			"projects/machine_learning/supervised_learning/predicting_boston_housing_prices/doc/Predicting%20Boston%20Housing%20Prices.pdf" , 
 			"Python" , 
-			"http://www.google.fr" ],
+			"projects/machine_learning/supervised_learning/predicting_boston_housing_prices/code" ],
 		[ 	"Supervised Learning1" , 
 			"Predicting Boston Housing Prices" , 
 			"Apply basic machine learning concepts on data collected for housing prices in the Boston, Massachusetts area to predict the selling price of a new home." , 
@@ -531,6 +395,7 @@ j
                 // `data` option, which defaults to the column being worked with, in
                 // this case `data: 0`.
                 render: function ( data, type, row, obj ) {
+					var git_hub_base_uri = 'http://rawgit.com/FredGH/ProjectPortfolio_2.0/master/'
 					var idx = 0
 					var msg = "NA"
 					if (obj.col === 3) {
@@ -541,7 +406,8 @@ j
 						idx = 5
 						msg = row[4]
 					}
-					return '<a href=' + row[idx] + '>' + msg + '</a>'
+					uri = git_hub_base_uri + row[idx]
+					return '<a target="_blank" href=' +  row[idx] + '>' + msg + '</a>'
                 },
                 targets: [3,4] // target columns
             },
@@ -557,7 +423,141 @@ j
 		.removeClass( 'display' )
 		.addClass('table table-striped table-bordered');
 	</script>
-	<!-- end - boostrap datatable 3.0 -->	
-</body>
+	<!-- end - boostrap datatable 3.0 -->
 
+
+    <!-- JSX components-->
+    <!-- All inlined instead of broken down
+    into files due to the with the below error
+    'jsx Cross origin requests are only supported for protocol schemes:
+    http, data, chrome, chrome-extension, https, chrome-extension-resource.'
+    -->
+    <script type="text/babel">
+
+        var AboutContent = React.createClass({
+          render: function() {
+            return (
+                <div className="container">
+                  <div className="row">
+                    <div className="col-lg-12 text-center">
+                      <h2>About</h2>
+                        <hr className="star-light" />
+                    </div>
+                  </div>
+                <div className="row">
+                  <div className="col-lg-4 col-lg-offset-2">
+                    <p>This web site 3 is dedicated to project I have been working on recently in the Data Sciences and Web technologies sapce.</p>
+                  </div>
+                  <div className="col-lg-4 col-lg-offset-2">
+                    <p>Please do not hesitate to contact me should you require more information on any of my projects.</p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+        });
+
+        ReactDOM.render(
+          <AboutContent />,
+          document.getElementById('about-content')
+        );
+
+        var ContactMe = React.createClass({
+          render: function() {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-12 text-center">
+                            <h2>Contact Me</h2>
+                            <hr className="star-primary" />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-8 col-lg-offset-2">
+                          <div className="bootstrap-iso">
+                            <div className="container-fluid">
+                              <div className="row">
+                                <div className="col-md-6 col-sm-6 col-xs-12">
+                                  <form action="https://formden.com/post/2Zvlj6AV/" method="post">
+                                    <div className="form-group ">
+                                      <label className="control-label " for="name"> Name </label>
+                                      <input className="form-control" id="name" name="name" type="text"/>
+                                    </div>
+                                    <div className="form-group ">
+                                      <label className="control-label requiredField" for="email"> Email <span className="asteriskField"> * </span> </label>
+                                      <input className="form-control" id="email" name="email" type="text"/>
+                                    </div>
+                                    <div className="form-group ">
+                                      <label className="control-label " for="subject"> Subject </label>
+                                      <input className="form-control" id="subject" name="subject" type="text"/>
+                                    </div>
+                                    <div className="form-group ">
+                                      <label className="control-label " for="message"> Message </label>
+                                      <textarea className="form-control" cols="40" id="message" name="message" rows="10"></textarea>
+                                    </div>
+                                    <div className="form-group">
+                                      <div>
+
+                                        <button className="btn btn-custom " name="submit" type="submit"> Submit </button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                     </div>
+                </div>
+            );
+          }
+        });
+
+        ReactDOM.render(
+          <ContactMe  />,
+          document.getElementById('contact-me')
+        );
+
+        var PortfolioItem = React.createClass({
+            getDefaultProps: function(){
+               return {
+                   title: "Not_Available",
+                   img_src: "Not_Available",
+                   item_href: "Not_Available"
+               }
+            },
+            render: function() {
+                return (
+                       <div className="col-sm-4 portfolio-item">
+                            <a href={this.props.item_href} className="portfolio-link" data-toggle="modal">
+                                <div className="caption">
+                                    <div className="caption-content">
+                                        <i className="fa fa-search-plus fa-3x" />
+                                    </div>
+                                </div>
+                                <img src={this.props.img_src} className="img-responsive"  alt="" />
+                            </a>
+					    <h3>{this.props.title}</h3>
+                        </div>
+                );
+            }
+        });
+
+        ReactDOM.render(
+            <PortfolioItem title="Machine Learning" img_src="img/portfolio/ml.jpg" item_href="#portfolioModal1"  />,
+            document.getElementById('portfolio-item-machine-learning')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#portfolioModal2"  />,
+                document.getElementById('portfolio-item-big-data-engineering')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#portfolioModal3"  />,
+                document.getElementById('portfolio-item-web_technologies')
+        );
+    </script>
+
+</body>
 </html>
