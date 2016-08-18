@@ -230,7 +230,9 @@
                   </div>
                 <div className="row">
                   <div className="col-lg-4 col-lg-offset-2">
-                    <p>This web site is dedicated to projects I have been working on recently in the Data Sciences and Web technologies sapces.</p>
+                    <p>This web site is dedicated to projects I have been working on recently in the Data Sciences and Web technologies spaces.
+                       <p></p>The projects are available on:
+                    <a target="_blank" href='https://github.com/FredGH/ProjectPortfolio_2.0/tree/master/projects'> GitHub</a></p>
                   </div>
                   <div className="col-lg-4 col-lg-offset-2">
                     <p>Please do not hesitate to contact me should you require more information on any of my projects.</p>
@@ -415,7 +417,7 @@
                             render: function ( data, type, row, obj ) {
                                 var git_hub_base_uri = 'https://github.com/FredGH/ProjectPortfolio_2.0/tree/master/projects'
                                 var idx = 0
-                                var msg = "NA"
+                                var msg = "Not Available"
                                 if (obj.col === 3) {
                                     idx = 3
                                     msg = ".pdf"
@@ -425,7 +427,7 @@
                                     msg = row[4]
                                 }
                                 var uri = git_hub_base_uri + row[idx]
-                                return '<a target="_parent" href=' +  row[idx] + '>' + msg + '</a>'
+                                return '<a target="_blank" href=' +  row[idx] + '>' + msg + '</a>'
                             },
                             targets: [3,4] // target columns
                         },
