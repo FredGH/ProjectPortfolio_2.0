@@ -414,7 +414,6 @@
                             // this case `data: 0`.
                             render: function ( data, type, row, obj ) {
                                 var git_hub_base_uri = 'https://github.com/FredGH/ProjectPortfolio_2.0/tree/master/projects'
-                                                        https://github.com/FredGH/ProjectPortfolio_2.0
                                 var idx = 0
                                 var msg = "NA"
                                 if (obj.col === 3) {
@@ -426,7 +425,7 @@
                                     msg = row[4]
                                 }
                                 var uri = git_hub_base_uri + row[idx]
-                                return '<a target="_blank" href=' +  row[idx] + '>' + msg + '</a>'
+                                return '<a target="_parent" href=' +  row[idx] + '>' + msg + '</a>'
                             },
                             targets: [3,4] // target columns
                         },
