@@ -33,6 +33,6 @@ var machine_learning_projects =
             "Apply basic machine learning concepts on data collected for housing prices in the Boston, Massachusetts area to predict the selling price of a new home." ,
             "/machine_learning/supervised_learning/predicting_boston_housing_prices/docs/predicting_boston_housing_prices.pdf" ,
             "Python" ,
-            "projects/machine_learning/supervised_learning/predicting_boston_housing_prices/code",
+            "/machine_learning/supervised_learning/predicting_boston_housing_prices/code",
             "Apr-2016"]
     ];
