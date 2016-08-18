@@ -230,7 +230,7 @@
                   </div>
                 <div className="row">
                   <div className="col-lg-4 col-lg-offset-2">
-                    <p>This web site is dedicated to project I have been working on recently in the Data Sciences and Web technologies sapce.</p>
+                    <p>This web site is dedicated to projects I have been working on recently in the Data Sciences and Web technologies sapces.</p>
                   </div>
                   <div className="col-lg-4 col-lg-offset-2">
                     <p>Please do not hesitate to contact me should you require more information on any of my projects.</p>
@@ -383,6 +383,7 @@
                 return {
                     modal_id: "Not_Available",
                     summary_text: "Not_Available",
+                    dependecy_text: "Not_Available",
                     table_id: "Not_Available",
                     title: "Not_Available",
                     table_jqery_name: 'Not_Available',
@@ -453,8 +454,10 @@
                                             <h2>{this.props.title}</h2>
                                             <hr className="star-primary" />
                                             <p>{this.props.summary_text}</p>
+                                            <p>{this.props.dependecy_text}</p>
                                             <hr />
                                             <table width="100%" className="display" id={this.props.table_id}></table>
+
                                             <button type="button" className="btn btn-default" data-dismiss="modal">
                                                 <i className="fa fa-times"></i> Close
                                             </button>
@@ -471,7 +474,8 @@
         ReactDOM.render(
             <ModelView  title = "machine learning"
                 modal_id = "machineLearningModal"
-                summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain as well as the well documented resolution. It also contains the corresponding code that you can run locally on your box."
+                summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements as well as the well documented resolution. It also contains the corresponding code solution that you can run locally on your box."
+                dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'python 2.7' and the latest versions of 'jupyter', 'scikit-learn', 'seaborn', 'numpy', 'pandas', 'feedparser', 'Pygame','Eclipse Luna'. The Deep Learning project requires an installation of TensorFlow."
                 table_id = "machineLearningDataTable"
                 table_jqery_name = '#machineLearningDataTable'
                 project_data = {machine_learning_projects} />,
@@ -481,7 +485,8 @@
         ReactDOM.render(
             <ModelView  title = "big data engineering"
                 modal_id = "bigDataEngineeringModal"
-                summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain as well as the well documented resolution.  It also contains the corresponding code that you can run locally on your box. For the code to run successfully, the following software dependencies needs to be present on your environement, namely 'JDK 1.7.0_6', 'Eclipse Luna', 'Hadoop 2.2.0', 'Hive 0.13.1', 'Spark 1.5.2', 'Scala 2.10.4', 'Sbt 0.13. 8'."
+                summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements. It also contains the corresponding code solutions."
+                dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'JDK 1.7.0_6', 'Eclipse Luna', 'Hadoop 2.2.0', 'Hive 0.13.1', 'Spark 1.5.2', 'Scala 2.10.4', 'Sbt 0.13. 8'."
                 table_id = "bigBataEngneeringDataTable"
                 table_jqery_name = '#bigBataEngneeringDataTable'
                 project_data = {big_data_engineering_projects} />,
