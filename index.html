@@ -177,30 +177,7 @@
     <!-- Portfolio Modals -->
     <div id="modal-view-machine-learning"></div>
     <div id="modal-view-big-data-engineering"></div>
-
-    <div class="portfolio-modal modal fade" id="webTechnologiesModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Project Title</h2>
-                            <hr class="star-primary">
-                            <img src="" class="img-responsive img-centered" alt="">
-                            <p>Work in progress... Coming Soon...</p>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="modal-view-web-technologies"></div>
 
 	<!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -210,6 +187,7 @@
     <!-- Project list details -->
     <script src="data/machine_learning_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
+    <script src="data/web_technologies_projects.js"></script>
 
     <!-- JSX components-->
     <!-- All inlined instead of broken down
@@ -389,6 +367,7 @@
                     table_id: "Not_Available",
                     title: "Not_Available",
                     table_jqery_name: 'Not_Available',
+                    raw_git: 0,
                     table_data: []
                 }
             },
@@ -396,6 +375,7 @@
             componentDidMount: function(){
                 var self = this;
                 var table_jqery_name = this.props.table_jqery_name;
+                var raw_git = this.props.raw_git;
 
                 $(table_jqery_name).DataTable( {
                     data: this.props.project_data,
@@ -403,10 +383,10 @@
                         { title: "Category" }, 		// col 0
                         { title: "Name" }, 			// col 1
                         { title: "Description" },	// col 2
-                        { title: "Pdf" },			// col 3
+                        { title: "Document" },			// col 3
                         { title: "Code" },			// col 4
                         { title: "Code Uri" },		// col 5
-                        { title: "Date" }		    // col 6
+                        { title: "Date" }		    // col 7
                     ],
                     columnDefs: [
                         {
@@ -415,12 +395,15 @@
                             // this case `data: 0`.
                             render: function ( data, type, row, obj ) {
                                 //var git_hub_base_uri = 'http://rawgit.com/FredGH/ProjectPortfolio_2.0/master/projects'
-                                var git_hub_base_uri = 'https://github.com/FredGH/ProjectPortfolio_2.0/tree/master/projects'
+                                var git_hub_base_uri = 'http://rawgit.com/FredGH'
+                                if (raw_git === 0) {
+                                    git_hub_base_uri = 'https://github.com/FredGH'
+                                }
                                 var idx = 0
                                 var msg = "Not Available"
                                 if (obj.col === 3) {
                                     idx = 3
-                                    msg = ".pdf"
+                                    msg = "read"
                                 }
                                 if (obj.col === 4) {
                                     idx = 5
@@ -476,24 +459,36 @@
 
         ReactDOM.render(
             <ModelView  title = "machine learning"
-                modal_id = "machineLearningModal"
-                summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements as well as the well documented resolution. It also contains the corresponding code solution that you can run locally on your box."
-                dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'python 2.7' and the latest versions of 'jupyter', 'scikit-learn', 'seaborn', 'numpy', 'pandas', 'feedparser', 'Pygame','Eclipse Luna'. The Deep Learning project requires an installation of TensorFlow."
-                table_id = "machineLearningDataTable"
-                table_jqery_name = '#machineLearningDataTable'
-                project_data = {machine_learning_projects} />,
+                        modal_id = "machineLearningModal"
+                        summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements as well as the well documented resolution. It also contains the corresponding code solution that you can run locally on your box."
+                        dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'python 2.7' and the latest versions of 'jupyter', 'scikit-learn', 'seaborn', 'numpy', 'pandas', 'feedparser', 'Pygame','Eclipse Luna'. The Deep Learning project requires an installation of TensorFlow."
+                        table_id = "machineLearningDataTable"
+                        table_jqery_name = '#machineLearningDataTable'
+                        project_data = {machine_learning_projects} />,
             document.getElementById('modal-view-machine-learning')
         );
 
         ReactDOM.render(
             <ModelView  title = "big data engineering"
-                modal_id = "bigDataEngineeringModal"
-                summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements. It also contains the corresponding code solutions."
-                dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'JDK 1.7.0_6', 'Eclipse Luna', 'Hadoop 2.2.0', 'Hive 0.13.1', 'Spark 1.5.2', 'Scala 2.10.4', 'Sbt 0.13. 8'."
-                table_id = "bigBataEngneeringDataTable"
-                table_jqery_name = '#bigBataEngneeringDataTable'
-                project_data = {big_data_engineering_projects} />,
+                        modal_id = "bigDataEngineeringModal"
+                        summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements. It also contains the corresponding code solutions."
+                        dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'JDK 1.7.0_6', 'Eclipse Luna', 'Hadoop 2.2.0', 'Hive 0.13.1', 'Spark 1.5.2', 'Scala 2.10.4', 'Sbt 0.13. 8'."
+                        table_id = "bigBataEngneeringDataTable"
+                        table_jqery_name = '#bigBataEngneeringDataTable'
+                        project_data = {big_data_engineering_projects} />,
             document.getElementById('modal-view-big-data-engineering')
+        );
+
+         ReactDOM.render(
+            <ModelView  title = "web technologies"
+                        modal_id = "webTechnologiesModal"
+                        summary_text =  ""
+                        dependecy_text =  ""
+                        table_id = "webTechnologiesDataTable"
+                        table_jqery_name = '#webTechnologiesDataTable'
+                        project_data = {web_technologies_projects}
+                        raw_git = '1'/>,
+            document.getElementById('modal-view-web-technologies')
         );
 
     </script>
