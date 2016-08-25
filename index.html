@@ -1,13 +1,22 @@
+UTTON
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- toturials
     React
         https://facebook.github.io/react/docs/jsx-in-depth.html
+
     Load data in datatable
         https://gist.github.com/checkraiser/8555856
+
     DataTable reinitialisation Gotcha
         https://datatables.net/manual/tech-notes/3
+
+     Icon Lib
+        http://fontawesome.io/icons/#directional
+
+     Button CSS generator
+        http://www.bestcssbuttongenerator.com/#/3
     -->
 
     <meta charset="utf-8">
@@ -32,7 +41,10 @@
 	<!-- start - boostrap datatable 3.0 -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css"/>
 
-	<!-- FormFen -->
+    <!-- Custom CSS -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- FormFen -->
 	<!--formden.js communicates with FormDen server to validate fields and submit via AJAX -->
 	<script type="text/javascript" src="https://formden.com/static/cdn/formden.js"></script>
 	<!-- Special version of Bootstrap that is isolated to content wrapped in .bootstrap-iso -->
@@ -44,7 +56,7 @@
 	<script src="https://formden.com/static/cdn/formden.js"></script>
 	<script type="text/javascript" src="https://formden.com/static/cdn/formden.js"></script>
 
-    <--! React -->
+    <!-- React -->
     <script src="https://fb.me/react-15.0.0.js"></script>
     <script src="https://fb.me/react-dom-15.0.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
@@ -261,7 +273,7 @@
                                     </div>
                                     <div className="form-group">
                                       <div>
-                                        <button className="btn btn-custom " name="submit" type="submit"> Submit </button>
+                                        <button className="btn btn-custom" name="submit" type="submit"> Submit </button>
                                       </div>
                                     </div>
                                   </form>
@@ -434,6 +446,10 @@
                                 </div>
                             </div>
                             <div className="container">
+                                <button type="button" className="customButton" data-dismiss="modal">
+                                    <i className="fa fa-hand-o-left"></i> Main Menu
+                                </button>
+
                                 <div className="row">
                                     <div className="col-lg-8 col-lg-offset-2">
                                         <div className="modal-body">
@@ -443,10 +459,6 @@
                                             <p>{this.props.dependecy_text}</p>
                                             <hr />
                                             <table width="100%" className="display" id={this.props.table_id}></table>
-
-                                            <button type="button" className="btn btn-default" data-dismiss="modal">
-                                                <i className="fa fa-times"></i> Close
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
