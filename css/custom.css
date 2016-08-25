@@ -24,6 +24,7 @@
     text-decoration:none;
     text-shadow:0px -1px 0px #18BC9C;
     margin-bottom: 5%;
+    margin-top: 1%;
 }
 .customButton:hover {
     background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #18BC9C), color-stop(1, #18BC9C));
