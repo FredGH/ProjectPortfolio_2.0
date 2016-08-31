@@ -6,7 +6,7 @@ var big_data_engineering_projects =
             "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/cassandra_java/docs/flight_booking_system.pdf" ,
             "CQL/Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/cassandra_java/code",
-            "Aug-2016"],
+            "Sep-2016"],
         [ 	"Programming",
             "Telecom Companies Report in Spark SQL" ,
             "Detailed report explaining the design/build and implementation of a reporting solution to find the top 10 customers facing frequent call drops." ,
