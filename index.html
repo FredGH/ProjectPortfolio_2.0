@@ -124,7 +124,10 @@
             <div class="row">
                 <div id="portfolio-item-machine-learning"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
-                <div id="portfolio-item-web_technologies"></div>
+                <div id="portfolio-item-web-technologies"></div>
+                <div id="portfolio-item-empty"></div>
+                <div id="portfolio-item-post-grad-thesis"></div>
+                <div id="portfolio-item-empty"></div>
             </div>
         </div>
     </section>
@@ -188,6 +191,7 @@
     <div id="modal-view-machine-learning"></div>
     <div id="modal-view-big-data-engineering"></div>
     <div id="modal-view-web-technologies"></div>
+    <div id="modal-view-post-grad-thesis"></div>
 
 	<!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -198,6 +202,7 @@
     <script src="data/machine_learning_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
+    <script src="data/post_grad_thesis.js"></script>
 
     <!-- JSX components-->
     <!-- All inlined instead of broken down
@@ -328,7 +333,23 @@
 
         ReactDOM.render(
                 <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#webTechnologiesModal"  />,
-                document.getElementById('portfolio-item-web_technologies')
+                document.getElementById('portfolio-item-web-technologies')
+        );
+
+
+        ReactDOM.render(
+        <PortfolioItem title = "" img_src="" item_href="#empty"  />,
+                document.getElementById('portfolio-item-empty')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Post Graduate Thesis" img_src="img/portfolio/ts.png" item_href="#postGradThesisModal"  />,
+                document.getElementById('portfolio-item-post-grad-thesis')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "" img_src="" item_href="#empty"  />,
+                document.getElementById('portfolio-item-empty')
         );
 
         var NavItem = React.createClass({
@@ -497,6 +518,20 @@
                         raw_git = '1'/>,
             document.getElementById('modal-view-web-technologies')
         );
+
+        ReactDOM.render(
+            <ModelView  title = "post graduate thesis"
+                        modal_id = "postGradThesisModal"
+                        summary_text =  ""
+                        dependecy_text =  ""
+                        table_id = "postGradThesisDataTable"
+                        table_jqery_name = '#postGradThesisDataTable'
+                        project_data = {post_grad_thesis}
+                        raw_git = '1'/>,
+            document.getElementById('modal-view-post-grad-thesis')
+        );
+
+
 
     </script>
 </body>

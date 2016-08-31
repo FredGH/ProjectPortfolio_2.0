@@ -1,7 +1,7 @@
 var big_data_engineering_projects =
     [
         [ 	"Programming",
-            "Flight Booking System Cassandra and Java" ,
+            "Flight Booking System in Cassandra" ,
             "Detailed report explaining the design/build and implementation of a simplified flight booking system." ,
             "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/cassandra_java/docs/flight_booking_system.pdf" ,
             "CQL/Java" ,
