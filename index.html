@@ -408,17 +408,49 @@
                 var table_jqery_name = this.props.table_jqery_name;
                 var raw_git = this.props.raw_git;
 
+                function generateMutilineHyperLink(idx, base_uri, row, msg) {
+                    var uri = "Not Available";
+                    var splits = row.toString().split(',')
+                    if (splits != null) {
+                        var docs =  splits[4].toString().split('|') /*4 is hte position starting at 1 in the .js file*/
+                        if (docs != null) {
+                            var len = docs.length;
+                            if (len > 1 && idx == 3)/*col 3 is the column index for Doc.*/ {
+                                //complex case... nb yperlinkks > 1
+                                var hl = "";
+                                for (var i = 0; i< docs.length ; i++){
+                                    msg = msg + "(" + docs[i] + ")"
+                                    uri = base_uri + docs[i+1]
+                                    hl = hl + '<a target="_blank" href=' + uri + '>' + msg + '</a><p></p>'
+                                    i = i+1
+                                    msg = "Read"
+                                }
+                                return hl;
+                            }
+                            else{
+                                //simple case... only one hyperlink
+                                uri = base_uri + row[idx];
+                                return '<a target="_blank" href=' + uri + '>' + msg + '</a>'
+                            }
+                         }
+
+                        //should never get here...
+                        console.log('docs == null -> Error generating generateMutilineHyperLink()')
+                        return '';
+                    }
+                }
+
                 $(table_jqery_name).DataTable( {
                     data: this.props.project_data,
                     columns: [
-                        { title: "Cat." }, 		// col 0
-                        { title: "Name" }, 		// col 1
-                        { title: "Desc." },	    // col 2
-                        { title: "Doc." },		// col 3
-                        { title: "Code" },		// col 4
-                        { title: "Code Uri" },	// col 5
-                        { title: "Date" },		// col 7
-                        { title: "Lang." }		// col 8
+                        {title: "Cat."}, 		// col 0
+                        {title: "Name"}, 		// col 1
+                        {title: "Desc."},	    // col 2
+                        {title: "Doc."},		// col 3
+                        {title: "Code"},		// col 4
+                        {title: "Code Uri"},	// col 5
+                        {title: "Date"},		// col 7
+                        {title: "Lang."}		// col 8
                     ],
                     order: [[ 6, "desc" ]],
                     columnDefs: [
@@ -429,6 +461,7 @@
                             render: function ( data, type, row, obj ) {
                                 //var git_hub_base_uri = 'http://rawgit.com/FredGH/ProjectPortfolio_2.0/master/projects'
                                 var git_hub_base_uri = 'http://rawgit.com/FredGH'
+                                var hyperLink =  "Not Available";
                                 if (raw_git === 0) {
                                     git_hub_base_uri = 'https://github.com/FredGH'
                                 }
@@ -437,14 +470,15 @@
                                 if (obj.col === 3) {
                                     idx = 3
                                     msg = "Read"
+                                    hyperLink = generateMutilineHyperLink(idx, git_hub_base_uri, row, msg)
                                 }
                                 if (obj.col === 4) {
                                     idx = 5
                                     msg = row[4]
+                                    hyperLink = generateMutilineHyperLink(idx, git_hub_base_uri, row, msg)
                                 }
-                                var uri = git_hub_base_uri + row[idx]
-                                console.log(uri)
-                                return '<a target="_blank" href=' +  uri + '>' + msg + '</a>'
+                                //console.log(hyperLink)
+                                return hyperLink;
                             },
                             targets: [3,4] // target columns
                         },
