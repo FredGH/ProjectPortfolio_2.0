@@ -6,12 +6,14 @@ var web_technologies_projects =
             "/NeighborhoodMap/master/README.md" ,
             "Knockout/Javascript/CSS" ,
             "/NeighborhoodMap/master/index.html" ,
-            "Jun-2016"],
+            "Jun-2016",
+            "EN"],
         [ 	"Programming" ,
             "Frogger" ,
             "Code player, enemies, and other game entities in JavaScript in object-oriented pseudo-classical style, given the art assets and game engines.",
             "/Frogger/master/README.md" ,
             "Javascript/CSS" ,
             "/Frogger/master/index.html" ,
-            "April-2016"]
+            "April-2016",
+            "EN"]
     ];

@@ -411,14 +411,17 @@
                 $(table_jqery_name).DataTable( {
                     data: this.props.project_data,
                     columns: [
-                        { title: "Category" }, 		// col 0
-                        { title: "Name" }, 			// col 1
-                        { title: "Description" },	// col 2
-                        { title: "Document" },			// col 3
-                        { title: "Code" },			// col 4
-                        { title: "Code Uri" },		// col 5
-                        { title: "Date" }		    // col 7
+                        { title: "Cat." }, 		// col 0
+                        { title: "Name" }, 		// col 1
+                        { title: "Desc." },	    // col 2
+                        { title: "Doc." },		// col 3
+                        { title: "Code" },		// col 4
+                        { title: "Code Uri" },	// col 5
+                        { title: "Date" },		// col 7
+                        { title: "Lang." }		// col 8
+                        { title: "Lang." }		// col 9
                     ],
+                    order: [[ 6, "desc" ]],
                     columnDefs: [
                         {
                             // The `data` parameter refers to the data for the cell (defined by the
