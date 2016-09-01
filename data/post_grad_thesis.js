@@ -6,7 +6,7 @@ var post_grad_thesis =
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/docs/web_poster.pdf" ,
             "" ,
             "" ,
-            "March-2008",
+            "Mar-2008",
             "EN"],
         [ 	"MSc in Software Development Thesis (Full)" ,
             "A Model Checking Tool to detect and resolve potential Redundancies in Entity Relationship models" ,
@@ -22,6 +22,6 @@ var post_grad_thesis =
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_sommaire.pdf" ,
             "" ,
             "" ,
-            "June-1998",
+            "Jun-1998",
             "FR"]
     ];

@@ -14,6 +14,6 @@ var web_technologies_projects =
             "/Frogger/master/README.md" ,
             "Javascript/CSS" ,
             "/Frogger/master/index.html" ,
-            "April-2016",
+            "Apr-2016",
             "EN"]
     ];
