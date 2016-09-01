@@ -14,7 +14,7 @@ var post_grad_thesis =
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/docs/dissertation.pdf" ,
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/code" ,
-            "March-2008",
+            "Mar-2008",
             "EN"],
         [ 	"Maitrise Banque, Finance et Assurance" ,
             "Credit Value-at-Risk (VaR)" ,
