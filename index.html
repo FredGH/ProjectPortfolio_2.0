@@ -224,7 +224,7 @@
                 <div className="row">
                   <div className="col-lg-4 col-lg-offset-2">
                     <p>This web site is dedicated to projects I have been working on recently in the Data Sciences and Web technologies spaces.
-                       <p></p>The projects are available on:
+                       The projects are available on:
                     <a target="_blank" href='https://github.com/FredGH/ProjectPortfolio_2.0/tree/master/projects'> GitHub</a></p>
                   </div>
                   <div className="col-lg-4 col-lg-offset-2">
@@ -315,7 +315,7 @@
                                 </div>
                                 <img src={this.props.img_src} className="img-responsive"  alt="" />
                             </a>
-					    <h3>{this.props.title}</h3>
+					        <h3>{this.props.title}</h3>
                         </div>
                 );
             }
@@ -411,15 +411,17 @@
                 function generateMutilineHyperLink(idx, base_uri, row, msg) {
                     var uri = "Not Available";
                     var splits = row.toString().split(',')
+                    console.log('splits: ' + splits)
                     if (splits != null) {
-                        var docs =  splits[4].toString().split('|') /*4 is hte position starting at 1 in the .js file*/
+                        var docs =  splits[3].toString().split('|') /*4 is hte position starting at 1 in the .js file*/
+                        console.log('docs: ' + docs)
                         if (docs != null) {
                             var len = docs.length;
                             if (len > 1 && idx == 3)/*col 3 is the column index for Doc.*/ {
                                 //complex case... nb yperlinkks > 1
                                 var hl = "";
                                 for (var i = 0; i< docs.length ; i++){
-                                    msg = msg + "(" + docs[i] + ")"
+                                    msg = msg + " " + docs[i]
                                     uri = base_uri + docs[i+1]
                                     hl = hl + '<a target="_blank" href=' + uri + '>' + msg + '</a><p></p>'
                                     i = i+1
