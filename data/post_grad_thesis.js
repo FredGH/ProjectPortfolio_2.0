@@ -16,7 +16,8 @@ var post_grad_thesis =
             "Table of content|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_sommaire.pdf" +
             "|Introduction|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_introduction.pdf" +
             "|Part 1|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_partie1.pdf" +
-            "|Part 2|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_partie2.pdf" ,
+            "|Part 2|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_partie2.pdf" +
+            "|Part 3|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_partie3.pdf" ,
             "" ,
             "" ,
             "Jun-1998",
