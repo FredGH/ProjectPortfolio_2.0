@@ -421,7 +421,7 @@
                                 //complex case... nb yperlinkks > 1
                                 var hl = "";
                                 for (var i = 0; i< docs.length ; i++){
-                                    msg = msg + " " + docs[i]
+                                    msg = /*msg + " " +*/ docs[i]
                                     uri = base_uri + docs[i+1]
                                     hl = hl + '<a target="_blank" href=' + uri + '>' + msg + '</a><p></p>'
                                     i = i+1
