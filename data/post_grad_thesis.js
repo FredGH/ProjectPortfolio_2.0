@@ -14,7 +14,8 @@ var post_grad_thesis =
             "Credit Value-at-Risk (VaR)" ,
             "Description and implementation  of the VaR applied to a credit portfolio and review of the methodology limitations" ,
             "table of content|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_sommaire.pdf" +
-            "|introduction|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_introduction.pdf" ,
+            "|introduction|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_introduction.pdf" +
+            "|part I|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_partie1.pdf" ,
             "" ,
             "" ,
             "Jun-1998",
