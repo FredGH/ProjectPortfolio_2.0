@@ -124,6 +124,8 @@
             <!-- display project list -->
             <div class="row">
                 <div id="portfolio-item-machine-learning"></div>
+                <div id="portfolio-item-natural-language-processing"></div>
+                <div id="portfolio-item-artificial-intelligence"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
                 <div id="portfolio-item-web-technologies"></div>
                 <div id="portfolio-item-empty"></div>
@@ -196,6 +198,8 @@
     <!-- Portfolio Modals -->
     <div id="modal-view-machine-learning"></div>
     <div id="modal-view-big-data-engineering"></div>
+    <div id="modal-view-natural-language-processing"></div>
+    <div id="modal-view-artificial-intelligence"></div>
     <div id="modal-view-web-technologies"></div>
     <div id="modal-view-post-grad-thesis"></div>
 
@@ -207,6 +211,7 @@
     <!-- Project list details -->
     <script src="data/machine_learning_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
+    <script src="data/natural_language_processing_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
     <script src="data/post_grad_thesis.js"></script>
 
@@ -354,6 +359,16 @@
         ReactDOM.render(
                 <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#webTechnologiesModal"  />,
                 document.getElementById('portfolio-item-web-technologies')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Natural Language Processing" img_src="img/portfolio/nlp.png" item_href="#naturalLanguageProcessingModal"  />,
+                document.getElementById('portfolio-item-natural-language-processing')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Artificial Intelligence" img_src="img/portfolio/ai.jpg" item_href="#artificialIntelligenceModal" />,
+                document.getElementById('portfolio-item-artificial-intelligence')
         );
 
 
@@ -569,6 +584,28 @@
                         project_data = {big_data_engineering_projects} />,
             document.getElementById('modal-view-big-data-engineering')
         );
+
+        ReactDOM.render(
+                <ModelView  title = "natural language processing"
+                            modal_id = "naturalLanguageProcessing"
+                            summary_text =  "TBA"
+                            dependecy_text =  "TBA"
+                            table_id = "naturalLanguageProcessingTable"
+                            table_jqery_name = '#naturalLanguageProcessingTable'
+                            project_data = {natural_language_processing_projects} />,
+                            document.getElementById('modal-view-natural-language-processing')
+            );
+
+        ReactDOM.render(
+                <ModelView  title = "artificial intelligence"
+                        modal_id = "artificialIntelligence"
+                        summary_text =  "TBA"
+                        dependecy_text =  "TBA"
+                        table_id = "artificialIntelligenceable"
+                        table_jqery_name = '#artificialIntelligenceTable'
+                        project_data = {artificial_intelligence_projects} />,
+                                document.getElementById('modal-view-artificial-intelligence')
+                        );
 
          ReactDOM.render(
             <ModelView  title = "web technologies"
