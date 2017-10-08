@@ -23,7 +23,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Frederic Marechal</title>
+    <title>Fred Marechal's Portfolio</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -88,6 +88,7 @@
                 <!-- nav list -->
                 <div id="nav-item-contact"></div>
                 <div id="nav-item-about"></div>
+                <div id="nav-item-bio"></div>
                 <div id="nav-item-portfolio"></div>
             </div>
             <!-- /.navbar-collapse -->
@@ -130,6 +131,11 @@
                 <div id="portfolio-item-empty"></div>
             </div>
         </div>
+    </section>
+
+    <!-- Bio Section -->
+    <section class="success" id="about">
+        <div id="bio-content"></div>
     </section>
 
     <!-- About Section -->
@@ -210,7 +216,21 @@
     'jsx Cross origin requests are only supported for protocol schemes:
     http, data, chrome, chrome-extension, https, chrome-extension-resource.'
     -->
+
     <script type="text/babel">
+        var BioContent = React.createClass({
+            render: function() {
+                return (
+                        <div id="modal-view-machine-learning"></div>
+                );
+            }
+        });
+
+        ReactDOM.render(
+        <BioContent />,
+                document.getElementById('bio-content')
+        );
+
         var AboutContent = React.createClass({
           render: function() {
             return (
@@ -379,6 +399,11 @@
         );
 
         ReactDOM.render(
+        <NavItem content = "Bio" a_href="#bio"/>,
+                document.getElementById('nav-item-bio')
+        );
+
+        ReactDOM.render(
                 <NavItem content = "About" a_href="#about"/>,
                 document.getElementById('nav-item-about')
         );
@@ -451,8 +476,8 @@
                         {title: "Doc."},		// col 3
                         {title: "Code"},		// col 4
                         {title: "Code Uri"},	// col 5
-                        {title: "Date"},		// col 7
-                        {title: "Lang."}		// col 8
+                        {title: "Date"},		// col 6
+                        {title: "Lang."}		// col 7
                     ],
                     order: [[ 6, "desc" ]],
                     columnDefs: [
