@@ -64,7 +64,7 @@
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]  -->
+    <![endif]  -->g
 
 </head>
 
@@ -128,9 +128,9 @@
                 <div id="portfolio-item-artificial-intelligence"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
                 <div id="portfolio-item-web-technologies"></div>
-                <div id="portfolio-item-empty"></div>
+                <!--<div id="portfolio-item-empty"></div>-->
                 <div id="portfolio-item-post-grad-thesis"></div>
-                <div id="portfolio-item-empty"></div>
+                <!--<div id="portfolio-item-empty"></div>-->
             </div>
         </div>
     </section>
@@ -212,6 +212,7 @@
     <script src="data/machine_learning_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
     <script src="data/natural_language_processing_projects.js"></script>
+    <script src="data/artificial_intelligence_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
     <script src="data/post_grad_thesis.js"></script>
 
@@ -365,12 +366,11 @@
         <PortfolioItem title = "Natural Language Processing" img_src="img/portfolio/nlp.png" item_href="#naturalLanguageProcessingModal"  />,
                 document.getElementById('portfolio-item-natural-language-processing')
         );
-
+h
         ReactDOM.render(
         <PortfolioItem title = "Artificial Intelligence" img_src="img/portfolio/ai.jpg" item_href="#artificialIntelligenceModal" />,
                 document.getElementById('portfolio-item-artificial-intelligence')
         );
-
 
         ReactDOM.render(
         <PortfolioItem title = "" img_src="" item_href="#empty"  />,
@@ -587,7 +587,7 @@
 
         ReactDOM.render(
                 <ModelView  title = "natural language processing"
-                            modal_id = "naturalLanguageProcessing"
+                            modal_id = "naturalLanguageProcessingModal"
                             summary_text =  "TBA"
                             dependecy_text =  "TBA"
                             table_id = "naturalLanguageProcessingTable"
@@ -598,10 +598,10 @@
 
         ReactDOM.render(
                 <ModelView  title = "artificial intelligence"
-                        modal_id = "artificialIntelligence"
+                        modal_id = "artificialIntelligenceModal"
                         summary_text =  "TBA"
                         dependecy_text =  "TBA"
-                        table_id = "artificialIntelligenceable"
+                        table_id = "artificialIntelligenceTable"
                         table_jqery_name = '#artificialIntelligenceTable'
                         project_data = {artificial_intelligence_projects} />,
                                 document.getElementById('modal-view-artificial-intelligence')
