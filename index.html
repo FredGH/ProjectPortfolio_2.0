@@ -128,9 +128,7 @@
                 <div id="portfolio-item-artificial-intelligence"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
                 <div id="portfolio-item-web-technologies"></div>
-                <!--<div id="portfolio-item-empty"></div>-->
                 <div id="portfolio-item-post-grad-thesis"></div>
-                <!--<div id="portfolio-item-empty"></div>-->
             </div>
         </div>
     </section>
@@ -197,9 +195,9 @@
 
     <!-- Portfolio Modals -->
     <div id="modal-view-machine-learning"></div>
-    <div id="modal-view-big-data-engineering"></div>
     <div id="modal-view-natural-language-processing"></div>
     <div id="modal-view-artificial-intelligence"></div>
+    <div id="modal-view-big-data-engineering"></div>
     <div id="modal-view-web-technologies"></div>
     <div id="modal-view-post-grad-thesis"></div>
 
@@ -210,9 +208,9 @@
 
     <!-- Project list details -->
     <script src="data/machine_learning_projects.js"></script>
-    <script src="data/big_data_engineering_projects.js"></script>
     <script src="data/natural_language_processing_projects.js"></script>
     <script src="data/artificial_intelligence_projects.js"></script>
+    <script src="data/big_data_engineering_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
     <script src="data/post_grad_thesis.js"></script>
 
@@ -353,38 +351,28 @@
         );
 
         ReactDOM.render(
-                <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#bigDataEngineeringModal"  />,
-                document.getElementById('portfolio-item-big-data-engineering')
+            <PortfolioItem title = "Natural Language Processing" img_src="img/portfolio/nlp.png" item_href="#naturalLanguageProcessingModal"  />,
+            document.getElementById('portfolio-item-natural-language-processing')
         );
 
         ReactDOM.render(
-                <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#webTechnologiesModal"  />,
-                document.getElementById('portfolio-item-web-technologies')
+            <PortfolioItem title = "Artificial Intelligence" img_src="img/portfolio/ai.jpg" item_href="#artificialIntelligenceModal" />,
+             document.getElementById('portfolio-item-artificial-intelligence')
         );
 
         ReactDOM.render(
-        <PortfolioItem title = "Natural Language Processing" img_src="img/portfolio/nlp.png" item_href="#naturalLanguageProcessingModal"  />,
-                document.getElementById('portfolio-item-natural-language-processing')
+             <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#bigDataEngineeringModal"  />,
+              document.getElementById('portfolio-item-big-data-engineering')
         );
 
         ReactDOM.render(
-        <PortfolioItem title = "Artificial Intelligence" img_src="img/portfolio/ai.jpg" item_href="#artificialIntelligenceModal" />,
-                document.getElementById('portfolio-item-artificial-intelligence')
+             <PortfolioItem title = "Web Technologies" img_src="img/portfolio/wb.jpg" item_href="#webTechnologiesModal"  />,
+             document.getElementById('portfolio-item-web-technologies')
         );
 
-        ReactDOM.render(
-        <PortfolioItem title = "" img_src="" item_href="#empty"  />,
-                document.getElementById('portfolio-item-empty')
-        );
-
-        ReactDOM.render(
-        <PortfolioItem title = "Post Graduate Thesis" img_src="img/portfolio/ts.png" item_href="#postGradThesisModal"  />,
-                document.getElementById('portfolio-item-post-grad-thesis')
-        );
-
-        ReactDOM.render(
-        <PortfolioItem title = "" img_src="" item_href="#empty"  />,
-                document.getElementById('portfolio-item-empty')
+ReactDOM.render(
+            <PortfolioItem title = "Post Graduate Thesis" img_src="img/portfolio/ts.png" item_href="#postGradThesisModal"  />,
+            document.getElementById('portfolio-item-post-grad-thesis')
         );
 
         var NavItem = React.createClass({
@@ -575,6 +563,28 @@
         );
 
         ReactDOM.render(
+            <ModelView  title = "natural language processing"
+                        modal_id = "naturalLanguageProcessingModal"
+                        summary_text =  "TBA"
+                        dependecy_text =  "TBA"
+                        table_id = "naturalLanguageProcessingTable"
+                        table_jqery_name = '#naturalLanguageProcessingTable'
+                        project_data = {natural_language_processing_projects} />,
+           document.getElementById('modal-view-natural-language-processing')
+        );
+
+        ReactDOM.render(
+            <ModelView  title = "artificial intelligence"
+                        modal_id = "artificialIntelligenceModal"
+                        summary_text =  "TBA"
+                        dependecy_text =  "TBA"
+                        table_id = "artificialIntelligenceTable"
+                        table_jqery_name = '#artificialIntelligenceTable'
+                        project_data = {artificial_intelligence_projects} />,
+                document.getElementById('modal-view-artificial-intelligence')
+        );
+
+        ReactDOM.render(
             <ModelView  title = "big data engineering"
                         modal_id = "bigDataEngineeringModal"
                         summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements. It also contains the corresponding code solutions."
@@ -586,36 +596,14 @@
         );
 
         ReactDOM.render(
-                <ModelView  title = "natural language processing"
-                            modal_id = "naturalLanguageProcessingModal"
-                            summary_text =  "TBA"
-                            dependecy_text =  "TBA"
-                            table_id = "naturalLanguageProcessingTable"
-                            table_jqery_name = '#naturalLanguageProcessingTable'
-                            project_data = {natural_language_processing_projects} />,
-            document.getElementById('modal-view-natural-language-processing')
-            );
-
-        ReactDOM.render(
-                <ModelView  title = "artificial intelligence"
-                        modal_id = "artificialIntelligenceModal"
-                        summary_text =  "TBA"
-                        dependecy_text =  "TBA"
-                        table_id = "artificialIntelligenceTable"
-                        table_jqery_name = '#artificialIntelligenceTable'
-                        project_data = {artificial_intelligence_projects} />,
-            document.getElementById('modal-view-artificial-intelligence')
-                        );
-
-         ReactDOM.render(
             <ModelView  title = "web technologies"
-                        modal_id = "webTechnologiesModal"
-                        summary_text =  ""
-                        dependecy_text =  ""
-                        table_id = "webTechnologiesDataTable"
-                        table_jqery_name = '#webTechnologiesDataTable'
-                        project_data = {web_technologies_projects}
-                        raw_git = '1'/>,
+                            modal_id = "webTechnologiesModal"
+                            summary_text =  ""
+                            dependecy_text =  ""
+                            table_id = "webTechnologiesDataTable"
+                            table_jqery_name = '#webTechnologiesDataTable'
+                            project_data = {web_technologies_projects}
+                            raw_git = '1'/>,
             document.getElementById('modal-view-web-technologies')
         );
 
@@ -629,6 +617,8 @@
                         project_data = {post_grad_thesis} />,
             document.getElementById('modal-view-post-grad-thesis')
         );
+
+
 
     </script>
 </body>
