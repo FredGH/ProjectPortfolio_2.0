@@ -1,0 +1,178 @@
+ #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   #setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+> 
+> #########################################
+> ########### Load Dependencies ###########
+> #########################################
+> source("init_data.r")
+Loading required package: caret
+Loading required package: lattice
+Loading required package: ggplot2
+Loading required package: DMwR
+Loading required package: grid
+> source("exploratory_functions.r")
+Loading required package: dplyr
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading required package: reshape2
+> source("pre_processing_functions.r")
+> source("feat_selection.r")
+randomForest 4.6-12
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> require(e1071)
+Loading required package: e1071
+> 
+> forceReloadPreCanned1 = TRUE
+> if (forceReloadPreCanned1) {
++   #List the pre-processing functions
++   model.preProcessingFunctions <- c(
++       convert_to_factors, 
++       drop_na_cols,
++       remove_correlated_predictors,
++       convert_NAs_to_level,
++       remove_linear_dependencies,
++       create_replacement_columns,
++       impute_data
++   )
++   model.data <- apply_pre_processing(train, model.preProcessingFunctions)
++   write.csv(model.data, file = "train.bin.neg.top10.app.csv", row.names = FALSE)
++ } else {
++   #reload from file
++   model.data <- read.csv("train.bin.neg.top10.app.csv", stringsAsFactors = FALSE)
++   model.data <- convert_to_factors(model.data)
++ }
+[1] "Number of removed linearly dependent col(s): 0"
+> 
+> #Have a look to ensure there is no missing data
+> lookAtMissingValues = FALSE
+> if (lookAtMissingValues){
++   ggplot_missing(model.data)
++ }
+> 
+> sub <- model.data[,c("appetency","V84","V14","V111","V192","V70","V222","V141","V101","V161","V134","V55")]
+> res = evaluate_model(
++   #args to model.evaluate
++   data = sub,
++   formula = model.formula,
++   trainSMOTE = TRUE,
++   debug = TRUE,
++   # args passed through to other functions e.g. caret
++   method = "lda", 
++   metric = "Kappa",
++   #preProcess=c("knnImpute"), 
++   trControl = trainControl(
++     method = "repeatedcv", 
++     number = 10, 
++     repeats = 5, 
++     selectionFunction = "oneSE"
++   )
++ )
+[1] "evaluate_model:"
+appetency ~ V84 + V14 + V111 + V192 + V70 + V222 + V141 + V101 + 
+    V161 + V134 + V55
+[1] "numFolds: 5"
+[1] "debug: TRUE"
+[1] "foldSize is 6600, based on 33001 rows and 5 folds"
+[1] "targetColumnName: appetency"
+[1] "Training model, holding out rows 1 to 6600 for evaluation"
+Loading required package: MASS
+
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+          Truth
+Prediction   -1    1
+        -1 4544   27
+        1  1933   96
+[1] "tn: 4544, fp: 1933, fn: 27. tp: 96"
+[1] "specificity: 0.701559363903042"
+[1] "sensitivity: 0.780487804878049"
+[1] "precision: 0.047313947757516"
+[1] "accuracy: 0.703030303030303"
+[1] "F1-score: 0.0892193308550186"
+[1] "auc: 0.741023584390545"
+[1] "Training model, holding out rows 6601 to 13200 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4676   38
+        1  1812   74
+[1] "tn: 4676, fp: 1812, fn: 38. tp: 74"
+[1] "specificity: 0.720715166461159"
+[1] "sensitivity: 0.660714285714286"
+[1] "precision: 0.039236479321315"
+[1] "accuracy: 0.71969696969697"
+[1] "F1-score: 0.0740740740740741"
+[1] "auc: 0.690714726087722"
+[1] "Training model, holding out rows 13201 to 19800 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4569   38
+        1  1909   84
+[1] "tn: 4569, fp: 1909, fn: 38. tp: 84"
+[1] "specificity: 0.705310280950911"
+[1] "sensitivity: 0.688524590163934"
+[1] "precision: 0.0421475163070748"
+[1] "accuracy: 0.705"
+[1] "F1-score: 0.0794326241134752"
+[1] "auc: 0.696917435557423"
+[1] "Training model, holding out rows 19801 to 26400 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4580   34
+        1  1894   92
+[1] "tn: 4580, fp: 1894, fn: 34. tp: 92"
+[1] "specificity: 0.707445165276491"
+[1] "sensitivity: 0.73015873015873"
+[1] "precision: 0.0463242698892246"
+[1] "accuracy: 0.707878787878788"
+[1] "F1-score: 0.0871212121212121"
+[1] "auc: 0.71880194771761"
+[1] "Training model, holding out rows 26401 to 33000 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4593   25
+        1  1906   76
+[1] "tn: 4593, fp: 1906, fn: 25. tp: 76"
+[1] "specificity: 0.706724111401754"
+[1] "sensitivity: 0.752475247524752"
+[1] "precision: 0.0383451059535822"
+[1] "accuracy: 0.707424242424242"
+[1] "F1-score: 0.0729716754680749"
+[1] "auc: 0.729599679463253"
+[1] "Average AUC for model: 0.715411474643311"
+[1] "Average accuracy for model: 0.708606060606061"
+[1] "Retraining final model on whole training set"
+> 
+> print(sprintf("Model %s AUC score = %s", model.name, res$auc))
+[1] "Model LDA AUC score = 0.715411474643311"

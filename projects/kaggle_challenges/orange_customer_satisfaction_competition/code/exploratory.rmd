@@ -1,0 +1,65 @@
+---
+title: "Exploratory Analysis"
+output:
+  html_document:
+    df_print: paged
+    theme: cerulean
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r init}
+
+source("init_data.r")
+source("exploratory_functions.r")
+
+# See what we have, here..
+#foo <- convert_char_factors_to_integers(positive.churn)
+```
+
+## Data Distributions
+
+```{r plot_distributions}
+plot_distributions(train, test)
+```
+
+## Comparison of factors in Training vs Test Data
+
+```{r plot_factor_comparisons, message=FALSE, warning=FALSE}
+compare_factors(train, test)
+
+#train.factors <- convert_to_factors(train, debug = TRUE)
+#train.factors <- convert_NAs_to_level(train.factors, debug = TRUE)
+#train.appetency.factors <- bin_negative_levels(train.factors, "appetency")
+#train.upselling.factors <- bin_negative_levels(train.factors, "upselling")
+#train.churn.factors <- bin_negative_levels(train.factors, "churn")
+
+#summarise_levels(train.appetency.factors, "appetency")
+#summarise_levels(train.upselling.factors, "upselling")
+#summarise_levels(train.churn.factors, "churn")
+
+
+```
+
+## Summary of training factors are removing those levels not present in the test data
+```{r plot_training_factors_after_removal, message=FALSE, warning=FALSE}
+trainWithOnlyCommonLevels <- bin_levels_if_not_in_test_set(train, test, "BIN")
+summarise_levels(trainWithOnlyCommonLevels, "appetency")
+summarise_levels(trainWithOnlyCommonLevels, "upselling")
+summarise_levels(trainWithOnlyCommonLevels, "churn")
+
+```
+
+
+## plot_distributions of +1 vs -1 categories
+
+```{r plot_positive_negative_categories, message=FALSE, warning=FALSE}
+plot_distributions(positive.appetency, negative.appetency, data1label="positive for appetency", data2label="negative for appetency")
+plot_distributions(positive.upselling, negative.upselling, data1label="positive for upselling", data2label="negative for upselling")
+plot_distributions(positive.churn, negative.churn, data1label="positive for churn", data2label="negative for churn")
+
+

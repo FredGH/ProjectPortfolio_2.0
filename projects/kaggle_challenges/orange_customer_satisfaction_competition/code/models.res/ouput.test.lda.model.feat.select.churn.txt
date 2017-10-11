@@ -1,0 +1,270 @@
+
+R version 3.3.3 (2017-03-06) -- "Another Canoe"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #TRUE: server settings / FALSE: local settings
+> isServerRun = FALSE
+> model.name <- "LDA"
+> model.formula <-as.formula("churn ~ V118+V224+V165+V84+V155+V14+V116+V149+V111+V156+V149")
+> 
+> print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+[1] "model: LDA formula: churn ~ V118 + V224 + V165 + V84 + V155 + V14 + V116 + V149 + "
+[2] "model: LDA formula:     V111 + V156 + V149"                                        
+> 
+> #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   #setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+> #########################################
+> ########### Load Dependencies ###########
+> #########################################
+> source("init_data.r")
+Loading required package: caret
+Loading required package: lattice
+Loading required package: ggplot2
+Loading required package: DMwR
+Loading required package: grid
+Loading required package: dplyr
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> source("exploratory_functions.r")
+Loading required package: reshape2
+> source("pre_processing_functions.r")
+> source("feat_selection.r")
+randomForest 4.6-12
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> source("util_functions.r")
+> require(e1071)
+Loading required package: e1071
+> 
+> #List the pre-processing functions
+> model.preProcessingFunctions <- c(
++   drop_na_cols,
++   remove_correlated_predictors,
++   convert_NAs_to_level,
++   remove_linear_dependencies
++ )
+> forceReloadPreCanned1 = TRUE
+> if (forceReloadPreCanned1) {
++   
++   model.data <- bin_levels_if_not_in_test_set(train, test, "BIN")
++   model.data <- apply_pre_processing(model.data, model.preProcessingFunctions)
++   
++   model.data <- bin_negative_levels(data = model.data, targetColumnName = "churn", binLevelName = "ALL_NEGATIVE") 
++   allNegativeLevels <- attr(model.data, "ALL_NEGATIVE")
++   
++   model.data <- keep_top_X_levels(data = model.data, X = 10, binLevelName = "BIN")
++   binnedLevels <- attr(model.data, "BIN")
++   
++   write.csv(model.data, file = "train.bin.neg.top10.app.csv", row.names = FALSE)
++ } else {
++   #reload from file
++   model.data <- read.csv("train.bin.neg.top10.app.csv", stringsAsFactors = FALSE)
++   model.data <- convert_to_factors(model.data)
++ }
+[1] "Number of removed linearly dependent col(s): 0"
+> #Have a look to ensure there is no missing data
+> lookAtMissingValues = FALSE
+> if (lookAtMissingValues){
++   ggplot_missing(model.data)
++ }
+> #Run a Kolmogorov Smirnov test on numerical data
+> par( mfrow = c( 2, 2 ) )
+> df =  subset(subset(model.data, select=c("churn","V84")), model.data$churn == 1)
+> kolmogorov_smirnov_normal_distribution_test(df$V84, paste("'V84/churn == 1' is normally distributed", sep=""))
+'V84/churn == 1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 5.021697e-05 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V84, "V84/churn == 1")
+> df =  subset(subset(model.data, select=c("churn","V84")), model.data$churn == -1)
+> kolmogorov_smirnov_normal_distribution_test(df$V84, paste("'V84/churn == -1' is normally distributed", sep=""))
+'V84/churn == -1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 5.489717e-05 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V84, "V84/churn == -1")
+> 
+> df =  subset(subset(model.data, select=c("churn","V14")), model.data$churn == 1)
+> kolmogorov_smirnov_normal_distribution_test(df$V14, paste("'V14/churn == 1' is normally distributed", sep=""))
+'V14/churn == 1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 0 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V14, "V14/churn == 1")
+> df =  subset(subset(model.data, select=c("churn","V14")), model.data$churn == -1)
+> kolmogorov_smirnov_normal_distribution_test(df$V14, paste("'V14/churn == -1' is normally distributed", sep=""))
+'V14/churn == -1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 0 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V14, "V14/churn == -1")
+> 
+> df =  subset(subset(model.data, select=c("churn","V111")), model.data$churn == 1)
+> kolmogorov_smirnov_normal_distribution_test(df$V111, paste("'V111/churn == 1' is normally distributed", sep=""))
+'V111/churn == 1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 3.728516e-10 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V111, "V111/churn == 1")
+> df =  subset(subset(model.data, select=c("churn","V111")), model.data$churn == -1)
+> kolmogorov_smirnov_normal_distribution_test(df$V111, paste("'V111/churn == -1' is normally distributed", sep=""))
+'V111/churn == -1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 0 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V111, "V111/churn == -1")
+> 
+> par( mfrow = c( 1, 1 ) )
+> train.LDAchurn <- function(formula, data) {
++ 
++   data <- impute_data(data)
++   data <- SMOTE(form = formula, data = data)
++ 
++   caretModel <- train (
++     formula, 
++     data,
++     method = "lda", 
++     metric = "Kappa",
++     trControl = trainControl(
++       method = "repeatedcv", 
++       number = 10, 
++       repeats = 5, 
++       selectionFunction = "oneSE"
++     )
++   )
++   
++   model <- structure(
++     list(
++       model = caretModel
++     ),
++     class = "LDAchurn"
++   ) 
++   
++   return(model)
++ }
+> predict.LDAchurn <- function(model, data) {
++   model <- model$model
++   data <- impute_data(data)
++   predictions <- predict(model, data)
++   return(predictions)
++ }
+> knownLevels <- list_factor_levels(model.data)
+> #Get the AUC
+> res = evaluate_model(
++   data = model.data,
++   formula = model.formula,
++   trainMethod = train.LDAchurn,
++   debug = TRUE
++ )
+[1] "evaluate_model:"
+churn ~ V118 + V224 + V165 + V84 + V155 + V14 + V116 + V149 + 
+    V111 + V156 + V149
+[1] "numFolds: 5"
+[1] "debug: TRUE"
+[1] "foldSize is 6600, based on 33001 rows and 5 folds"
+[1] "targetColumnName: churn"
+[1] "Training model, holding out rows 1 to 6600 for evaluation"
+Loading required package: MASS
+
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+          Truth
+Prediction   -1    1
+        -1 4559  152
+        1  1548  341
+[1] "tn: 4559, fp: 1548, fn: 152. tp: 341"
+[1] "specificity: 0.746520386441788"
+[1] "sensitivity: 0.691683569979716"
+[1] "precision: 0.180518793012176"
+[1] "accuracy: 0.742424242424242"
+[1] "F1-score: 0.286314021830395"
+[1] "auc: 0.719101978210752"
+[1] "Training model, holding out rows 6601 to 13200 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4643  162
+        1  1477  318
+[1] "tn: 4643, fp: 1477, fn: 162. tp: 318"
+[1] "specificity: 0.758660130718954"
+[1] "sensitivity: 0.6625"
+[1] "precision: 0.177158774373259"
+[1] "accuracy: 0.751666666666667"
+[1] "F1-score: 0.27956043956044"
+[1] "auc: 0.710580065359477"
+[1] "Training model, holding out rows 13201 to 19800 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4633  142
+        1  1469  356
+[1] "tn: 4633, fp: 1469, fn: 142. tp: 356"
+[1] "specificity: 0.759259259259259"
+[1] "sensitivity: 0.714859437751004"
+[1] "precision: 0.195068493150685"
+[1] "accuracy: 0.755909090909091"
+[1] "F1-score: 0.306500215238915"
+[1] "auc: 0.737059348505132"
+[1] "Training model, holding out rows 19801 to 26400 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4494  142
+        1  1624  340
+[1] "tn: 4494, fp: 1624, fn: 142. tp: 340"
+[1] "specificity: 0.734553775743707"
+[1] "sensitivity: 0.705394190871369"
+[1] "precision: 0.173116089613035"
+[1] "accuracy: 0.732424242424242"
+[1] "F1-score: 0.278004905968929"
+[1] "auc: 0.719973983307538"
+[1] "Training model, holding out rows 26401 to 33000 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 4516  165
+        1  1597  322
+[1] "tn: 4516, fp: 1597, fn: 165. tp: 322"
+[1] "specificity: 0.738753476198266"
+[1] "sensitivity: 0.661190965092402"
+[1] "precision: 0.167795726941115"
+[1] "accuracy: 0.733030303030303"
+[1] "F1-score: 0.267664172901081"
+[1] "auc: 0.699972220645334"
+[1] "Average AUC for model: 0.717337519205647"
+[1] "Average accuracy for model: 0.743090909090909"
+[1] "Retraining final model on whole training set"

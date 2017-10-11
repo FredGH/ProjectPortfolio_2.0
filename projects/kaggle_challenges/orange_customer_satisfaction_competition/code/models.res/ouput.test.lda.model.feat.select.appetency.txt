@@ -1,0 +1,447 @@
+
+R version 3.3.3 (2017-03-06) -- "Another Canoe"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Workspace loaded from C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables/models/lda/LDAappetency.rda]
+
+> #TRUE: server settings / FALSE: local settings
+> isServerRun = FALSE
+> model.name <- "LDA"
+> model.formula <-as.formula("appetency ~ V84+V118+V165+V224+V116+V155+V14+V90")
+> 
+> print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+[1] "model: LDA formula: appetency ~ V84 + V118 + V165 + V224 + V116 + V155 + V14 + V90"
+> 
+> #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   #setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+Error in setwd("C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission") : 
+  cannot change working directory
+> 
+> #########################################
+> ########### Load Dependencies ###########
+> #########################################
+> source("init_data.r")
+Error in file(filename, "r", encoding = encoding) : 
+  cannot open the connection
+In addition: Warning message:
+In file(filename, "r", encoding = encoding) :
+  cannot open file 'init_data.r': No such file or directory
+> source("exploratory_functions.r")
+Error in file(filename, "r", encoding = encoding) : 
+  cannot open the connection
+In addition: Warning message:
+In file(filename, "r", encoding = encoding) :
+  cannot open file 'exploratory_functions.r': No such file or directory
+> source("pre_processing_functions.r")
+Error in file(filename, "r", encoding = encoding) : 
+  cannot open the connection
+In addition: Warning message:
+In file(filename, "r", encoding = encoding) :
+  cannot open file 'pre_processing_functions.r': No such file or directory
+> source("feat_selection.r")
+Error in file(filename, "r", encoding = encoding) : 
+  cannot open the connection
+In addition: Warning message:
+In file(filename, "r", encoding = encoding) :
+  cannot open file 'feat_selection.r': No such file or directory
+> source("util_functions.r")
+Error in file(filename, "r", encoding = encoding) : 
+  cannot open the connection
+In addition: Warning message:
+In file(filename, "r", encoding = encoding) :
+  cannot open file 'util_functions.r': No such file or directory
+> require(e1071)
+Loading required package: e1071
+> 
+> #List the pre-processing functions
+> model.preProcessingFunctions <- c(
++   drop_na_cols,
++   remove_correlated_predictors,
++   convert_NAs_to_level,
++   remove_linear_dependencies
++ )
+Error: object 'drop_na_cols' not found
+> 
+> forceReloadPreCanned1 = TRUE
+> if (forceReloadPreCanned1) {
++   
++   model.data <- bin_levels_if_not_in_test_set(train, test, "BIN")
++   model.data <- apply_pre_processing(model.data, model.preProcessingFunctions)
++   
++   model.data <- bin_negative_levels(data = model.data, targetColumnName = "appetency", binLevelName = "ALL_NEGATIVE") 
++   allNegativeLevels <- attr(model.data, "ALL_NEGATIVE")
++   
++   model.data <- keep_top_X_levels(data = model.data, X = 10, binLevelName = "BIN")
++   binnedLevels <- attr(model.data, "BIN")
++   
++   write.csv(model.data, file = "train.bin.neg.top10.app.csv", row.names = FALSE)
++ } else {
++   #reload from file
++   model.data <- read.csv("train.bin.neg.top10.app.csv", stringsAsFactors = FALSE)
++   model.data <- convert_to_factors(model.data)
++ }
+Error: could not find function "bin_levels_if_not_in_test_set"
+> 
+> #Have a look to ensure there is no missing data
+> lookAtMissingValues = FALSE
+> if (lookAtMissingValues){
++   ggplot_missing(model.data)
++ }
+> 
+> #Run a Kolmogorov Smirnov test on numerical data
+> par( mfrow = c( 2, 2 ) )
+> df =  subset(subset(model.data, select=c("appetency","V84")), model.data$appetency == 1)
+Error in subset(model.data, select = c("appetency", "V84")) : 
+  object 'model.data' not found
+> kolmogorov_smirnov_normal_distribution_test(df$V84, paste("'V84/appetency == 1' is normally distributed", sep=""))
+Error: could not find function "kolmogorov_smirnov_normal_distribution_test"
+> plot_qqplot (df$V84, "V84/appetency == 1")
+Error: could not find function "plot_qqplot"
+> df =  subset(subset(model.data, select=c("appetency","V84")), model.data$appetency == -1)
+Error in subset(model.data, select = c("appetency", "V84")) : 
+  object 'model.data' not found
+> kolmogorov_smirnov_normal_distribution_test(df$V84, paste("'V84/appetency == -1' is normally distributed", sep=""))
+Error: could not find function "kolmogorov_smirnov_normal_distribution_test"
+> plot_qqplot (df$V84, "V84/appetency == -1")
+Error: could not find function "plot_qqplot"
+> 
+> df =  subset(subset(model.data, select=c("appetency","V14")), model.data$appetency == 1)
+Error in subset(model.data, select = c("appetency", "V14")) : 
+  object 'model.data' not found
+> kolmogorov_smirnov_normal_distribution_test(df$V14, paste("'V14/appetency == 1' is normally distributed", sep=""))
+Error: could not find function "kolmogorov_smirnov_normal_distribution_test"
+> plot_qqplot (df$V14, "V14/appetency == 1")
+Error: could not find function "plot_qqplot"
+> df =  subset(subset(model.data, select=c("appetency","V14")), model.data$appetency == -1)
+Error in subset(model.data, select = c("appetency", "V14")) : 
+  object 'model.data' not found
+> kolmogorov_smirnov_normal_distribution_test(df$V14, paste("'V14/appetency == -1' is normally distributed", sep=""))
+Error: could not find function "kolmogorov_smirnov_normal_distribution_test"
+> plot_qqplot (df$V14, "V14/appetency == -1")
+Error: could not find function "plot_qqplot"
+> par( mfrow = c( 1, 1 ) ) 
+> 
+> train.LDAappetency <- function(formula, data) {
++ 
++   data <- impute_data(data)
++   data <- SMOTE(form = formula, data = data)
++ 
++   caretModel <- train (
++     formula, 
++     data,
++     method = "lda", 
++     metric = "Kappa",
++     trControl = trainControl(
++       method = "repeatedcv", 
++       number = 10, 
++       repeats = 5, 
++       selectionFunction = "oneSE"
++     )
++   )
++   
++   model <- structure(
++     list(
++       model = caretModel
++     ),
++     class = "LDAappetency"
++   ) 
++   
++   return(model)
++ }
+>   
+> predict.LDAappetency <- function(model, data) {
++   model <- model$model
++   data <- impute_data(data)
++   predictions <- predict(model, data)
++   return(predictions)
++ }
+>   
+> knownLevels <- list_factor_levels(model.data)
+Error: could not find function "list_factor_levels"
+> 
+> #Get the AUC
+> res = evaluate_model(
++   data = model.data,
++   formula = model.formula,
++   trainMethod = train.LDAappetency,
++   debug = TRUE
++ )
+Error: could not find function "evaluate_model"
+> #TRUE: server settings / FALSE: local settings
+> isServerRun = FALSE
+> model.name <- "LDA"
+> model.formula <-as.formula("appetency ~ V84+V118+V165+V224+V116+V155+V14+V90")
+> 
+> print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+[1] "model: LDA formula: appetency ~ V84 + V118 + V165 + V224 + V116 + V155 + V14 + V90"
+> 
+> #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   #setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+Error in setwd("C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission") : 
+  cannot change working directory
+> #TRUE: server settings / FALSE: local settings
+> isServerRun = FALSE
+> model.name <- "LDA"
+> model.formula <-as.formula("appetency ~ V84+V118+V165+V224+V116+V155+V14+V90")
+> 
+> print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+[1] "model: LDA formula: appetency ~ V84 + V118 + V165 + V224 + V116 + V155 + V14 + V90"
+> 
+> #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   #setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+> #########################################
+> ########### Load Dependencies ###########
+> #########################################
+> source("init_data.r")
+Loading required package: caret
+Loading required package: lattice
+Loading required package: ggplot2
+Loading required package: DMwR
+Loading required package: grid
+Loading required package: dplyr
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> source("exploratory_functions.r")
+Loading required package: reshape2
+> source("pre_processing_functions.r")
+> source("feat_selection.r")
+randomForest 4.6-12
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> source("util_functions.r")
+> require(e1071)
+> 
+> #List the pre-processing functions
+> model.preProcessingFunctions <- c(
++   drop_na_cols,
++   remove_correlated_predictors,
++   convert_NAs_to_level,
++   remove_linear_dependencies
++ )
+> 
+> forceReloadPreCanned1 = TRUE
+> if (forceReloadPreCanned1) {
++   
++   model.data <- bin_levels_if_not_in_test_set(train, test, "BIN")
++   model.data <- apply_pre_processing(model.data, model.preProcessingFunctions)
++   
++   model.data <- bin_negative_levels(data = model.data, targetColumnName = "appetency", binLevelName = "ALL_NEGATIVE") 
++   allNegativeLevels <- attr(model.data, "ALL_NEGATIVE")
++   
++   model.data <- keep_top_X_levels(data = model.data, X = 10, binLevelName = "BIN")
++   binnedLevels <- attr(model.data, "BIN")
++   
++   write.csv(model.data, file = "train.bin.neg.top10.app.csv", row.names = FALSE)
++ } else {
++   #reload from file
++   model.data <- read.csv("train.bin.neg.top10.app.csv", stringsAsFactors = FALSE)
++   model.data <- convert_to_factors(model.data)
++ }
+[1] "Number of removed linearly dependent col(s): 0"
+> #Have a look to ensure there is no missing data
+> lookAtMissingValues = FALSE
+> if (lookAtMissingValues){
++   ggplot_missing(model.data)
++ }
+> #Run a Kolmogorov Smirnov test on numerical data
+> par( mfrow = c( 2, 2 ) )
+> df =  subset(subset(model.data, select=c("appetency","V84")), model.data$appetency == 1)
+> kolmogorov_smirnov_normal_distribution_test(df$V84, paste("'V84/appetency == 1' is normally distributed", sep=""))
+'V84/appetency == 1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 9.58332e-07 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V84, "V84/appetency == 1")
+> df =  subset(subset(model.data, select=c("appetency","V84")), model.data$appetency == -1)
+> kolmogorov_smirnov_normal_distribution_test(df$V84, paste("'V84/appetency == -1' is normally distributed", sep=""))
+'V84/appetency == -1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 7.345105e-05 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V84, "V84/appetency == -1")
+> 
+> df =  subset(subset(model.data, select=c("appetency","V14")), model.data$appetency == 1)
+> kolmogorov_smirnov_normal_distribution_test(df$V14, paste("'V14/appetency == 1' is normally distributed", sep=""))
+'V14/appetency == 1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 0 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V14, "V14/appetency == 1")
+> df =  subset(subset(model.data, select=c("appetency","V14")), model.data$appetency == -1)
+> kolmogorov_smirnov_normal_distribution_test(df$V14, paste("'V14/appetency == -1' is normally distributed", sep=""))
+'V14/appetency == -1' is normally distributed 
+H0 = the data is normally distributed.
+The ks p_value: 0 < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.
+> plot_qqplot (df$V14, "V14/appetency == -1")
+> par( mfrow = c( 1, 1 ) )
+> train.LDAappetency <- function(formula, data) {
++ 
++   data <- impute_data(data)
++   data <- SMOTE(form = formula, data = data)
++ 
++   caretModel <- train (
++     formula, 
++     data,
++     method = "lda", 
++     metric = "Kappa",
++     trControl = trainControl(
++       method = "repeatedcv", 
++       number = 10, 
++       repeats = 5, 
++       selectionFunction = "oneSE"
++     )
++   )
++   
++   model <- structure(
++     list(
++       model = caretModel
++     ),
++     class = "LDAappetency"
++   ) 
++   
++   return(model)
++ }
+> predict.LDAappetency <- function(model, data) {
++   model <- model$model
++   data <- impute_data(data)
++   predictions <- predict(model, data)
++   return(predictions)
++ }
+> knownLevels <- list_factor_levels(model.data)
+> #Get the AUC
+> res = evaluate_model(
++   data = model.data,
++   formula = model.formula,
++   trainMethod = train.LDAappetency,
++   debug = TRUE
++ )
+[1] "evaluate_model:"
+appetency ~ V84 + V118 + V165 + V224 + V116 + V155 + V14 + V90
+[1] "numFolds: 5"
+[1] "debug: TRUE"
+[1] "foldSize is 6600, based on 33001 rows and 5 folds"
+[1] "targetColumnName: appetency"
+[1] "Training model, holding out rows 1 to 6600 for evaluation"
+Loading required package: MASS
+
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+          Truth
+Prediction   -1    1
+        -1 5571    3
+        1   906  120
+[1] "tn: 5571, fp: 906, fn: 3. tp: 120"
+[1] "specificity: 0.860120426123205"
+[1] "sensitivity: 0.975609756097561"
+[1] "precision: 0.116959064327485"
+[1] "accuracy: 0.862272727272727"
+[1] "F1-score: 0.2088772845953"
+[1] "auc: 0.917865091110383"
+[1] "Training model, holding out rows 6601 to 13200 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5598    4
+        1   890  108
+[1] "tn: 5598, fp: 890, fn: 4. tp: 108"
+[1] "specificity: 0.862823674475956"
+[1] "sensitivity: 0.964285714285714"
+[1] "precision: 0.108216432865731"
+[1] "accuracy: 0.864545454545455"
+[1] "F1-score: 0.194594594594595"
+[1] "auc: 0.913554694380835"
+[1] "Training model, holding out rows 13201 to 19800 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5573    4
+        1   905  118
+[1] "tn: 5573, fp: 905, fn: 4. tp: 118"
+[1] "specificity: 0.860296387774004"
+[1] "sensitivity: 0.967213114754098"
+[1] "precision: 0.115347018572825"
+[1] "accuracy: 0.862272727272727"
+[1] "F1-score: 0.206113537117904"
+[1] "auc: 0.913754751264051"
+[1] "Training model, holding out rows 19801 to 26400 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5549    6
+        1   925  120
+[1] "tn: 5549, fp: 925, fn: 6. tp: 120"
+[1] "specificity: 0.857120790855731"
+[1] "sensitivity: 0.952380952380952"
+[1] "precision: 0.114832535885167"
+[1] "accuracy: 0.858939393939394"
+[1] "F1-score: 0.204953031596926"
+[1] "auc: 0.904750871618341"
+[1] "Training model, holding out rows 26401 to 33000 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5499    2
+        1  1000   99
+[1] "tn: 5499, fp: 1000, fn: 2. tp: 99"
+[1] "specificity: 0.846130173872904"
+[1] "sensitivity: 0.98019801980198"
+[1] "precision: 0.0900818926296633"
+[1] "accuracy: 0.848181818181818"
+[1] "F1-score: 0.165"
+[1] "auc: 0.913164096837442"
+[1] "Average AUC for model: 0.912617901042211"
+[1] "Average accuracy for model: 0.859242424242424"
+[1] "Retraining final model on whole training set"

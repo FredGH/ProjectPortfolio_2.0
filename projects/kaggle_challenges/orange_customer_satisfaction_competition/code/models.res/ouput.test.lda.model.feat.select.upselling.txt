@@ -1,0 +1,239 @@
+
+R version 3.3.3 (2017-03-06) -- "Another Canoe"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Workspace loaded from ~/.RData]
+
+> #TRUE: server settings / FALSE: local settings
+> isServerRun = FALSE
+> model.name <- "LDA"
+> model.formula <-as.formula("upselling ~V84+V101+V14+V155+V111+V70+V222+V192+V141+V161+V191+V55+V156+V91+V37+V116+V42+V134+V189+V96+V1+V121+V166+V124+V81+V151+V75+V206+V197+V165")
+> 
+> print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+[1] "model: LDA formula: upselling ~ V84 + V101 + V14 + V155 + V111 + V70 + V222 + V192 + "
+[2] "model: LDA formula:     V141 + V161 + V191 + V55 + V156 + V91 + V37 + V116 + V42 + "  
+[3] "model: LDA formula:     V134 + V189 + V96 + V1 + V121 + V166 + V124 + V81 + V151 + "  
+[4] "model: LDA formula:     V75 + V206 + V197 + V165"                                     
+> 
+> #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   #setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+> 
+> #########################################
+> ########### Load Dependencies ###########
+> #########################################
+> source("init_data.r")
+Loading required package: caret
+Loading required package: lattice
+Loading required package: ggplot2
+Loading required package: DMwR
+Loading required package: grid
+Loading required package: dplyr
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> source("exploratory_functions.r")
+Loading required package: reshape2
+> source("pre_processing_functions.r")
+> source("feat_selection.r")
+randomForest 4.6-12
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> source("util_functions.r")
+> require(e1071)
+Loading required package: e1071
+> 
+> #List the pre-processing functions
+> model.preProcessingFunctions <- c(
++   drop_na_cols,
++   remove_correlated_predictors,
++   convert_NAs_to_level,
++   remove_linear_dependencies
++ )
+> 
+> forceReloadPreCanned1 = TRUE
+> if (forceReloadPreCanned1) {
++   
++   model.data <- bin_levels_if_not_in_test_set(train, test, "BIN")
++   model.data <- apply_pre_processing(model.data, model.preProcessingFunctions)
++   
++   model.data <- bin_negative_levels(data = model.data, targetColumnName = "upselling", binLevelName = "ALL_NEGATIVE") 
++   allNegativeLevels <- attr(model.data, "ALL_NEGATIVE")
++   
++   model.data <- keep_top_X_levels(data = model.data, X = 10, binLevelName = "BIN")
++   binnedLevels <- attr(model.data, "BIN")
++   
++   write.csv(model.data, file = "train.bin.neg.top10.app.csv", row.names = FALSE)
++ } else {
++   #reload from file
++   model.data <- read.csv("train.bin.neg.top10.app.csv", stringsAsFactors = FALSE)
++   model.data <- convert_to_factors(model.data)
++ }
+[1] "Number of removed linearly dependent col(s): 0"
+> train.LDAupselling <- function(formula, data) {
++   
++   data <- impute_data(data)
++   data <- SMOTE(form = formula, data = data)
++   
++   caretModel <- train (
++     formula, 
++     data,
++     method = "lda", 
++     metric = "Kappa",
++     trControl = trainControl(
++       method = "repeatedcv", 
++       number = 10, 
++       repeats = 5, 
++       selectionFunction = "oneSE"
++     )
++   )
++   
++   model <- structure(
++     list(
++       model = caretModel
++     ),
++     class = "LDAupselling"
++   ) 
++   
++   return(model)
++ }
+> predict.LDAupselling <- function(model, data) {
++   model <- model$model
++   data <- impute_data(data)
++   predictions <- predict(model, data)
++   return(predictions)
++ }
+> 
+> knownLevels <- list_factor_levels(model.data)
+> 
+> #Get the AUC
+> res = evaluate_model(
++   data = model.data,
++   formula = model.formula,
++   trainMethod = train.LDAupselling,
++   debug = TRUE
++ )
+[1] "evaluate_model:"
+upselling ~ V84 + V101 + V14 + V155 + V111 + V70 + V222 + V192 + 
+    V141 + V161 + V191 + V55 + V156 + V91 + V37 + V116 + V42 + 
+    V134 + V189 + V96 + V1 + V121 + V166 + V124 + V81 + V151 + 
+    V75 + V206 + V197 + V165
+[1] "numFolds: 5"
+[1] "debug: TRUE"
+[1] "foldSize is 6600, based on 33001 rows and 5 folds"
+[1] "targetColumnName: upselling"
+[1] "Training model, holding out rows 1 to 6600 for evaluation"
+Loading required package: MASS
+
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+          Truth
+Prediction   -1    1
+        -1 5065  286
+        1  1042  207
+[1] "tn: 5065, fp: 1042, fn: 286. tp: 207"
+[1] "specificity: 0.829376125757328"
+[1] "sensitivity: 0.419878296146045"
+[1] "precision: 0.165732586068855"
+[1] "accuracy: 0.798787878787879"
+[1] "F1-score: 0.237657864523536"
+[1] "auc: 0.624627210951686"
+[1] "Training model, holding out rows 6601 to 13200 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5193  283
+        1   920  204
+[1] "tn: 5193, fp: 920, fn: 283. tp: 204"
+[1] "specificity: 0.849501063307705"
+[1] "sensitivity: 0.418891170431211"
+[1] "precision: 0.181494661921708"
+[1] "accuracy: 0.817727272727273"
+[1] "F1-score: 0.253258845437616"
+[1] "auc: 0.634196116869458"
+[1] "Training model, holding out rows 13201 to 19800 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5152  242
+        1   970  236
+[1] "tn: 5152, fp: 970, fn: 242. tp: 236"
+[1] "specificity: 0.841555047370141"
+[1] "sensitivity: 0.493723849372385"
+[1] "precision: 0.195688225538972"
+[1] "accuracy: 0.816363636363636"
+[1] "F1-score: 0.280285035629454"
+[1] "auc: 0.667639448371263"
+[1] "Training model, holding out rows 19801 to 26400 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5240  264
+        1   898  198
+[1] "tn: 5240, fp: 898, fn: 264. tp: 198"
+[1] "specificity: 0.853698273053112"
+[1] "sensitivity: 0.428571428571429"
+[1] "precision: 0.180656934306569"
+[1] "accuracy: 0.823939393939394"
+[1] "F1-score: 0.254172015404365"
+[1] "auc: 0.64113485081227"
+[1] "Training model, holding out rows 26401 to 33000 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5130  276
+        1   959  235
+[1] "tn: 5130, fp: 959, fn: 276. tp: 235"
+[1] "specificity: 0.842502874035145"
+[1] "sensitivity: 0.459882583170254"
+[1] "precision: 0.196817420435511"
+[1] "accuracy: 0.812878787878788"
+[1] "F1-score: 0.275659824046921"
+[1] "auc: 0.6511927286027"
+[1] "Average AUC for model: 0.643758071121475"
+[1] "Average accuracy for model: 0.813939393939394"
+[1] "Retraining final model on whole training set"
+> 
+> auc <- res[["auc"]]
+> predictor <- res[["model"]]
+> 
+> print(sprintf("Model %s AUC score = %s", model.name, res$auc))
+[1] "Model LDA AUC score = 0.643758071121475"

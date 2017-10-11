@@ -1,0 +1,262 @@
+
+R version 3.3.3 (2017-03-06) -- "Another Canoe"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Workspace loaded from ~/.RData]
+
+> #TRUE: server settings / FALSE: local settings
+> isServerRun = FALSE
+> model.name <- "LDA"
+> model.formula <-as.formula("churn~.")
+> 
+> print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+[1] "model: LDA formula: churn ~ ."
+> 
+> #########################################
+> ############## Drive Config #############
+> #########################################
+> if(isServerRun){
++   setwd('/host/dsm1/fmare001/stats/svm/deliverables')
++ }else{
++   #setwd('C:/Users/audrey.ekuban/dev/goldsmiths/mlsdm/assignment3')
++   #setwd('C:/Users/john/dev/goldsmiths/mlsdm/assignment3/submission')
++   setwd('C:/Users/Fred/Desktop/Studies/MSc-DataScience/Statistical Learning/Assignments/Assignment3/deliverables')
++ }
+> 
+> #########################################
+> ########### Load Dependencies ###########
+> #########################################
+> source("init_data.r")
+Loading required package: caret
+Loading required package: lattice
+Loading required package: ggplot2
+Loading required package: DMwR
+Loading required package: grid
+> source("exploratory_functions.r")
+Loading required package: dplyr
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading required package: reshape2
+> source("pre_processing_functions.r")
+> source("feat_selection.r")
+randomForest 4.6-12
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> require(e1071)
+Loading required package: e1071
+> 
+> forceReloadPreCanned1 = TRUE
+> if (forceReloadPreCanned1) {
++   #List the pre-processing functions
++   model.preProcessingFunctions <- c(
++       convert_to_factors, 
++       drop_na_cols,
++       remove_correlated_predictors,
++       convert_NAs_to_level,
++       remove_linear_dependencies,
++       create_replacement_columns,
++       impute_data
++   )
++   model.data <- apply_pre_processing(train, model.preProcessingFunctions)
++   write.csv(model.data, file = "train.replacement.churn.csv", row.names = FALSE)
++ } else {
++   #reload from file
++   model.data <- read.csv("train.replacement.churn.csv", stringsAsFactors = FALSE)
++   model.data <- convert_to_factors(model.data)
++ }
+[1] "Number of removed linearly dependent col(s): 0"
+> 
+> #Have a look to ensure there is no missing data
+> lookAtMissingValues = FALSE
+> if (lookAtMissingValues){
++   ggplot_missing(model.data)
++ }
+> 
+> 
+> sub <- model.data[,c("churn","V14","V84","V111","V70","V192","V222","V161","V55","V141","V101","V142","V191","V134")]
+Error in `[.data.frame`(model.data, , c("churn", "V14", "V84", "V111",  : 
+  undefined columns selected
+> 
+> res = evaluate_model(
++   # args to model.evaluate
++   data = sub,
++   formula = model.formula,
++   trainSMOTE = TRUE,
++   debug = TRUE,
++   # args passed through to other functions e.g. caret
++   method = "lda", 
++   metric = "Kappa", 
++   #preProcess=c("knnImpute"), 
++   trControl = trainControl(
++     method = "repeatedcv", 
++     number = 10, 
++     repeats = 5,
++     selectionFunction = "oneSE"
++   )
++ )
+[1] "evaluate_model:"
+churn ~ .
+[1] "numFolds: 5"
+[1] "debug: TRUE"
+[1] "foldSize is 0, based on 1 rows and 5 folds"
+[1] "targetColumnName: churn"
+[1] "Training model, holding out rows 1 to 0 for evaluation"
+Error in data[-fold.rows, ] : object of type 'closure' is not subsettable
+> 
+> print(sprintf("Model %s AUC score = %s", model.name, res$auc))
+Error in res$auc : $ operator is invalid for atomic vectors
+> dim(model.data)
+[1] 33001   110
+> dim(sub)
+NULL
+> sub <- model.data[,c("churn","V14","V84","V111","V70","V192","V222","V161","V55","V141","V101","V142","V191","V134")]
+Error in `[.data.frame`(model.data, , c("churn", "V14", "V84", "V111",  : 
+  undefined columns selected
+> colnames(model.data)
+  [1] "appetency"     "appetency_new" "churn"         "churn_new"     "upselling"     "upselling_new" "V1"            "V101"         
+  [9] "V107"          "V11"           "V11_new"       "V111"          "V112"          "V112_new"      "V113"          "V113_new"     
+ [17] "V114"          "V114_new"      "V115"          "V115_new"      "V116"          "V116_new"      "V118"          "V118_new"     
+ [25] "V119"          "V119_new"      "V121"          "V124"          "V125"          "V125_new"      "V128"          "V128_new"     
+ [33] "V134"          "V138"          "V138_new"      "V14"           "V141"          "V143"          "V143_new"      "V149"         
+ [41] "V149_new"      "V15"           "V150"          "V151"          "V154"          "V154_new"      "V155"          "V155_new"     
+ [49] "V156"          "V156_new"      "V161"          "V165"          "V165_new"      "V166"          "V168"          "V168_new"     
+ [57] "V171"          "V187"          "V187_new"      "V189"          "V189_new"      "V190"          "V190_new"      "V191"         
+ [65] "V192"          "V196"          "V196_new"      "V197"          "V202"          "V204"          "V204_new"      "V206"         
+ [73] "V21"           "V212"          "V212_new"      "V219"          "V219_new"      "V222"          "V224"          "V224_new"     
+ [81] "V230"          "V230_new"      "V29"           "V29_new"       "V30"           "V37"           "V42"           "V55"          
+ [89] "V58"           "V58_new"       "V67"           "V67_new"       "V70"           "V71"           "V73"           "V73_new"      
+ [97] "V75"           "V79"           "V79_new"       "V81"           "V84"           "V90"           "V90_new"       "V91"          
+[105] "V93"           "V93_new"       "V94"           "V94_new"       "V95"           "V96"          
+> sub <- model.data[,c("churn","V14","V84")]
+> sub <- model.data[,c("churn","V14","V84","V111","V70","V192","V222")]
+> sub <- model.data[,c("churn","V14","V84","V111","V70","V192","V222","V161","V55","V141")]
+> sub <- model.data[,c("churn","V14","V84","V111","V70","V192","V222","V161","V55","V141","V101","V142")]
+Error in `[.data.frame`(model.data, , c("churn", "V14", "V84", "V111",  : 
+  undefined columns selected
+> sub <- model.data[,c("churn","V14","V84","V111","V70","V192","V222","V161","V55","V141","V101","V191","V134")]
+> res = evaluate_model(
++   # args to model.evaluate
++   data = sub,
++   formula = model.formula,
++   trainSMOTE = TRUE,
++   debug = TRUE,
++   # args passed through to other functions e.g. caret
++   method = "lda", 
++   metric = "Kappa", 
++   #preProcess=c("knnImpute"), 
++   trControl = trainControl(
++     method = "repeatedcv", 
++     number = 10, 
++     repeats = 5,
++     selectionFunction = "oneSE"
++   )
++ )
+[1] "evaluate_model:"
+churn ~ .
+[1] "numFolds: 5"
+[1] "debug: TRUE"
+[1] "foldSize is 6600, based on 33001 rows and 5 folds"
+[1] "targetColumnName: churn"
+[1] "Training model, holding out rows 1 to 6600 for evaluation"
+Loading required package: MASS
+
+Attaching package: ‘MASS’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+          Truth
+Prediction   -1    1
+        -1 5455  425
+        1   652   68
+[1] "tn: 5455, fp: 652, fn: 425. tp: 68"
+[1] "specificity: 0.89323726870804"
+[1] "sensitivity: 0.137931034482759"
+[1] "precision: 0.0944444444444444"
+[1] "accuracy: 0.836818181818182"
+[1] "F1-score: 0.112118713932399"
+[1] "auc: 0.515584151595399"
+[1] "Training model, holding out rows 6601 to 13200 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5404  398
+        1   716   82
+[1] "tn: 5404, fp: 716, fn: 398. tp: 82"
+[1] "specificity: 0.883006535947712"
+[1] "sensitivity: 0.170833333333333"
+[1] "precision: 0.102756892230576"
+[1] "accuracy: 0.831212121212121"
+[1] "F1-score: 0.128325508607199"
+[1] "auc: 0.526919934640523"
+[1] "Training model, holding out rows 13201 to 19800 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5590  421
+        1   512   77
+[1] "tn: 5590, fp: 512, fn: 421. tp: 77"
+[1] "specificity: 0.916093084234677"
+[1] "sensitivity: 0.154618473895582"
+[1] "precision: 0.130730050933786"
+[1] "accuracy: 0.858636363636364"
+[1] "F1-score: 0.141674333026679"
+[1] "auc: 0.53535577906513"
+[1] "Training model, holding out rows 19801 to 26400 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5484  417
+        1   634   65
+[1] "tn: 5484, fp: 634, fn: 417. tp: 65"
+[1] "specificity: 0.896371363190585"
+[1] "sensitivity: 0.134854771784232"
+[1] "precision: 0.0929899856938484"
+[1] "accuracy: 0.840757575757576"
+[1] "F1-score: 0.110076206604572"
+[1] "auc: 0.515613067487409"
+[1] "Training model, holding out rows 26401 to 33000 for evaluation"
+          Truth
+Prediction   -1    1
+        -1 5530  415
+        1   583   72
+[1] "tn: 5530, fp: 583, fn: 415. tp: 72"
+[1] "specificity: 0.904629478161296"
+[1] "sensitivity: 0.147843942505133"
+[1] "precision: 0.109923664122137"
+[1] "accuracy: 0.848787878787879"
+[1] "F1-score: 0.126094570928196"
+[1] "auc: 0.526236710333215"
+[1] "Average AUC for model: 0.523941928624335"
+[1] "Average accuracy for model: 0.843242424242424"
+[1] "Retraining final model on whole training set"
