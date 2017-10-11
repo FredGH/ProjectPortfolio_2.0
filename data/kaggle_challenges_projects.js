@@ -8,5 +8,6 @@ var kaggle_challenges_projects =
             "R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/santander_customer_satisfaction_competition/code" ,
             "Sep-2017",
-            "EN"]
+            "EN"
+        ]
     ];
