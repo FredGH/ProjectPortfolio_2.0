@@ -1,0 +1,253 @@
+LDA -- WITH COXBOX
+
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 14544   660
+         1     0     0
+[1] "tn: 14544, fp: 0, fn: 660. tp: 0"
+[1] "specificity: 1"
+[1] "sensitivity: 0"
+[1] "precision: NaN"
+[1] "accuracy: 0.956590370955012"
+[1] "F1-score: 0"
+[1] "auc: 0.5"
+[1] "Average AUC for model: 0.5"
+[1] "Average accuracy for model: 0.960431465403841"
+[1] "Retraining final model on whole training set"
+
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3")
+
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 14544   660
+         1     0     0
+[1] "tn: 14544, fp: 0, fn: 660. tp: 0"
+[1] "specificity: 1"
+[1] "sensitivity: 0"
+[1] "precision: NaN"
+[1] "accuracy: 0.956590370955012"
+[1] "F1-score: 0"
+[1] "auc: 0.5"
+[1] "Average AUC for model: 0.5"
+[1] "Average accuracy for model: 0.960431465403841"
+[1] "Retraining final model on whole training set"
+
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1")
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 14544   660
+         1     0     0
+[1] "tn: 14544, fp: 0, fn: 660. tp: 0"
+[1] "specificity: 1"
+[1] "sensitivity: 0"
+[1] "precision: NaN"
+[1] "accuracy: 0.956590370955012"
+[1] "F1-score: 0"
+[1] "auc: 0.5"
+[1] "Average AUC for model: 0.5"
+[1] "Average accuracy for model: 0.960431465403841"
+[1] "Retraining final model on whole training set"
+
+....
+
+#Set model details
+model.name = "LDA"
+model.formula = as.formula("factor(TARGET) ~ var15")
+
+
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 14544   660
+         1     0     0
+[1] "tn: 14544, fp: 0, fn: 660. tp: 0"
+[1] "specificity: 1"
+[1] "sensitivity: 0"
+[1] "precision: NaN"
+[1] "accuracy: 0.956590370955012"
+[1] "F1-score: 0"
+[1] "auc: 0.5"
+[1] "Average AUC for model: 0.5"
+[1] "Average accuracy for model: 0.960431465403841"
+[1] "Retraining final model on whole training set"
+
+
+LDA
+--- NO BOXCOX
+
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 10801   279
+         1  3743   381
+[1] "tn: 10801, fp: 3743, fn: 279. tp: 381"
+[1] "specificity: 0.74264301430143"
+[1] "sensitivity: 0.577272727272727"
+[1] "precision: 0.0923860329776916"
+[1] "accuracy: 0.735464351486451"
+[1] "F1-score: 0.15928093645485"
+[1] "auc: 0.659957870787079"
+[1] "Average AUC for model: 0.66707466981882"
+[1] "Average accuracy for model: 0.734254143646409"
+[1] "Retraining final model on whole training set"
+
+
+*** model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3")
+
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 10776   278
+         1  3768   382
+[1] "tn: 10776, fp: 3768, fn: 278. tp: 382"
+[1] "specificity: 0.740924092409241"
+[1] "sensitivity: 0.578787878787879"
+[1] "precision: 0.0920481927710843"
+[1] "accuracy: 0.733885819521179"
+[1] "F1-score: 0.158835758835759"
+[1] "auc: 0.65985598559856"
+[1] "Average AUC for model: 0.668541946004128"
+[1] "Average accuracy for model: 0.734346224677716"
+[1] "Retraining final model on whole training set"
+
+
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1")
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 10574   272
+         1  3970   388
+[1] "tn: 10574, fp: 3970, fn: 272. tp: 388"
+[1] "specificity: 0.727035203520352"
+[1] "sensitivity: 0.587878787878788"
+[1] "precision: 0.0890316659017898"
+[1] "accuracy: 0.720994475138122"
+[1] "F1-score: 0.154643284176963"
+[1] "auc: 0.65745699569957"
+[1] "Average AUC for model: 0.663688045423404"
+[1] "Average accuracy for model: 0.723612207313865"
+[1] "Retraining final model on whole training set"
+
+
+
+--- RF
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction     0     1
+         0 11857   217
+         1  2687   443
+[1] "tn: 11857, fp: 2687, fn: 217. tp: 443"
+[1] "specificity: 0.815250275027503"
+[1] "sensitivity: 0.671212121212121"
+[1] "precision: 0.141533546325879"
+[1] "accuracy: 0.808997632202052"
+[1] "F1-score: 0.23377308707124"
+[1] "auc: 0.743231198119812"
+[1] "Average AUC for model: 0.737792183457308"
+[1] "Average accuracy for model: 0.809287029729019"
+[1] "Retraining final model on whole training set"
+
+> res
+$accuracy
+[1] 0.809287
+
+$auc
+[1] 0.7377922
+
+$model
+$model
+Parallel Random Forest 
+
+12032 samples
+   10 predictor
+    2 classes: '0', '1' 
+
+No pre-processing
+Resampling: Cross-Validated (10 fold, repeated 5 times) 
+Summary of sample sizes: 10830, 10828, 10829, 10829, 10829, 10829, ... 
+Resampling results across tuning parameters:
+
+  mtry  Accuracy   Kappa    
+   4    0.8156245  0.6312486
+   5    0.8157405  0.6314808
+  10    0.8006314  0.6012627
+
+Accuracy was used to select the optimal model using  the one SE rule.
+The final value used for the model was mtry = 4.
+
+attr(,"class")
+[1] "RF"
+
+-- Boosting
+
+[1] "Training model, holding out rows 60817 to 76020 for evaluation"
+          Truth
+Prediction    X0    X1
+        X0 12043   213
+        X1  2501   447
+[1] "tn: 12043, fp: 2501, fn: 213. tp: 447"
+[1] "specificity: 0.828039053905391"
+[1] "sensitivity: 0.677272727272727"
+[1] "precision: 0.151628222523745"
+[1] "accuracy: 0.821494343593791"
+[1] "F1-score: 0.247782705099778"
+[1] "auc: 0.752655890589059"
+[1] "Average AUC for model: 0.745975273247697"
+[1] "Average accuracy for model: 0.819876348329387"
+[1] "Retraining final model on whole training set"
+> end = paste("End date: %s time: %s", Sys.Date(), Sys.time(),sep="")
+> print(start)
+[1] "Start date: %s time: %s2017-09-152017-09-15 04:39:44"
+> print(end)
+[1] "End date: %s time: %s2017-09-152017-09-15 05:31:48"
+> print ("complete")
+[1] "complete"
+> 
+
+> res
+$accuracy
+[1] 0.8198763
+
+$auc
+[1] 0.7459753
+
+$model
+$model
+Stochastic Gradient Boosting 
+
+76020 samples
+   10 predictor
+    2 classes: 'X0', 'X1' 
+
+No pre-processing
+Resampling: Cross-Validated (10 fold, repeated 5 times) 
+Summary of sample sizes: 68417, 68418, 68418, 68418, 68418, 68418, ... 
+Addtional sampling using SMOTE
+
+Resampling results:
+
+  ROC        Sens       Spec     
+  0.8271359  0.8259821  0.6686815
+
+Tuning parameter 'n.trees' was held constant at a value of 500
+Tuning parameter
+ held constant at a value of 0.01
+Tuning parameter 'n.minobsinnode' was held constant at a value
+ of 20
+
+attr(,"class")
+[1] "GBM"

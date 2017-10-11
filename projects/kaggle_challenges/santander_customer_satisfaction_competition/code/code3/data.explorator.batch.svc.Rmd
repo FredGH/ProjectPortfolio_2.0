@@ -1,0 +1,685 @@
+---
+title: "Exploration Service"
+author: Frederic Marechal
+date: Sep, 2017
+output: word_document
+---
+
+######################################################################### 
+######################################################################### 
+#######               Clean-Up
+######################################################################### 
+######################################################################### 
+```{r cleanup}
+#Clear console
+cat("\014") 
+```
+
+######################################################################### 
+######################################################################### 
+#######               set Working Directory
+######################################################################### 
+######################################################################### 
+```{r working_dir}
+setwd("C:/Users/Fred/Desktop/employment/satanter/TechInteview/deliverables/code3") 
+```
+
+######################################################################### 
+######################################################################### 
+#######               Load Dependencies
+######################################################################### 
+######################################################################### 
+```{r load_depedencies}
+source("test_harness.r")
+require(ggplot2)
+require(dplyr)
+require(reshape2)
+require(tcltk)
+require(fBasics)
+require(caTools)
+require(caret)
+require(CORElearn)
+require(AppliedPredictiveModeling)
+require(randomForest)
+require(e1071)
+require (DMwR)
+require (MASS)
+library(gbm)
+require(sqldf)
+require(plyr)
+```
+
+######################################################################### 
+######################################################################### 
+#######               Load Data
+######################################################################### 
+######################################################################### 
+```{r load_data}
+#get the training data
+train = read.csv(paste(getwd(),"/train.csv", sep=""), stringsAsFactors=FALSE)
+#get the training data w/o the label and Id
+train_reduced = train[, -which(names(train) == "TARGET")]
+train_reduced = train_reduced[, -which(names(train_reduced) == "ID")]
+dim(train_reduced)
+#get the test data
+test = read.csv(paste(getwd(),"/test.csv", sep=""), stringsAsFactors=FALSE)
+dim(test)
+```
+
+######################################################################### 
+######################################################################### 
+#######               Data Types
+######################################################################### 
+######################################################################### 
+```{r dataset_stats}
+data_types = sapply(train_reduced, typeof)
+data_types
+```
+
+######################################################################### 
+######################################################################### 
+#######               Missing Values
+######################################################################### 
+######################################################################### 
+```{r dataset_stats}
+ggplot_missing <- function(x){   
+    x %>%      
+    is.na %>%     
+    melt %>%     
+    ggplot(data = ., aes(x = Var2,y = Var1)) + 
+    geom_raster(aes(fill = value)) + 
+    scale_fill_grey(name = "", labels = c("Present","Missing")) +     
+    theme_minimal() +      
+    theme(axis.text.x = element_text(angle=45, vjust=0.5)) +
+    labs(x = "Variables in Dataset", y = "Observations") 
+}
+
+#List all missing values per col name
+missing_values = colnames(train_reduced)[colSums(is.na(train_reduced)) > 0]
+missing_values
+
+#plot missing values
+ggplot_missing(train_reduced)
+
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               Check for class imbalance
+######################################################################### 
+######################################################################### 
+```{r dataset_stats}
+train[, "TARGET"]
+
+zeros = nrow(train[train$TARGET == 0,])
+zeros
+ones = nrow(train[train$TARGET == 1,])
+ones
+
+zeroes_perc = zeros / (ones+zeros)
+ones_perc = 1-zeroes_perc
+print(sprintf("Percentage of zeroes(percentage): %s ", 100 * zeroes_perc))
+print(sprintf("Percentage of ones(percentage): %s ", 100 *ones_perc))
+
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               Descriptive Stats
+######################################################################### 
+######################################################################### 
+```{r dataset_stats}
+#get_factor = function(data, dest_file_path) {
+#  colnames = colnames(data)
+#  for (i in 1:length(colnames)) {
+#    colname <- colnames[i]
+#    factor <- sqldf(paste("select distinct ",colname, " from train_no_label", sep=""))
+#    write.csv(factor, file = paste(dest_file_path, colname, ".csv", sep=""), row.names = TRUE)
+#  }
+#}
+
+plot_distributions = function(data) {
+  colnames = colnames(data)
+  for (i in 1:length(colnames)) {
+    colname <- colnames[i]
+    coldata <- data[, colname]
+    png(filename=paste("images/distib/",colname,".png",sep=""))
+    hist(data[,colname], main = sprintf("%s", colname))
+    dev.off()
+  }
+}
+
+#Re-introduce the TARGET col
+train_reduced_with_target =  cbind(train_reduced, train$TARGET)
+colnames(train_reduced_with_target)[dim(train_reduced_with_target)[2]] = c("TARGET")  
+
+#Presence of near zero variance?
+#see distributions plots in ..\code\images\distib
+
+#Presence of correlation?
+res_cor = cor(  train_reduced_with_target)
+write.csv(res_cor, file = paste("output/cor/", "correlation", ".csv", sep=""), row.names = TRUE)
+
+#Presence of linear dependencies?
+pairs(TARGET~imp_op_var41_comer_ult1+imp_op_var41_comer_ult3+imp_op_var39_efect_ult3+imp_op_var39_efect_ult1, data=train_reduced_with_target)
+
+#Get Basic stats for each col
+stats =   basicStats(train_reduced, ci = 0.95)
+stats
+
+#Get factors for each cols and store it to CSV
+#get_factor(train_reduced, "output/factors1")
+
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               Blanket Data Preprocessing
+######################################################################### 
+######################################################################### 
+```{r col_removal}
+
+#The function removes the zero variance attributes
+remove_near_zero_variance_columns = function(data) {
+  print ("Remove_near_zero_variance_columns --> Enter")
+  colnames = names(data)
+  nzv = nearZeroVar(data)
+  nzv = colnames(data[nzv])
+  print (paste("Zero variance cols --> ", nzv, sep=""))
+  res = data
+  if (length(nzv) > 0){
+    res = data[, colnames[!colnames %in% nzv]]}
+  print ("Remove_near_zero_variance_columns --> Exit")
+  return(res)
+}
+
+#The function findLinearCombos uses the QR decomposition of a matrix 
+#to enumerate sets of linear combinations (if they exist).
+#For each linear combination, it will incrementally remove columns 
+#from the matrix and test to see if the dependencies have been resolved.
+remove_linear_dependencies = function(data) {
+  print ("Remove_linear_dependencies --> Enter")
+  comboInfo = findLinearCombos(data.matrix(data))
+  removeCount = 0
+  # The dataset minus the identified col(s)
+  if (is.null(comboInfo$remove) == FALSE) {
+    res = data[, -comboInfo$remove]
+    removeCount =length(comboInfo$remove)
+  }
+  print(paste("Number of removed linearly dependent col(s): ", removeCount, sep=""))
+  print ("Remove_linear_dependencies --> Exit")
+  return (res) 
+}
+
+# Identify and remove Correlated Predictors -> The collinearity issue
+# Only to be applied to numerica columns
+remove_correlated_predictors = function(data, correlationCutOff= 0.95){
+  print ("Remove_correlated_predictors --> Enter")
+  # Get the correlation
+  corr = cor(data)
+  # This function searches through a correlation matrix and returns a vector of integers corresponding
+  # to columns to remove to reduce pair-wise correlations.
+  cols_index_to_delete = findCorrelation(corr, cutoff = correlationCutOff)
+  removeCount = 0
+  count_col_to_delete = 0
+  if (length(cols_index_to_delete) > 0){
+    res = data[, -cols_index_to_delete]
+    removeCount = length(cols_index_to_delete)
+    print(paste("Number of removed correlated predictors: ", removeCount, sep=""))
+    print ("Remove_correlated_predictors --> Exit")
+    return(res)
+  }
+  print ("Remove_correlated_predictors --> Exit")
+  return (data)
+}
+
+dim(train_reduced)[2]
+train_reduced = remove_near_zero_variance_columns(train_reduced)
+dim(train_reduced)[2]
+train_reduced = remove_linear_dependencies(train_reduced)
+dim(train_reduced)[2]
+train_reduced = remove_correlated_predictors(train_reduced)
+dim(train_reduced)[2]
+
+#Re-introduce the TARGET col
+train_reduced_with_target =  cbind(train_reduced, train$TARGET)
+colnames(train_reduced_with_target)[dim(train_reduced_with_target)[2]] = c("TARGET")  
+
+```
+
+######################################################################### 
+######################################################################### 
+#######               Feature Selection
+######################################################################### 
+######################################################################### 
+```{r feature_Selection}
+random_forest_mean_decrease_gini = function(file_name,data_df,n_trees, output_dir, graph_output_dir){
+  cat (paste("\nEnter mean decrease gini: ", file_name, " to: ", output_dir, "\n", sep=""))
+  set.seed(1)
+  #Feature select against all variables bar (Direction_Flag) as it is 100% correlated to the Direction explanatory variable
+  fit = randomForest( factor(TARGET)~.,  #encode the vector as a factor
+                      data=data_df,
+                      ntree = n_trees,
+                      #mtry=6, defaulted to SQRT(p) for a classification tree
+                      importance=TRUE)
+
+  #Generate the importance data and order by the column "MeanDecreaseGini" (desc)
+  importance_res = importance(fit)
+  importance_res = importance_res[order(importance_res[,"MeanDecreaseGini"] , decreasing = TRUE ),]
+  #Save
+  cat (paste("\nSave mean decrease gini: ", file_name, " to: ", output_dir, "\n", sep=""))
+  write.csv(data.frame(importance_res), file = paste(output_dir, file_name, sep=""), row.names = TRUE)
+  #Generate graph
+  mean_decrease_gini_graph(file_name, fit, n_trees,graph_output_dir)
+  return (importance_res)
+}
+
+mean_decrease_gini_graph = function(file_name,fit, n_trees, output_dir){ 
+  png(filename=paste(output_dir,file_name,".png",sep=""))
+  cat (paste("\nSave plot mean decrease gini :", file_name, " to: ", output_dir, "\n", sep=""))
+  #save plot
+  varImpPlot(fit,type=2, main = paste("Plot MeanDecreaseGini (# trees= ",n_trees ,")" ))
+  dev.off()  
+}
+
+output_dir = "output/feature_selection/gini/"
+random_forest_mean_decrease_gini("var_imp.csv",train_reduced_with_target,500, output_dir, output_dir)
+
+#The following cols are retained:
+#"var15", "var38", "saldo_medio_var5_ult3", "saldo_var30", "saldo_medio_var5_hace2", "saldo_var42", "saldo_medio_var5_hace3", "saldo_medio_var5_ult1", #"num_var45_hace3", "num_var45_hace2"
+```
+
+######################################################################### 
+######################################################################### 
+#######               The K-S test
+######################################################################### 
+######################################################################### 
+```{r dataset_graph}
+
+#Produce the results of the KS test
+kolmogorov_smirnov_normal_distribution_test = function(data,msg) {
+  #This is the z-score scaling: (x-avg)/std as default
+  scaled_data = scale(data)
+  #Ensure all data is unique, else it breaks the ks test
+  res = ks.test(unique(scaled_data), pnorm)
+  cat(msg,"\n", sep =" ")
+  cat("H0 = the data is normally distributed.\n", sep="")
+  if(res$p.value > 0.05){
+    cat("The ks p_value: ", res$p.value, " > 0.05 -> H0 (the null hypothetsis) is NOT rejected. There is not enough evidence to reject the hypothesis that the distribution is normal. Therefore, the data seems to follow normal distribution\n",  sep="")
+    return ("H0 is NOT rejected")    
+  } else
+  {
+    cat("The ks p_value: ", res$p.value, " < 0.05 -> H0 (the null hypothesis) is rejected. The data distribution does not seem to follow a normal distribution.\n",  sep="")
+    return ("H0 is rejected")
+  }
+}
+
+#Produce the QQ plot
+plot_qqplot = function (data, ylab_param) {
+  title = ylab_param
+  qqnorm(data, main=paste(title, " \n (centered & scaled) - QQplot", sep=""), ylab=paste(ylab_param, paste=""))
+  qqline(data, col="gold", lwd=2)
+}
+
+targets= c('1','0')
+attributes = c("var15", "var38", "saldo_medio_var5_ult3", "saldo_var30", "saldo_medio_var5_hace2", "saldo_var42", "saldo_medio_var5_hace3", "saldo_medio_var5_ult1", "num_var45_hace3", "num_var45_hace2")
+
+schema_df = read.csv(paste(getwd(),"/schema.csv", sep=""), stringsAsFactors=FALSE)
+
+df_test =  subset(subset(df, select=c("Direction",attribute)), df$Direction == direction)
+
+idx = 1
+for (attribute in attributes){
+  print('*******************************')
+  for (target in targets) {
+    df_test =  subset(subset(train, select=c("TARGET",attribute)), train$TARGET == target)
+    res = kolmogorov_smirnov_normal_distribution_test(df_test[attribute], paste("'", attribute, "/Target = '", target, " is normally distributed", sep=""))
+    
+    schema_df[idx,"attribute_name"] = attribute
+    schema_df[idx,"target"] = target
+    schema_df[idx,"result"] = res
+    idx = idx+1
+  }
+  print('*******************************')
+}
+
+write.csv(schema_df, file = "ks_test/ks_test_results.csv", row.names = FALSE)
+
+#a few graphs
+par(mfrow=c(2,2))
+train_0 = train[train$TARGET ==0,]
+train_1 = train[train$TARGET ==1,]
+plot_qqplot (train_0$var38, "var38/TARGET = 0")
+plot_qqplot (train_1$var38, "var38/TARGET = 1")
+plot_qqplot (train_0$saldo_medio_var5_ult3, "saldo_medio_var5_ult3/TARGET = 0")
+plot_qqplot (train_1$saldo_medio_var5_ult3, "saldo_medio_var5_ult3/TARGET = 1")
+par(mfrow=c(1,1))
+
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               Train Data (used by all models)
+######################################################################### 
+######################################################################### 
+```{r train_data}
+train = train_reduced_with_target[,c("TARGET","var15", "var38", "saldo_medio_var5_ult3", "saldo_var30", "saldo_medio_var5_hace2", "saldo_var42", "saldo_medio_var5_hace3", "saldo_medio_var5_ult1", "num_var45_hace3", "num_var45_hace2")]
+train$TARGET_FACTOR = factor(train$TARGET)
+```
+
+######################################################################### 
+######################################################################### 
+#######               Playing with SMOTE...
+######################################################################### 
+######################################################################### 
+```{r play_smote}
+smote =  SMOTE(TARGET_FACTOR ~ ., train,perc.over = 100, k = 5, perc.under = 200)
+
+zeros = nrow(train[smote$TARGET == 0,])
+zeros
+ones = nrow(train[smote$TARGET == 1,])
+ones
+zeroes_perc = zeros / (ones+zeros)
+ones_perc = 1-zeroes_perc
+print(sprintf("Percentage of zeroes(percentage): %s ", 100 * zeroes_perc))
+print(sprintf("Percentage of ones(percentage): %s ", 100 *ones_perc))
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               LDA Model 
+######################################################################### 
+######################################################################### 
+```{r lda}
+#Set model details
+model.name = "LDA"
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+
+train.LDA = function(formula, data) {
+
+  #Box-Cox transform
+  preprocess_training_data = preProcess(data, method=c("BoxCox"))
+  data =predict( preprocess_training_data , data )
+  
+  data =  SMOTE(form = TARGET_FACTOR ~ ., data = data,perc.over = 100, k = 5, perc.under = 200)
+
+  caretModel = train (
+    formula, 
+    data,
+    method = "lda", 
+    metric = "Kappa",
+    trControl = trainControl(
+      method = "repeatedcv", 
+      number = 10, 
+      repeats = 5, 
+      selectionFunction = "oneSE"
+    )
+  )
+  
+  model = structure(
+    list(
+      model = caretModel
+    ),
+    class = "LDA"
+  ) 
+  
+  return(model)
+}
+  
+predict.LDA = function(model, data) {
+  model = model$model
+  predictions = predict(model, data)
+  return(predictions)
+}
+  
+#Get the AUC
+res = evaluate_model(
+  data = train,
+  formula = model.formula,
+  trainMethod = train.LDA,
+  debug = TRUE
+)
+```
+
+######################################################################### 
+######################################################################### 
+#######               RF Model 
+######################################################################### 
+######################################################################### 
+```{r rf}
+#Set model details
+model.name = "RF"
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+
+train.RF = function(formula, data) {
+
+  data =  SMOTE(form = TARGET_FACTOR ~ ., data = data,perc.over = 100, k = 5, perc.under = 200)
+
+  #count the number of '+' that occur in the formula and add one to get the number of attributes
+  p = sapply(regmatches(as.character(formula)[3], gregexpr("\\+", as.character(formula)[3])), length)+1
+
+  #p is for Bagging, the rest is for RF
+  tunegrid = expand.grid(mtry=c(p, ceiling(sqrt(p)), ceiling(p/2)))
+  
+  caretModel = train (
+    formula, 
+    data,
+    method = "parRF", 
+    ntree = 500,
+    tuneGrid=tunegrid,
+    importance = TRUE,
+    trControl = trainControl(
+      method = "repeatedcv", 
+      number = 10, 
+      repeats = 5, 
+      selectionFunction = "oneSE"
+    )
+  )
+  
+  model = structure(
+    list(
+      model = caretModel
+    ),
+    class = "RF"
+  ) 
+  
+  return(model)
+}
+  
+predict.RF = function(model, data) {
+  model = model$model
+  predictions = predict(model, data)
+  return(predictions)
+}
+  
+#Get the AUC
+res = evaluate_model(
+  data = train,
+  formula = model.formula,
+  trainMethod = train.RF,
+  debug = TRUE
+)
+print ("complete")  
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               Boosting 
+######################################################################### 
+######################################################################### 
+```{r boosting}
+#Set model details
+model.name = "Boosting"
+model.formula = as.formula("TARGET_FACTOR ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+#required for boosting...
+levels(train$TARGET_FACTOR) <- make.names(levels(factor(train$TARGET_FACTOR)))
+
+print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+
+train.GBM = function(formula, data) {
+
+  #p is for Bagging, the rest is for 
+  tunegrid = expand.grid(interaction.depth=5,
+                    n.trees=500,	 
+                    shrinkage=0.01,	
+                    n.minobsinnode = 20)
+  
+  caretModel = train (
+    formula, 
+    data,
+    method = "gbm", 
+    metric = "ROC",
+    tuneGrid=tunegrid,
+    trControl = trainControl(
+      method = "repeatedcv", 
+      number = 10, 
+      repeats = 5, 
+      summaryFunction=twoClassSummary,	# Use AUC to pick the best model
+      classProbs=TRUE,
+      sampling = "smote"
+    ),
+    verbose=FALSE
+  )
+  
+  model = structure(
+    list(
+      model = caretModel
+    ),
+    class = "GBM"
+  ) 
+  
+  return(model)
+}
+  
+predict.GBM = function(model, data) {
+  model = model$model
+  predictions = predict(model, data)
+  return(predictions)
+}
+
+start = paste("Start date: %s time: %s", Sys.Date(), Sys.time(),sep="")
+#Get the AUC
+res = evaluate_model(
+  data = train,
+  formula = model.formula,
+  trainMethod = train.GBM,
+  debug = TRUE
+)
+end = paste("End date: %s time: %s", Sys.Date(), Sys.time(),sep="")
+print(start)
+print(end)
+print ("complete")  
+```
+
+
+######################################################################### 
+######################################################################### 
+#######               SVM Model 
+######################################################################### 
+######################################################################### 
+```{r svm}
+#Set model details
+model.name = "SVM"
+model.formula = as.formula("factor(TARGET) ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+
+train.SVM = function(formula, data) {
+
+  #data =  SMOTE(form = TARGET_FACTOR ~ ., data = data,perc.over = 100, k = 5, perc.under = 200)
+  
+  grid = expand.grid(c=c(0.0001,0.0005, 0.001, 0.1, 1 ,5 ,10 ,100 ))
+  
+  caretModel = train (
+    formula, 
+    data,
+    method = "svmLinear",
+    tuneGrid=grid,
+    trControl = trainControl(
+      method = "repeatedcv", 
+      number = 10, 
+      repeats = 5,
+      classProbs=TRUE
+    ),
+    verbose=FALSE 
+  )
+  
+  model = structure(
+    list(
+      model = caretModel
+    ),
+    class = "SVM"
+  ) 
+  
+  return(model)
+}
+  
+predict.SVM = function(model, data) {
+  model = model$model
+  predictions = predict(model, data)
+  return(predictions)
+}
+  
+#Get the AUC
+res = evaluate_model(
+  data = train,
+  formula = model.formula,
+  trainMethod = train.SVM,
+  debug = TRUE
+)
+```
+
+######################################################################### 
+######################################################################### 
+#######               Generate Predictions based on best model 
+######################################################################### 
+######################################################################### 
+```{r prediction}
+
+#here boosting is used as it generates the best AUC and accuracy resolts
+model.name = "Boosting"
+model.formula = as.formula("TARGET_FACTOR ~ var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2")
+
+#required for boosting...
+levels(train$TARGET_FACTOR) <- make.names(levels(factor(train$TARGET_FACTOR)))
+
+print(sprintf("model: %s formula: %s", model.name, deparse(model.formula)))
+
+#fit
+train = SMOTE(form = TARGET_FACTOR ~ ., data = train,perc.over = 100, k = 5, perc.under = 200)
+
+fit = gbm(TARGET~var15+var38+saldo_medio_var5_ult3+saldo_var30+saldo_medio_var5_hace2+saldo_var42+saldo_medio_var5_hace3+saldo_medio_var5_ult1+num_var45_hace3+num_var45_hace2, 
+          data = train,
+          distribution="bernoulli", #this is for classification, use gaussian for regression
+          n.trees = 500,
+          interaction.depth = 1, #The maximum depth of variable interactions. 1 implies an additive model, 2 implies a model with up to                                    2-way interactions, etc.
+          n.minobsinnode = 4) #minimum number of observations in the trees terminal nodes
+
+#predict
+test1 = test[c("var15","var38","saldo_medio_var5_ult3","saldo_var30","saldo_medio_var5_hace2","saldo_var42","saldo_medio_var5_hace3","saldo_medio_var5_ult1","num_var45_hace3","num_var45_hace2")]
+proba = predict(fit,newdata = test1, n.trees = 500, interaction.depth = 1 , n.minobsinnode = 4, type="response" )
+
+#convert proba back to 0/1 classes
+pred = rep(0, length(proba))
+pred[proba>0.5] = 1
+pred = as.data.frame(pred)
+
+#assign id vs prediction
+res = cbind(test$ID, pred)
+colnames(res)[1] = "ID"
+colnames(res)[2] = "TARGET"
+write.csv(res, file = paste("results/", "predictions", ".csv", sep=""), row.names = FALSE)
+
+```
+
