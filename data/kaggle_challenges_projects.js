@@ -10,11 +10,20 @@ var kaggle_challenges_projects =
             "EN"],
         [ 	"Supervised Classification Machine Learning" ,
             "Orange Customer Satisfaction Prediction" ,
-            "Help Orange to predict the propensity of customers to i) switch provider (churn), ii) buy new products or services (appetency), or iii) buy upgrades or add-ons proposed to them(up-selling). http://www.kdd.org/kdd-cup/view/kdd-cup-2009" ,
+            "Help Orange to predict the propensity of customers to i) switch provider (churn), ii) buy new products or services (appetency), or iii) buy upgrades or add-ons proposed to them (up-selling). http://www.kdd.org/kdd-cup/view/kdd-cup-2009" ,
             "Presentation|/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/docs/kaggle_orange_customer_relationship_prediction_presentation.pdf" +
             "|Report|/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/docs/kaggle_orange_customer_relationship_prediction_full_report.pdf",
             "R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/code" ,
             "May-2017",
-            "EN"]
+            "EN"],
+        [ 	"Supervised Classification Machine Learning" ,
+            "Orange Customer Satisfaction Prediction" ,
+            "Help Orange to predict the propensity of customers to switch provider (churn)/buy new products (appetency)  or upgrade (up-selling) ." ,
+            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/docs/kaggle_orange_customer_relationship_prediction_presentation.pdf" +
+            "|Report|/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/docs/kaggle_orange_customer_relationship_prediction_full_report.pdf",
+            "R" ,
+            "/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/code" ,
+            "May-2017",
+            "FR"]
     ];
