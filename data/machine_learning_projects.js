@@ -1,13 +1,5 @@
 var machine_learning_projects =
     [
-        [ 	"Deep Learning" ,
-            "Build a Live Camera App" ,
-            "The task is to build a live camera application simulator that interprets number strings in real-world images." ,
-            "/ProjectPortfolio_2.0/tree/master/projects/machine_learning/deep_learning/live_camera_app/docs/deep_learning.pdf" ,
-            "Tensorflow/Python" ,
-            "/ProjectPortfolio_2.0/tree/master/projects/machine_learning/deep_learning/live_camera_app/code" ,
-            "Sep-2016",
-            "EN"],
         [ 	"Supervised Learning" ,
             "Creating Customer Segments" ,
             "Use unsupervised techniques to see what sort of patterns exist among existing customers, and what exactly makes them different." ,
