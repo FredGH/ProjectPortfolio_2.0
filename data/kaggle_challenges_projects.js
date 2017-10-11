@@ -1,4 +1,4 @@
-var artificial_intelligence_projects =
+var kaggle_challenges_projects =
     [
         [ 	"Supervised classification Learning" ,
             "Santander Customer Satisifaction Prediction" ,
