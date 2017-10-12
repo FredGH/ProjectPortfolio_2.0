@@ -79,7 +79,6 @@
                 <p></p>
                 <a>freddy.marechal@gmail.com</a>
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -130,6 +129,7 @@
                 <div id="portfolio-item-natural-language-processing"></div>
                 <div id="portfolio-item-artificial-intelligence"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
+                <div id="portfolio-item-no-sql"></div>
                 <div id="portfolio-item-web-technologies"></div>
                 <div id="portfolio-item-post-grad-thesis"></div>
             </div>
@@ -164,17 +164,6 @@
                         <h2>Email Contact</h3>
                         <p>freddy.marechal@gmail.com</p>
                     </div>
-                    <div class="footer-col col-md-4">
-                        <h2>Around the Web</h2>
-                        <ul class="list-inline">
-							<li>
-								<a target="_blank" href="https://uk.linkedin.com/in/fredericmarechal" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
-                            </li>
-                            <li>
-								<a target="_blank" href="http://www.facebook.com/frederic.marechal.963"class="btn-social btn-outline"><i class="fa fa-fw fa-facebook"></i></a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -202,6 +191,7 @@
     <div id="modal-view-natural-language-processing"></div>
     <div id="modal-view-artificial-intelligence"></div>
     <div id="modal-view-big-data-engineering"></div>
+    <div id="modal-view-no-sql"></div>
     <div id="modal-view-web-technologies"></div>
     <div id="modal-view-post-grad-thesis"></div>
 
@@ -216,6 +206,7 @@
     <script src="data/natural_language_processing_projects.js"></script>
     <script src="data/artificial_intelligence_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
+    <script src="data/no_sql_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
     <script src="data/post_grad_thesis.js"></script>
 
@@ -376,6 +367,11 @@
         ReactDOM.render(
              <PortfolioItem title = "Big Data Engineering" img_src="img/portfolio/bd.jpg" item_href="#bigDataEngineeringModal"  />,
               document.getElementById('portfolio-item-big-data-engineering')
+        );
+
+        ReactDOM.render(
+            <PortfolioItem title = "NoSql" img_src="img/portfolio/bd.jpg" item_href="#noSqlModal"  />,
+            document.getElementById('portfolio-item-no-sql')
         );
 
         ReactDOM.render(
@@ -617,6 +613,17 @@
                         table_jqery_name = '#bigBataEngneeringDataTable'
                         project_data = {big_data_engineering_projects} />,
             document.getElementById('modal-view-big-data-engineering')
+        );
+
+        ReactDOM.render(
+                <ModelView  title = "NoSql"
+                modal_id = "noSqlModal"
+                summary_text =  "TBA"
+                dependecy_text =  "TBA"
+                table_id = "noSqlDataTable"
+                table_jqery_name = '#noSqlDataTable'
+                project_data = {no_sql_projects} />,
+            document.getElementById('modal-view-no-sql')
         );
 
         ReactDOM.render(
