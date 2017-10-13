@@ -1,4 +1,4 @@
-var artificial_intelligence_projects =
+var neural_networks_projects =
     [
         [ 	"Deep Learning" ,
             "Build a Live Camera App" ,

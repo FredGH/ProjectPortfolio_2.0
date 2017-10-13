@@ -131,6 +131,7 @@
                 <div id="portfolio-item-machine-learning"></div>
                 <div id="portfolio-item-natural-language-processing"></div>
                 <div id="portfolio-item-artificial-intelligence"></div>
+                <div id="portfolio-item-neural-networks"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
                 <div id="portfolio-item-no-sql"></div>
                 <div id="portfolio-item-web-technologies"></div>
@@ -193,6 +194,7 @@
     <div id="modal-view-machine-learning"></div>
     <div id="modal-view-natural-language-processing"></div>
     <div id="modal-view-artificial-intelligence"></div>
+    <div id="modal-view-neural-networks"></div>
     <div id="modal-view-big-data-engineering"></div>
     <div id="modal-view-no-sql"></div>
     <div id="modal-view-web-technologies"></div>
@@ -208,6 +210,7 @@
     <script src="data/machine_learning_projects.js"></script>
     <script src="data/natural_language_processing_projects.js"></script>
     <script src="data/artificial_intelligence_projects.js"></script>
+    <script src="data/neural_networks_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
     <script src="data/no_sql_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
@@ -365,6 +368,11 @@
         ReactDOM.render(
             <PortfolioItem title = "Artificial Intelligence" img_src="img/portfolio/ai1.jpg" item_href="#artificialIntelligenceModal" />,
              document.getElementById('portfolio-item-artificial-intelligence')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Neural Networks" img_src="img/portfolio/nn1.jpg" item_href="#neuralNetworksModal" />,
+                document.getElementById('portfolio-item-neural-networks')
         );
 
         ReactDOM.render(
@@ -604,7 +612,18 @@
                         table_id = "artificialIntelligenceTable"
                         table_jqery_name = '#artificialIntelligenceTable'
                         project_data = {artificial_intelligence_projects} />,
-                document.getElementById('modal-view-artificial-intelligence')
+             document.getElementById('modal-view-artificial-intelligence')
+        );
+
+        ReactDOM.render(
+            <ModelView  title = "neural networks"
+                        modal_id = "neuralNetworksModal"
+                        summary_text =  "TBA"
+                        dependecy_text =  "TBA"
+                        table_id = "neuralnetworksTable"
+                        table_jqery_name = '#neuralnetworksTable'
+                        project_data = {neural_networks_projects} />,
+             document.getElementById('modal-view-neural-networks')
         );
 
         ReactDOM.render(
