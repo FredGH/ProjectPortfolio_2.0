@@ -134,6 +134,7 @@
                 <div id="portfolio-item-neural-networks"></div>
                 <div id="portfolio-item-big-data-engineering"></div>
                 <div id="portfolio-item-no-sql"></div>
+                <div id="portfolio-item-data-wranggling"></div>
                 <div id="portfolio-item-web-technologies"></div>
                 <div id="portfolio-item-post-grad-thesis"></div>
             </div>
@@ -197,6 +198,7 @@
     <div id="modal-view-neural-networks"></div>
     <div id="modal-view-big-data-engineering"></div>
     <div id="modal-view-no-sql"></div>
+    <div id="modal-view-data-wranggling"></div>
     <div id="modal-view-web-technologies"></div>
     <div id="modal-view-post-grad-thesis"></div>
 
@@ -213,6 +215,7 @@
     <script src="data/neural_networks_projects.js"></script>
     <script src="data/big_data_engineering_projects.js"></script>
     <script src="data/no_sql_projects.js"></script>
+    <script src="data/data_wranggling_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
     <script src="data/post_grad_thesis.js"></script>
 
@@ -383,6 +386,11 @@
         ReactDOM.render(
             <PortfolioItem title = "NoSql" img_src="img/portfolio/ns1.png" item_href="#noSqlModal"  />,
             document.getElementById('portfolio-item-no-sql')
+        );
+
+        ReactDOM.render(
+        <PortfolioItem title = "Data Wranggling" img_src="img/portfolio/dw1.jpg" item_href="#dataWrangglingModal"  />,
+                document.getElementById('portfolio-item-data-wranggling')
         );
 
         ReactDOM.render(
@@ -646,6 +654,17 @@
                 table_jqery_name = '#noSqlDataTable'
                 project_data = {no_sql_projects} />,
             document.getElementById('modal-view-no-sql')
+        );
+
+        ReactDOM.render(
+                <ModelView  title = "Data Wranggling"
+                modal_id = "dataWrangglingModal"
+                summary_text =  "TBA"
+                dependecy_text =  "TBA"
+                table_id = "dataWrangglingDataTable"
+                table_jqery_name = '#dataWrangglingDataTable'
+                project_data = {data_wranggling_projects} />,
+             document.getElementById('modal-view-data-wranggling')
         );
 
         ReactDOM.render(
