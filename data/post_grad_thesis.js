@@ -18,7 +18,7 @@ var post_grad_thesis =
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/code" ,
             "Mar-2008",
             "EN"],
-        [ 	"Maitrise Banque Finance Assurance" ,
+        [ 	"Memoire de Maitrise Banque Finance Assurance" ,
             "Credit Value-at-Risk (VaR)" ,
             "Description and implementation  of the VaR applied to a credit portfolio and review of the methodology limitations" ,
             "Table of content|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/finance/credit_var/docs/credit_var_limites_sommaire.pdf" +

@@ -11,7 +11,7 @@ var machine_learning_projects =
         [ 	"Supervised Learning" ,
             "Hands-on machine learning" ,
             "Short exercises in machine learning" ,
-            "" ,
+            "TBA" ,
             "R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/machine_learning/supervised_learning/mlsdm/code" ,
             "Jan-2017",
