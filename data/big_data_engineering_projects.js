@@ -3,10 +3,10 @@ var big_data_engineering_projects =
         [ 	"Programming" ,
             "Airlines on-time performance. <p></p> A comparative study of Hadoop solutions.",
             "Implementation and comparison of a Hive and a Spark solution to answer airport delays and cancellations related questions.",
-            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/k_means_clustering/docs/airlines_ontime_performance_summary.pdf" +
-            "|Report|/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/k_means_clustering/docs/airlines_ontime_performance.pdf",
+            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/airlines_ontime_performance_summary.pdf" +
+            "|Report|/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/docs/airlines_ontime_performance.pdf",
             "Spark/Hive",
-            "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/k_means_clustering/code",
+            "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/code",
             "Apr-2017",
             "FR"],
         [ 	"Programming",
