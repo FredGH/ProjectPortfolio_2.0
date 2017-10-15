@@ -3,7 +3,7 @@ var machine_learning_projects =
         [ 	"Supervised Learning" ,
             "Stock prediction" ,
             "The JPM stock prediction using supervised classification algorithm" ,
-            "/ProjectPortfolio_2.0/tree/master/projects/machine_learning/supervised_learning/jpm_stock_prediction/docs/stock_trend_prediction.pdf" ,
+            "" ,
             "R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/machine_learning/supervised_learning/jpm_stock_prediction/code" ,
             "Apr-2017",
