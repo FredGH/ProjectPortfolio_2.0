@@ -1,11 +1,19 @@
 var post_grad_thesis =
     [
-
-        [ 	"MSc in Software Development Thesis" ,
+        [ 	"MSc Data Science Thesis" ,
+            "A constituent sentiment approach to stock market trend prediction" ,
+            "The aims are to establish the sentiment prediction power on both the XLE index's trend and volatility " ,
+            "TBA" +
+            "" ,
+            "Python/R" ,
+            "TBA" ,
+            "Sep-2017",
+            "EN"],
+        [ 	"MSc Software Development Thesis" ,
             "A Model Checking Tool to detect and resolve potential Redundancies in Entity Relationship models" ,
             "The aims are to prototype an enhanced version of a discovery strategy proposed by Bowers (2002) and verify how efficient and correct this solution is in discovering potential redundant relationships" ,
-            "Exec summary|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/docs/web_poster.pdf" +
-            "|Full version|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/docs/dissertation.pdf" ,
+            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/docs/web_poster.pdf" +
+            "|Full Thesis|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/docs/dissertation.pdf" ,
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/computing/model_checking_tool/code" ,
             "Mar-2008",

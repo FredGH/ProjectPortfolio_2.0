@@ -1,0 +1,1930 @@
+---
+title: "Machine Learning & Statistical Data Mining with R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Software Dependencies:
+The code is compatible with:
+R - Version 3.3.2
+R Studio - Version 0.99.903  
+
+## Library Dependencies:
+The user needs to install the following packages (if not already present):'knitr', 'rmarkdown','plyr'
+
+## Loading the Dependent Libraries:
+```{r lib_loading}
+LoadLibraries= function (){
+  library (ISLR) 
+  library (tree) 
+  library (gbm) 
+  library (MASS)
+  library(rmarkdown)
+  library(class)
+  library (randomForest)
+  library(gbm)
+print (" The libraries have been loaded .")
+}
+LoadLibraries()
+```
+
+
+## Terms 
+MSE: it stands for Minimum Squared Error
+
+CV: it means Cross Validation
+
+## Week 5 - Classification: Logistic regression, k-Nearest Neighbour
+
+Exercise 10: 
+
+Question a) Produce some numerical and graphical summaries of the Weekly data 
+
+```{r answer_w5_10a0}
+#reload the original dataset to start from a clean position
+data("Weekly")
+#remove Weekly from the search() path of R objects 
+detach(Weekly)
+#The database is searched by R when evaluating a variable, 
+#so objects in the database can be accessed by simply giving their names.
+attach(Weekly)
+```
+
+Display of the 'Weekly'schema information.
+```{r answer_w5_10a1}
+#View the data in a grid
+fix(Weekly)
+
+#Get the names of the variables
+names(Weekly)
+#Get schema definition
+?Weekly
+#List the number of rows and columns of the weekly dataset
+dim(Weekly)
+```
+
+a) Today and Lags Analysis:
+
+The median of Today,Lag1,Lag2,Lag3,Lag4 and Lag5 is respectively 0.2410,0.2410,
+0.2410,0.2410,0.2380 and 0.2340. 
+
+50% of the data lies between the 1st (Q1) and the 3rd quartil (q3).
+
+Across Today and all Lags, the data vary between 1.4050/1.0490 (Q1) and -1.1540/-1.1660 (Q4).
+
+The Min and Max, correspond to the 25% of the data lying before Q1 and 25% after Q3 respectively.
+
+The Min is set to 12.0260 and the Max is set to -18.1950. These are large variations and indicate the potential presence of outliers.  
+
+b) Volume Analysis: 
+
+In terms of the Volume variable, the Q1 (0.33202) and Q3 (2.05373) are relatively close to the median (1.00268). 
+
+There seems to be a strong skew towards the right of the distribution tail, as the Max is away from the Q3 at 9.32.
+```{r answer_w5_10a2}
+##The summary() function produces the interquartile range. 
+summary(Weekly)
+```
+
+The Correlation is a statistical measure that indicates the extent to which two or more variables fluctuate together.
+
+Except from a high degree of correlation between the Year Vs Volume (0.84194), all the other pairwise correlations
+are very close to zero. This means it is probable that the change of the Year impacts the Volume, and reverse.
+But there is no causation, as there may be unknown factors that influence both variables similarly.
+
+All the other pairwise correlations are very close to zero.This means there seems to be no influence of the prices on the Lag
+period on the price today or the volume.
+```{r answer_w5_10a3}
+#Produce all the parwise correlation among the predictors in a dataset 
+cor(Weekly[,-9])
+```
+
+The plot displays the same behaviour. 
+No conclusion can be drawn from the analysis of the plots (as the data is clustered shows as a band with large width) for all plots, bar the Volume Vs Year that seems to show some correlation.
+```{r answer_w5_10a4}
+plot(Weekly)
+```
+
+Question b) Use the full dataset to produce a Logistic Regression with Direction as the response and
+the five lag variables plus volume as predictors. Use the summary function to print the results.
+Do you see any predictor appearing as statistically significant? If so which ones
+
+It is assumed that the alpha critical value is set at 5%.
+
+From the table below we can deduce the following:
+
+First, the intercept has a pValue of 0.0019 is which is less than the alpha critical value: 0.05.
+Therefore, it seems to be statistically significant. However, intercept in this case is of no real interest to the model. 
+So, we can ignore it from the analysis.
+
+Second, Lag2 has a pValue = 0.0296 which is less than 0.05. Therefore, we reject the hypothesis H0 that the coefficient beta for Lag2 = 0.
+We can deduce that the Lag2 beta is statistically significant. In other words, the predictor should have a significant impact on the predicted variable.
+
+All the other variables have a pValue greater than 0.05, therefore none of these predicators seems to be statistically
+significant. They can be ignored.
+
+The beta coefficient of Lag2 is 0.05844. It is slightly positive. It means that Lag2 and Direction should move in
+the same direction. This means if the market had a positive return two days ago, it is likely to go up today.
+
+The standard error (0.02686) represents approximately 50% of the beta coefficient value (0.02686/0.05844).
+This shows a relatively high variance. Therefore, we need to be cautious about the conclusion relating to the Lag2 potential effect on today market's direction.
+
+```{r answer_w5_10b}
+#The glm() function produces the Logistic Regression, where Direction is the response and the parameters
+#following the ~ are the predicators. The dataset is set to Weekly and the family (i.e. the error distribution and link function to be used in the model) is binomial, i.e. using the logit  
+glm.fit = glm(Direction~Lag1+Lag2+Lag3+Lag4+Lag5+Volume, data=Weekly,family=binomial)
+#get all the info
+summary(glm.fit)
+```
+
+Question c) Calculate the confusion matrix and the overall fraction of overall predictions and explain the results.
+
+From the confusion matrix provided below (i.e. table() function), we can deduce the model correctly predicts that the
+market would go up on 557 days and that it would go down 54 days, for a total of 661 days (661=54+557). 
+
+The Logistic Regression model predicts the movement of the market 56.106% of the time. This is given by the mean() function.
+
+This result should be read with care, as the data used for the model is a mixed of both the training and test data, on a set of 1089 observations. 
+
+First 1089 is a relatively small sample.
+
+Second, this is an optimistic result as the entire dataset has been used for generating the model. A more reliable model accuracy would obtained if we were to split the data between a training and a test set.
+
+Note: The correct predictions lie on the main diagonal of the matrix. The incorrect predictions lie on the off-diagonal.
+```{r answer_10c}
+#It indicates that R created a dummy variable with the value 1 for up. 
+contrasts(Direction)
+#The predict function can be used to predict the probability that the market will or up or down, given predictors' values.
+#The type="response" options tell R to output probabilities of the form P(Y=1/X).
+#The values produced that predict corresponds to the probability of the market going up, rather than down, because the 
+#contrasts() function indicates 1 for up.
+glm.probs = predict(glm.fit,type="response")
+#create a vector of class predictions on whether the predicted probability of a market increase
+#is greater than or les to 0.5.
+#In order to make a prediction as to whether the market is going to go up or down on a day, 
+#the predicted probabilities into class labels, Up or Down. 
+#The following two commands create a vector of class predictions based on whether the predicted probability of
+#a market increase is greater than or less than 0.5
+#This command creates a vector of 1089 elements. 
+glm.pred = rep("Down",length(Direction)) #i.e. 1089
+#This command transforms to Up all of the elements for which the predicted probability of a market increase exceeds 0.5 
+glm.pred[glm.probs>0.5]="Up" 
+#The table() function produce a confusion matrix to determine  how many observations are correctly or incorrectly classified.
+table(glm.pred, Direction) 
+#The mean() function computes the fractions of days for which the prediction is correct
+cat ("GLM Accuracy rate:", mean(glm.pred==Direction))
+```
+
+Question d) Fit the Logistic Regression model using a training data period from 1990 to 2008, with Lag2 as the only predicator. Compute the confusion matrix, and the overall fraction of predictions for the held out data (i.e. 2009-2010)
+
+The aim of this section is to improve the error rate, so that we can establish more precisely whether the Logistic model is a good predictor function for the market move. This time the error rate of interest is the test error rate. It measures the error rate on unknown data.
+
+From the confusion matrix provided below (i.e. table() function), we can deduce the model correctly predicts that the market would go up on 56 days and that it would go down 9 days on the test data, for a total of 65 days (65=9+56).
+
+The Logistic Regression model predicts correctly the movement of the market 62.5% of the time on the test data (37.5% represents the test error rate) 
+
+```{r answer_w5_10d}
+#This creates a boolean vector of 1089 elements. 
+#The elements where year < 2008 are set to TRUE, the others are set to FALSE  
+train=(Year<2009) 
+#This yields a submatrix of the Weekly data containing only the observations for which Weekly elements are set to FALSE.
+Weekly.test = Weekly[!train,]
+#This provides a vector of direction for the test data
+Direction.test = Direction[!train]
+length(Direction.test)
+#This fits the Logistic Regression model using the subset argument set to the training dataset and the only predictor Lag2..
+glm.fit = glm(Direction~Lag2, data=Weekly, family=binomial, subset=train)
+#This provides the probabilities of the stock market going up for each of the days
+glm.probs = predict(glm.fit,Weekly.test, type="response" )
+#create a vector of class predictions on whether the predicted proba of a market increase
+#is greater than or les to 0.5.
+#In order to make a prediction as to whether the market is going to go up or down on a day, 
+#the predicted probabilities into class labels, Up or Down. 
+#The following two commands create a vector of class predictions based on whether the predicted probability of
+#a market increase is greater than or less than 0.5
+#This command creates a vector of 1089 elements. 
+glm.pred = rep("Down",length(Direction.test)) #i.e. 156
+#This command transforms to Up all of the elements for which the predicted probability of a market increase exceeds 0.5 
+glm.pred[glm.probs>0.5]="Up" 
+table(glm.pred, Direction.test) 
+#The mean() function computes the fractions of days for which the prediction is correct
+cat ("GLM Test Accuracy rate:", mean(glm.pred==Direction.test))
+cat ("GLM Test Error rate:", mean(glm.pred!=Direction.test))
+```
+
+Question e) Repeat d) with LDA
+
+The aim of this section establishes a LDA model has better performance predictions.
+
+From the lda.fit result, we can conclude that:
+
+i) 44.77% (Down) of the training observations correspond to days during which the market went down.
+
+ii) 55.28% (Up) of the training observations correspond to days during which the market went up.
+
+The group means (average of the Lag2 predicator within each class) indicates that there is a tendency for day-2 (i.e. Lag2) to be positive (0.26) on days when the market increase and slightly negative (-0.035) when the market decrease.
+
+The coefficient of linear discriminants output provides the impact of Lag2 that is used to form the LDA decision rule. In this case it corresponds to  Lag2 * 0.4414. When the result of this product is large, then the LDA classifier predict a market increase, else it predicts a market decrease.
+
+From the confusion matrix, provided below (i.e. table() function), we can deduce the model correctly predicts that the market would go up on 56 days and that it would go down 6 days on the test data, for a total of 65 days (65=56+9). 
+
+The LDA model predicts correctly the movement of the market 62.5% of the time on the test data (37.5% represents the test error rate).  
+
+```{r answer_w5_10e}
+#I should not need to call this library again, as it is loaded as part of the 'LoadLibraries()' function.
+#But for some reason it does not seem to load correctly the first time around and does not produce the LDA function. 
+#So this is a safety check.
+library (MASS)
+#The train, test and direction.test data do not need to be re-created as they have been generated in step d)
+#This fits the LDA model using the subset argument set to the training dataset and the only predictor Lag2..
+lda.fit = lda(Direction~Lag2, data=Weekly,subset=train)
+lda.fit
+#The plot() function produces plots of linear discriminants, obtained by multiplying Lag2 * 0.4877 for each of the
+#training observation
+plot(lda.fit)
+#The lda class returns a list of 3 elements ('class', 'posterior', 'x'). 
+lda.pred=predict(lda.fit, Weekly.test)
+#We are interested in the class element as it contains the LDA predictions about the movement of the market. 
+lda.class=lda.pred$class
+#This produces the confusion matrix
+table(lda.class, Direction.test)
+#The mean() function computes the fractions of days for which the prediction is correct
+cat ("LDA Test Accuracy rate:", mean(lda.class==Direction.test))
+cat ("LDA Test Error rate:", mean(lda.class!=Direction.test))
+```
+
+Question f) Repeat d) with QDA
+
+The aim of this section is establish a QDA model has better performance predictions.
+
+From the qda.fit result, we can conclude that:
+
+i) 44.77% (Down) of the training observations correspond to days during which the market went down, and
+
+ii) 55.23% (Up) of the training observations correspond to days during which the market went up.
+The group means (average of the Lag2 predicator within each class) indicates that there is a tendency for day-2 (Lag2) to be positive (0.26) on days when the market increase and slightly negative (-0.035) when the market decrease.
+
+Note: There is no coefficient of linear discriminant, because the QDA classifier involves a quadratic, rather than a linear, function of the predictors.
+
+From the confusion matrix, provided below (i.e. table() function), we can deduce the model correctly predicts that the market would go up on 61 days and that it would go down 0 days on the test data, for a total of 61 days (61=61+0). 
+
+This is a strange result... In this case, it means the market is not predicted to go down... This is suspicious.  It would be interesting to increase the training sample significantly and check whether the training model error rate improves.
+
+The QDA model predicts correctly the movement of the market 58.65% of the time on the test data (41.35% represents the test error rate).  
+
+```{r answer_w5_10f}
+#I should not need to call this library again, as it is loaded as part of the 'LoadLibraries()' function.
+#But for some reason it does not seem to load correctly the first time around and does not produce the LDA function. 
+#So this is a safety check.
+library (MASS)
+#The train, test and direction.test data do not need to be re-created as they have been generated in step d)
+#This fits the QDA model using the subset argument set to the training dataset and the only predictor Lag2..
+qda.fit = qda(Direction~Lag2, data=Weekly, subset=train)
+qda.fit
+#The qda class returns a list of 3 elements ('class', 'posterior', 'x'). 
+qda.pred=predict(qda.fit, Weekly.test)
+#We are interested in the class element as it contains the LDA predictions about the movement of the market. 
+qda.class=qda.pred$class
+#This produces the confusion matrix
+table(qda.class, Direction.test)
+#The mean() function computes the fractions of days for which the prediction is correct
+cat ("QDA Test Accuracy rate:", mean(qda.class==Direction.test))
+cat ("QDA Test Error rate:", mean(qda.class!=Direction.test))
+```
+
+Question g) Repeat d) with KNN where k=1
+
+The aim of this section establishes a KNN model has better performance predictions.
+
+From the confusion matrix provided below (i.e. table() function), we can deduce the model correctly predicts that the market would go up on 31 days and that it would go down 21 days, for a total of 52 days (52=31+21). 
+
+The KNN model (k=1) predicts correctly the movement of the market 50.0% of the time on the test data (50.0% represents the test error rate). 
+```{r answer_w5_10g}
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+#I should not need to call this library again, as it is loaded as part of the 'LoadLibraries()' function.
+#But for some reason it does not seem to load correctly the first time around and does not produce the LDA function. 
+#So this is a safety check.
+library (class)
+#The train, test and direction.test data do not need to be re-created as they have been generated in step d)
+#This is a matrix containing the predictors associated with the training data (train.X)
+train.X = cbind(Lag2)[train,]
+#This is a matrix containing the predictors associated with the data for which we wish to make predictions, labeled test.X
+test.X = cbind(Lag2)[!train,]
+length(train.X)
+length(test.X)
+#A vector containing the class labels for the training observations, labeled train.Direction
+train.Direction = Direction[train]
+#The Knn() function is used to predict the market's movement for the dates in the test set
+#The value K corresponding to the nearest neighbours to be used by the classifier
+knn.pred=knn(data.frame(train.X),data.frame(test.X),train.Direction, k=1)
+#This is the confusion matrix
+table(knn.pred, Direction.test)
+#For the test data
+mean(knn.pred==Direction.test)
+cat ("KNN, k=1, Test Accuracy rate:", mean(knn.pred==Direction.test))
+cat ("KNN, k=1, Test Error rate:", mean(knn.pred!=Direction.test))
+```
+
+Question h) Which of these methods appears to provide the best results on this data?
+
+Summary of the test accuracy performance obtained with the studied models (and with the previously defined parameter selection):
+
+- Logistic Regression: 62.5%
+
+- LDA:  62.5%
+
+- QDA: 58.65%
+
+- KNN (K=1): 50%
+
+It looks like the best performing models are the Logistic Regression and the LDA models at 62.5% test accuracy.
+The worst model, in this case is KK (k=1), at 50%.
+
+Generally speaking the test error is quite high (the lowest being 37.5%), considering the very small dataset. This indicates prediction power could be improved. It would be interesting to add predictors to the model (e.g. sentiment impact) and to analyse their impact, in an attempt to reduce the test error.
+
+Question i) Experiment with different combination of predictors, including possible transformations and interactions, for each of the methods. Reports the variables, method, and associated confusion matrix that appears to provide the best results on the held out data. Need to experiment with different values of K for KNN.
+
+he Logistic Regression, LDA, QDA and KNN (k=1,k=2,k=5,k=10,k=20,k=30,k=40,k=50,k=60,k=69,k=70,k=80,k=90,k=100,k=150,k=200) models have been run against the following Response Vs Predicator variables:
+
+* Direction Vs Lag2
+
+* Direction Vs Lag2 and Volume
+
+* Direction Vs Lag2^2 
+
+* Direction Vs Lag2^2 and Volume^2
+
+Lag2 was still chosen as predictor as it seems to influence the model the most, then the Volume was chosen as an extra predictor.
+
+> knn_predictor(train.X, test.X, train.Direction, 150)
+Knn Accuracy Rate: 0.6346154/Knn Error Rate: 0.3653846
+
+It seems that the best performing model is the following: KNN, k=150, with the following setting: Direction~ Lag2 and Volume.
+The accuracy rate obatined is 63.46%. This is a model performance increase of 0.96% = (63.46%-62.5%) on the test data.
+
+
+```{r answer_w5_10i}
+set.seed(1) 
+#Create a knn predictor wrapper function to improve code readability and maintenance
+#It wrapps the knn(), table() and mean() function calls in one call
+#It ensures the seed is always set to 1 for the random number generator
+knn_predictor = function(train_dataset, test_dataset, train_direction, k_param){
+  set.seed(1)
+  knn.pred=knn(data.frame(train_dataset),data.frame(test_dataset),train_direction, k=k_param)
+  #This is the confusion matrix
+  table(knn.pred, Direction.test)
+  #For the test data
+  cat ("Knn Accuracy Rate:", mean(knn.pred==Direction.test))
+  cat("/")
+  cat ("Knn Error Rate:", mean(knn.pred!=Direction.test))
+}
+
+cat ("*****************************")
+cat ("**** Glm Models")
+cat ("*****************************")
+
+glm.fit = glm(Direction~Lag2, data=Weekly,family=binomial)
+glm.probs = predict(glm.fit,type="response")
+glm.pred = rep("Down",length(Direction)) 
+glm.pred[glm.probs>0.5]="Up" 
+table(glm.pred, Direction) 
+cat ("GLM Direction~Lag2 Accuracy Rate: ", mean(glm.pred==Direction))
+cat ("GLM Direction~Lag2 Error Rate: ", mean(glm.pred!=Direction))
+
+glm.fit = glm(Direction~Lag2+Volume, data=Weekly,family=binomial)
+glm.probs = predict(glm.fit,type="response")
+glm.pred = rep("Down",length(Direction)) 
+glm.pred[glm.probs>0.5]="Up" 
+table(glm.pred, Direction) 
+cat ("GLM Direction~Lag2+Volume Accuracy Rate: ", mean(glm.pred==Direction))
+cat ("GLM Direction~Lag2+Volume Error Rate: ", mean(glm.pred!=Direction))
+
+glm.fit = glm(Direction~Lag2^2, data=Weekly,family=binomial)
+glm.probs = predict(glm.fit,type="response")
+glm.pred = rep("Down",length(Direction)) 
+glm.pred[glm.probs>0.5]="Up" 
+table(glm.pred, Direction) 
+cat ("GLM Direction~Lag2^2 Accuracy Rate: ", mean(glm.pred==Direction))
+cat ("GLM Direction~Lag2^2 Error Rate: ", mean(glm.pred!=Direction))
+
+glm.fit = glm(Direction~Lag2^2+Volume^2, data=Weekly,family=binomial)
+glm.probs = predict(glm.fit,type="response")
+glm.pred = rep("Down",length(Direction)) 
+glm.pred[glm.probs>0.5]="Up" 
+table(glm.pred, Direction) 
+mean(glm.pred==Direction)
+cat ("GLM Direction~Lag2^2+Volume^2 Accuracy Rate: ", mean(glm.pred==Direction))
+cat ("GLM Direction~Lag2^2+Volume^2 Error Rate: ", mean(glm.pred!=Direction))
+
+cat ("*****************************")
+cat ("Lda Models")
+cat ("*****************************")
+
+lda.fit = lda(Direction~Lag2, data=Weekly,subset=train)
+lda.pred=predict(lda.fit, Weekly.test)
+table(lda.class, Direction.test)
+cat ("LDA Direction~Lag2 Accuracy Rate: ", mean(lda.class==Direction))
+cat ("LDA Direction~Lag2 Error Rate: ", mean(lda.class!=Direction))
+
+lda.fit = lda(Direction~Lag2+Volume, data=Weekly,subset=train)
+lda.pred=predict(lda.fit, Weekly.test)
+table(lda.class, Direction.test)
+cat ("LDA Direction~Lag2+Volume Accuracy Rate: ", mean(lda.class==Direction))
+cat ("LDA Direction~Lag2+Volume Error Rate: ", mean(lda.class!=Direction))
+
+lda.fit = lda(Direction~Lag2^2+Volume, data=Weekly,subset=train)
+lda.pred=predict(lda.fit, Weekly.test)
+table(lda.class, Direction.test)
+cat ("LDA Direction~Lag2^2+Volume Accuracy Rate: ", mean(lda.class==Direction))
+cat ("LDA Direction~Lag2^2+Volume Error Rate: ", mean(lda.class!=Direction))
+
+lda.fit = lda(Direction~Lag2^2+Volume^2, data=Weekly,subset=train)
+lda.pred=predict(lda.fit, Weekly.test)
+table(lda.class, Direction.test)
+cat ("LDA Direction~Lag2^2+Volume^2 Accuracy Rate: ", mean(lda.class==Direction))
+cat ("LDA Direction~Lag2^2+Volume^2 Error Rate: ", mean(lda.class!=Direction))
+
+cat ("*****************************")
+cat ("Qda Models")
+cat ("*****************************")
+
+qda.fit = qda(Direction~Lag2, data=Weekly, subset=train)
+qda.pred=predict(qda.fit, Weekly.test)
+qda.class=qda.pred$class
+table(qda.class, Direction.test)
+mean(qda.class==Direction.test)
+cat ("QDA Direction~Lag2 Accuracy Rate: ", mean(qda.class==Direction))
+cat ("QDA Direction~Lag2 Error Rate: ", mean(qda.class!=Direction))
+
+qda.fit = qda(Direction~Lag2+Volume, data=Weekly, subset=train)
+qda.pred=predict(qda.fit, Weekly.test)
+qda.class=qda.pred$class
+table(qda.class, Direction.test)
+mean(qda.class==Direction.test)
+cat ("QDA Direction~Lag2+Volume Accuracy Rate: ", mean(qda.class==Direction))
+cat ("QDA Direction~Lag2+Volume Error Rate: ", mean(qda.class!=Direction))
+
+qda.fit = qda(Direction~Lag2^2+Volume, data=Weekly, subset=train)
+qda.pred=predict(qda.fit, Weekly.test)
+qda.class=qda.pred$class
+table(qda.class, Direction.test)
+mean(qda.class==Direction.test)
+cat ("QDA Direction~Lag2^2+Volume Accuracy Rate: ", mean(qda.class==Direction))
+cat ("QDA Direction~Lag2^2+Volume Error Rate: ", mean(qda.class!=Direction))
+
+qda.fit = qda(Direction~Lag2^2+Volume^2, data=Weekly, subset=train)
+qda.pred=predict(qda.fit, Weekly.test)
+qda.class=qda.pred$class
+table(qda.class, Direction.test)
+mean(qda.class==Direction.test)
+cat ("QDA Direction~Lag2^2+Volume^2 Accuracy Rate: ", mean(qda.class==Direction))
+cat ("QDA Direction~Lag2^2+Volume^2 Error Rate: ", mean(qda.class!=Direction))
+
+cat ("*****************************")
+cat ("KNN Models")
+cat ("*****************************")
+
+train.X = cbind(Lag2)[train,]
+test.X = cbind(Lag2)[!train,]
+knn_predictor(train.X, test.X, train.Direction, 1)
+knn_predictor(train.X, test.X, train.Direction, 2)
+knn_predictor(train.X, test.X, train.Direction, 5)
+knn_predictor(train.X, test.X, train.Direction, 10)
+knn_predictor(train.X, test.X, train.Direction, 20)
+knn_predictor(train.X, test.X, train.Direction, 30)
+knn_predictor(train.X, test.X, train.Direction, 40)
+knn_predictor(train.X, test.X, train.Direction, 50)
+knn_predictor(train.X, test.X, train.Direction, 60)
+knn_predictor(train.X, test.X, train.Direction, 69)
+knn_predictor(train.X, test.X, train.Direction, 70)
+knn_predictor(train.X, test.X, train.Direction, 80)
+knn_predictor(train.X, test.X, train.Direction, 90)
+knn_predictor(train.X, test.X, train.Direction, 100)
+knn_predictor(train.X, test.X, train.Direction, 150)
+knn_predictor(train.X, test.X, train.Direction, 200)
+
+train.X = cbind(Lag2,Volume)[train,]
+test.X = cbind(Lag2,Volume)[!train,]
+knn_predictor(train.X, test.X, train.Direction, 1)
+knn_predictor(train.X, test.X, train.Direction, 2)
+knn_predictor(train.X, test.X, train.Direction, 5)
+knn_predictor(train.X, test.X, train.Direction, 10)
+knn_predictor(train.X, test.X, train.Direction, 20)
+knn_predictor(train.X, test.X, train.Direction, 30)
+knn_predictor(train.X, test.X, train.Direction, 40)
+knn_predictor(train.X, test.X, train.Direction, 50)
+knn_predictor(train.X, test.X, train.Direction, 60)
+knn_predictor(train.X, test.X, train.Direction, 69)
+knn_predictor(train.X, test.X, train.Direction, 70)
+knn_predictor(train.X, test.X, train.Direction, 80)
+knn_predictor(train.X, test.X, train.Direction, 90)
+knn_predictor(train.X, test.X, train.Direction, 100)
+knn_predictor(train.X, test.X, train.Direction, 150)
+knn_predictor(train.X, test.X, train.Direction, 200)
+
+train.X = cbind(Lag2^2)[train,]
+test.X = cbind(Lag2^2)[!train,]
+knn_predictor(train.X, test.X, train.Direction, 1)
+knn_predictor(train.X, test.X, train.Direction, 2)
+knn_predictor(train.X, test.X, train.Direction, 5)
+knn_predictor(train.X, test.X, train.Direction, 10)
+knn_predictor(train.X, test.X, train.Direction, 20)
+knn_predictor(train.X, test.X, train.Direction, 30)
+knn_predictor(train.X, test.X, train.Direction, 40)
+knn_predictor(train.X, test.X, train.Direction, 50)
+knn_predictor(train.X, test.X, train.Direction, 60)
+knn_predictor(train.X, test.X, train.Direction, 69)
+knn_predictor(train.X, test.X, train.Direction, 70)
+knn_predictor(train.X, test.X, train.Direction, 80)
+knn_predictor(train.X, test.X, train.Direction, 90)
+knn_predictor(train.X, test.X, train.Direction, 100)
+knn_predictor(train.X, test.X, train.Direction, 150)
+knn_predictor(train.X, test.X, train.Direction, 200)
+
+train.X = cbind(Lag2^2,Volume^2)[train,]
+test.X = cbind(Lag2^2,Volume^2)[!train,]
+knn_predictor(train.X, test.X, train.Direction, 1)
+knn_predictor(train.X, test.X, train.Direction, 2)
+knn_predictor(train.X, test.X, train.Direction, 5)
+knn_predictor(train.X, test.X, train.Direction, 10)
+knn_predictor(train.X, test.X, train.Direction, 20)
+knn_predictor(train.X, test.X, train.Direction, 30)
+knn_predictor(train.X, test.X, train.Direction, 40)
+knn_predictor(train.X, test.X, train.Direction, 50)
+knn_predictor(train.X, test.X, train.Direction, 60)
+knn_predictor(train.X, test.X, train.Direction, 69)
+knn_predictor(train.X, test.X, train.Direction, 70)
+knn_predictor(train.X, test.X, train.Direction, 80)
+knn_predictor(train.X, test.X, train.Direction, 90)
+knn_predictor(train.X, test.X, train.Direction, 100)
+knn_predictor(train.X, test.X, train.Direction, 150)
+knn_predictor(train.X, test.X, train.Direction, 200)
+```
+
+
+Exercise 12: Create wrapper functions
+
+Question a) Write a function Power() that raises 2 to the 3rd power 
+```{r answer_w5_12a}
+Power= function (){
+  result = 2^3 #calculate and return the result
+  paste("result:", toString(result),sep= " ") #just a screen print out
+}
+#Call the function
+Power()
+```
+
+Question b) Write a function Power2(x,a), that allows to pass any two numbers and prints out x^a 
+```{r answer_w5_12b}
+Power2= function (x, a){
+  result = x^a #calculate and return the result
+  paste("Input:",toString(x), 
+        "Power^:",toString(a), 
+        "result:", toString(result),
+        sep= " ") #just a screen print out
+}
+Power2(3, 8)
+```
+
+Question c) Using Power2(x,a), compute a 10^3, 8^17, 131^3
+```{r answer_w5_12c}
+#Call the function 3 times with different examples
+Power2(10.0,3.0)
+Power2(8.0,17.0)
+Power2(131.0,3.0)
+```
+
+Question d) Create Power3(x,a) that returns the returns x^a as an R object  
+```{r answer_w5_12d}
+Power3= function (x, a){
+  result = x^a #the result object
+  return (result) # the result object being returned
+}
+```
+
+Question e) Using  Power3(x,a) create a plot of f(x)= x^2
+```{r answer_w5_12e}
+x = 1:10
+plot( x, #x values between 1 and 10 on the x-axis
+      Power3(x, 2), #function return x^2 on the y-axis
+      log = "xy", #both axis are shown as log-scale
+      ylab = "Log(y) = x^2", #y label
+      xlab = "Log(x)", #x label
+      main = "Log(x^2) Function") #main title
+```
+
+Question f) Create a function that allows to create plot of x against x^3 for a fixed and range value of x  
+
+```{r answer_w5_12ef}
+# x is the input data, a is the power and log indicates whether the x axis should use log scale (log='x'), 
+# or the y axis should use the log scale (log='y') or both axis should use log scale (log='xy') 
+PlotPower= function (x, a, log='y'){
+
+    #create an empty vector  
+    y = c()
+    #get the vector length
+    len = length(x)
+
+    #this is a check to ensure the user pass a vector containing at list one element    
+    if (len == 0)
+      stop ("input cannot be null")
+    
+    #for each of element in the input vector, elevate the element 'x[i]' to the power 'a' 
+    for (i in 1:len)
+      y[i] = c(Power3(x[i], a )) 
+    
+    #print the result
+    print(y)
+    
+    #reset x and/or y depending on the log parameter passed in the function
+    #if a none supported parameter is passed, then neither x nor y will be scaled.
+    xLog = ""
+    yLog = ""
+    if (log=='y') {y=log(y); yLog = ' with log scale.'}
+    if (log=='x') {x=log(x); xLog = ' with log scale.'}
+    if (log=='xy') {x=log(x);y=log(y); yLog = ' with log scale.'; xLog = ' with log scale.'}
+    
+    #plot the data
+    plot( x,y, # the input (x) and output (y)
+          main="Power Function",sub=paste("Plot of function X^", a, sep=""), #main and customisable  sub title
+          xlab=paste("X Values", xLog, sep =" ") , #x customisable label name
+          ylab=paste("Y Values", yLog, sep =" "), #y customisable label name
+          col="blue", # curve color
+          col.lab="blue", #color of the labels
+          col.axis="black", # color of the axis 
+          pch=1) #the shape of the points in the plot
+    }
+
+
+#plot the data for the defined input c(...) raise to the power 2. There are 4 scenarios, one for each log parameter case.
+PlotPower(c(1,2,3,4,5,6,8,9,10), 2, 'y')
+PlotPower(c(1,2,3,4,5,6,8,9,10), 2, 'x')
+PlotPower(c(1,2,3,4,5,6,8,9,10), 2, 'xy')
+PlotPower(c(1,2,3,4,5,6,8,9,10), 2, 'dummy')
+#plot the data for a unique x value use case
+PlotPower2(5, 3, 'dummy') 
+#plot the data for range value of x
+PlotPower2(1:10, 3, 'dummy') #range case
+```
+
+## Week 7 - Classification: Linear Discriminant Analysis, Quadratic Discriminant Analysis, Naïve Bayes
+
+Exercise 11: Develop a model to predict whether a given car gets high or low gas mileage based on the auto dataset. 
+
+Question a) Create a binary variable, that contains '1' when mpg contains a value > median, else '0'.
+
+```{r answer_10a0}
+library(ISLR)
+#reload the original dataset to start from a clean position
+data("Auto")
+#Remove Weekly from the search() path of R object
+detach(Auto)
+#The database is searched by R when evaluating a variable, 
+#so objects in the database can be accessed by simply giving their names.
+attach(Auto)
+```
+
+```{r answer_11a}
+#view r the data in a grid
+fix(Auto)
+
+#Clean-up. This is necessary as the script may be run more than once. It is necessary to ensure there is only one version of this column
+if("mpg01" %in% colnames(Auto))
+{
+  Auto$mpg01<-NULL
+  cat ("mpg01 deleted from Auto")
+}
+
+#The median is assumed to be strictly above the median 
+Auto$mpg01 = ifelse(Auto$mpg > median(Auto$mpg),1,0)
+cat ("mpg01 created in Auto")
+```
+
+Question b) Explore the data graphically in order to investigate the association between mpg01 and the other features. In other words, what other features seem most likely to be useful in predicting mpg01?
+
+From the box plots and the plots below, it is not possible to draw any interesting conclusion relative to mpg01 (as this is a boolean variable).
+
+The same comment can be made about the graphs generated by the pairs() function. Therefore, mpg instead of mpg01 is used for this analysis. It looks like mpg is negatively correlated with displacement, horsepower and weight. It also seems that mpg is slightly positively correlated with origin and year.
+
+The cor() function provides more readable information about mpg01 in relation to the other predicators.
+Mpg01 is negatively correlated with displacement, horsepower and weight and also with cylinders.
+Mpg01 seems slightly positively correlated with origin and year.
+
+Furthermore, if 0.5 is assumed to be the correlation cut of point, then the year variable could be discarded as a feature useful in predicating, as it displays an absolute correlation value strictly less than 0.5.  
+Mpg seems also strongly correlated with mpg (but this is obvious as mpg01 derives from mpg).
+
+Therefore, from this analysis the feature that seems to be the most influential for predicting the mpg01 level are: cylinders, displacement, horsepower, weight and origin.
+As they display an absolute value correlation with mmpg01 greater than 0.5.
+
+```{r answer_11b}
+#Boxplots
+boxplot(mpg01~cylinders, main="mpg01 explained by cylinders ", xlab="cylinders",ylab="mpg01")
+boxplot(mpg01~displacement, main="mpg01 explained by displacement ", xlab="displacement",ylab="mpg01")
+boxplot(mpg01~horsepower, main="mpg01 explained by horsepower ", xlab="horsepower",ylab="mpg01")
+boxplot(mpg01~weight, main="mpg01 explained by weight ", xlab="weight",ylab="mpg01")
+boxplot(mpg01~acceleration, main="mpg01 explained by Cylinders ", xlab="Cylinders",ylab="mpg01")
+boxplot(mpg01~year, main="mpg01 explained by year ", xlab="year",ylab="mpg01")
+boxplot(mpg01~origin, main="mpg01 explained by origin ", xlab="origin",ylab="mpg01")
+
+#It produces a matrix of scatter plots
+pairs(Auto[,-9])
+
+#Display the correlation pairs
+cor(Auto[,-9])
+```
+
+Question c) Split the data between training and test sets.
+
+It is assumed that approx. 50% of the data serve as training data and 50% serve as test data.
+The code below shows the split.
+
+```{r answer_11c}
+train = (year<77)   
+test = !train
+Auto.train = Auto[train, ]
+Auto.test = Auto[test, ]
+mpg01.test = mpg01[test]
+train_size = dim(Auto.train)[1]
+test_size = dim(Auto.test)[1]
+total = dim(Auto)[1]
+train_size
+train_ratio = 100.0 * (train_size/total);
+paste ("exact training ratio:", train_ratio, sep = " ")
+test_ratio = 100.0 * (test_size/total);
+paste ("exact test ratio:", test_ratio, sep = " ")
+```
+
+Question d) Perform a LDA on the training data using variables that seemed most associated with mpg01. 
+What is the test error obtained?
+
+The test error obtained in the mean() function is 12.36%
+```{r answer_11d}
+# LDA
+# load the library for LDA
+library(MASS) 
+#Generate the fitting model
+lda.fit = lda(mpg01 ~ cylinders + weight + displacement + horsepower + origin, data = Auto, subset = train)
+#Generate the prediction model
+lda.pred = predict(lda.fit, Auto.test)
+#Compare prediction on the test data vs the expected test value. The result of the mean represents the error rate
+mean(lda.pred$class != mpg01.test)
+```
+
+Question e) Perform a QDA on the training data using variables that seemed most associated with mpg01. 
+What is the test error obtained?
+
+The test error obtained in the mean() function is 12.36%
+```{r answer_11e}
+#QDA
+# load the library for LDA
+library(MASS)
+#Generate the fitting model
+qda.fit = qda(mpg01~ cylinders + weight + displacement + horsepower + origin, data = Auto, subset = train)
+#Generate the prediction model
+qda.pred = predict(qda.fit, Auto.test)
+#Compare prediction on the test data vs the expected test value. The result of the mean represents the error rate
+mean(qda.pred$class != mpg01.test)
+```
+
+Question f) Perform a Logistic Regression on the training data using variables that seemed most associated with mpg01. 
+What is the test error obtained?
+
+The test error obtained in the mean() function is 20.79%
+```{r answer_11f}
+# Logistic regression with the family is binomial (i.e. the error distribution and link function to be used in the model), in other words using the logit  
+glm.fit = glm(mpg01~ cylinders + weight + displacement + horsepower + origin, data = Auto, family = binomial, subset = train)
+#TODO explain
+glm.probs = predict(glm.fit, Auto.test, type = "response")
+#TODO explain
+glm.pred = rep(0, length(glm.probs))
+glm.pred[glm.probs > 0.5] = 1
+mean(glm.pred != mpg01.test)
+```
+
+Question g) Perform a KNN using variables that seemed most associated with mpg01. 
+What is the test error obtained?
+What is the value of K that seems to perform best on this data set?
+
+K=10 and K=100 produce the set with the smallest test error at 17.41%. K=10 is therefore selected as it has the smallest neighbours count.
+```{r answer_11g}
+library(class)
+#Create a training vector set
+train.X = cbind(cylinders, weight, displacement, horsepower, origin)[train, ]
+#Create a test vector set
+test.X = cbind(cylinders, weight, displacement, horsepower, origin)[test, ]
+#TODO explain
+train.mpg01 = mpg01[train]
+#set to the random variable seed to ensure reproductivity
+set.seed(1)
+#As the number of patters is 278, K will vary between 1 and 278
+# KNN(k=1)
+knn.pred = knn(train.X, test.X, train.mpg01, k = 1)
+mean(knn.pred != mpg01.test)
+# KNN(k=10)
+knn.pred = knn(train.X, test.X, train.mpg01, k = 10)
+mean(knn.pred != mpg01.test)
+# KNN(k=50)
+knn.pred = knn(train.X, test.X, train.mpg01, k = 50)
+mean(knn.pred != mpg01.test)
+# KNN(k=100)
+knn.pred = knn(train.X, test.X, train.mpg01, k = 100)
+mean(knn.pred != mpg01.test)
+# KNN(k=200)
+knn.pred = knn(train.X, test.X, train.mpg01, k = 200)
+mean(knn.pred != mpg01.test)
+```
+
+Exercise 13: Using the Boston data set, fit classification models in order to predict whether a given suburb has a crime rate above or below the median.
+Explore Logistic Regression, LDA, KNN models using various subsets of predictors.
+
+First, let's create the crime01 col
+
+```{r answer_13_part1}
+library(MASS)
+#reload the original dataset to start from a clean position
+data("Boston")
+detach(Boston)
+attach(Boston)
+
+#Clean-up. This is necessary as the script may be run more than once. 
+#It is necessary to ensure there is only one version of this column
+if("crime01" %in% colnames(Boston))
+{
+  Boston$crime01<-NULL
+  cat ("crime01 deleted from Boston")
+}
+#Above the median is understood as strictly greater than the median
+crime01 = rep(0, length(crim))
+#The crime001 column displays 1 when the crime rate is above the median, else it displays 0
+crime01[crim > median(crim)] = 1
+
+Boston = data.frame(Boston, crime01)
+cat ("crime01 is now attached to the Boston dataset")
+
+#The training dataset set is set to 50% of the Boston data
+train = 1:(dim(Boston)[1] * 0.5)
+#The test dataset set is set to 50% of the Boston data
+test = (dim(Boston)[1]*0.5 + 1):dim(Boston)[1]
+Boston.train = Boston[train, ]
+Boston.test = Boston[test, ]
+crime01.test = crime01[test]
+
+```
+
+
+Second, let's have a look at the potential significance of variables. For that, plots and a correlation table are produced. 
+We will assume that abs(0.5) is the correlation cut off point. Any predictor with a correlation level above the cut off is considered as significantly impacting crime01.
+
+Consequently, looking at the correlation table, we will retain the following explanatory variable in our model: 
+indus (0.603),nox(0.723),age(0.614), dis(-0.616), rad(0.6197), tax(0.609).
+
+It looks like all these variables part from dis, have a positive relationship with crm01. Dis has a negative relationship. We start with this list as a base case and then modify the predictor list to see whether we can improve on the model test performance.
+
+```{r answer_13_part2}
+summary(Boston)
+cor(Boston)
+```
+
+
+From the below test performance, it appears that the best result is obtained when test MSE is 10.28%. Even when we affect the polynomial of the main explanatory variable (square root and square). 
+
+Several models show this test MSE results. Therefore, we will take the simplest model with nox as the explanatory variable (crime01 ~ nox).
+
+This model tells us that the concentration level of nitrogen oxides plays the greatest part in the level of crime. This is an interesting insight.   
+
+```{r answer_13_part3_logisitic_reg}
+#We set the seed to 1 to ensure repeatability
+set.seed(1)
+#Create a gml wrapper for code reuse and maintenance reduction
+glm_performance = function(the_fit, msg){
+  glm.probs = predict(the_fit, Boston.test, type = "response")
+  glm.pred = rep(0, length(glm.probs))
+  glm.pred[glm.probs > 0.5] = 1
+  
+  paste("Test MSE: ", round(100 * mean(glm.pred != crime01.test),digits=2) ,"% with ", msg  )
+}
+
+#***** Logistic Regression
+# Logistic regression with the family is binomial  (i.e. the error distribution and link function to be used in the model), in other words using the logit  
+
+glm.fit = glm(crime01 ~ nox+rad+dis+age+tax, indus, data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox+rad+dis+age+tax+indus")
+
+glm.fit = glm(crime01 ~ nox,data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox")
+
+glm.fit = glm(crime01 ~ nox+rad, data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox+rad")
+
+glm.fit = glm(crime01 ~ nox+rad+dis, data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox+rad+dis")
+
+glm.fit = glm(crime01 ~ nox+rad+dis+age, data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox+rad+dis+age")
+
+glm.fit = glm(crime01 ~ nox+rad+dis+age, data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox+rad+dis+age+tax")
+
+glm.fit = glm(crime01 ~ nox^2,data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ nox^2")
+
+glm.fit = glm(crime01 ~ sqrt(nox),data = Boston, family = binomial, subset = train)
+glm_performance(glm.fit, "crime01 ~ SQRT(nox)")
+
+```
+
+Let's do a simlar analysis with the LDA model.
+
+We still obtain the same min MSE result at 10.28%, but this time the LDA simplest model is crime01 ~ nox+rad.
+The crime01 is now dependent on the level of nitrogen oxides and the level of accessibility to the radial highways.
+As before, increasing the polynomial value of the explanatory variables did not help.
+
+```{r answer_13_part4_lda}
+#We set the seed to 1 to ensure repeatability
+set.seed(1)
+
+#Create a gml wrapper for code reuse and maintenance reduction
+lda_performance = function(the_fit, msg){
+  lda.pred = predict(the_fit, Boston.test)
+  
+  paste("Test MSE: ", round(100 * mean(lda.pred$class != crime01.test),digits=2) ,"% with ", msg  )
+}
+
+#***** LDA regression
+
+lda.fit = lda(crime01 ~ nox+rad+dis+age+tax+indus, data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox+rad+dis+age+tax+indus")
+
+lda.fit = lda(crime01 ~ nox,data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox")
+
+lda.fit = lda(crime01 ~ nox+rad, data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox+rad")
+
+lda.fit = lda(crime01 ~ nox+rad+dis, data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox+rad+dis")
+
+lda.fit = lda(crime01 ~ nox+rad+dis+age, data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox+rad+dis+age")
+
+lda.fit = lda(crime01 ~ nox+rad+dis+age, data = Boston,  subset = train)
+lda_performance(lda.fit, "crime01 ~ nox+rad+dis+age+tax")
+
+lda.fit = lda(crime01 ~ nox^2+rad, data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox^2+rad")
+
+lda.fit = lda(crime01 ~ nox^2+rad^2, data = Boston, subset = train)
+lda_performance(lda.fit, "crime01 ~ nox^2+rad^2")
+
+lda.fit = lda(crime01 ~ sqrt(nox)+rad, data = Boston,  subset = train)
+lda_performance(lda.fit, "crime01 ~ nox^2+rad")
+
+lda.fit = lda(crime01 ~ sqrt(nox)+sqrt(rad), data = Boston,  subset = train)
+lda_performance(lda.fit, "crime01 ~ nox^2+rad")
+
+```
+
+Final analysis, using KNN. 
+
+The crime01 KNN has been modelled against different combinations of the following explanatory variables: nox, rad, dis, age, tax. The min test MSE that has been generated is the one where the model use nox and rad as predicators and knn=1. 
+
+It produces the best min test MSE (9.88%) out of all the knn models, and the other models (Logistic Regression and LDA) analysed above. This model is satisfactory as it is simple (only using two explanatory variables are used, and the number of knn is very low).
+
+```{r answer_13_part5_knn}
+set.seed(1)
+
+cat("crm01 ~ nox, rad, dis, age, tax")
+train.X = cbind(nox, rad, dis, age, tax)[train, ]
+test.X = cbind(nox, rad, dis, age, tax)[test, ]
+train.crime01 = crime01[train]
+the_knn = 1
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 50
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 100
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 200
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+cat("crm01 ~ nox, rad")
+train.X = cbind(nox, rad )[train, ]
+test.X = cbind(nox, rad)[test, ]
+train.crime01 = crime01[train]
+the_knn = 1
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 50
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 100
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 200
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+cat("crm01 ~ nox, rad, dis")
+train.X = cbind(nox, rad, dis )[train, ]
+test.X = cbind(nox, rad, dis)[test, ]
+train.crime01 = crime01[train]
+the_knn = 1
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 50
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 100
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 200
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+cat("crm01 ~ nox, rad, dis,age")
+train.X = cbind(nox, rad, dis,age )[train, ]
+test.X = cbind(nox, rad, dis, age)[test, ]
+train.crime01 = crime01[train]
+the_knn = 1
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 50
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 100
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+the_knn = 200
+knn.pred = knn(train.X, test.X, train.crime01, k = the_knn)
+paste("Test MSE: ", round(100 * mean(knn.pred != crime01.test), digits=2) , "% and knn=",the_knn  )
+
+```
+
+
+## Week 9 - Trees based methods; Bagging, Boosting, Random Forests
+
+Exercise 7: Create a test displaying the test error resulting from random forests on the Boston data
+for a comprehensive range of values for mtry and ntree.
+Describe the results of obtained.
+
+The limit for number of tree was set to 500. Above this, all lines are flat. Therefore, it does add any values to increasethe number of tree above 500. 
+
+The aim is the find the smallest test MSE (with the smallest number of trees), across the different Random Forest scenarios.
+
+It looks like the smallest test MSE is obtained from looking at the red line (Random Forest:m=p/2) at an MSE of approximately 13.5 and a number of trees is approximately 70.
+
+```{r answer_w9_e7}
+#reload the original dataset to start from a clean position
+data("Boston")
+#Set the seed to 1 to ensure repea
+set.seed(1)
+#Split the Boston data into 50% training data and 50% test data
+train = sample(1:nrow(Boston)[1], nrow(Boston)*0.5)
+#the matrix of training predicators (all columns bar medv), i.e. 13=15-2
+X.train = Boston[train,-13]
+#The matrix of test predicators (all columns bar medv)
+X.test = Boston[-train,-13]
+#The response vector (mdev)
+Y.train = Boston[train,13]
+Y.test = Boston[-train,13]
+
+#the number of variables randomly sampled as candidates at each split
+p = dim(Boston)[2] - 1
+p.2 = p*0.5
+p.sq = sqrt(p)
+#The number of tree to grow
+max_tree = 500
+
+#The random forest takes the following parameters and generates the mse:
+# - the training data (x.train), the training response vector (y.train), 
+# - the test data (xtest), the test response (ytest)
+# - the number of variables randonly sampled as candidates at each split (mtry)
+# - the number of tree to grow, here we have three cases p, p.2 and p.sq as defined above (ntree)
+rf.boston.p = randomForest(X.train, Y.train, xtest = X.test, ytest = Y.test, mtry = p, ntree = max_tree)
+rf.boston.p.2 = randomForest(X.train, Y.train, xtest = X.test, ytest = Y.test, mtry = p.2, ntree = max_tree)
+rf.boston.p.sq = randomForest(X.train, Y.train, xtest = X.test, ytest = Y.test, mtry = p.sq, ntree = max_tree)
+
+#Plot the first graph where p=number of columns in the Boston data set -1 
+plot( 1:max_tree, # the number of tree to be displayed on the x-axis 
+      rf.boston.p$test$mse, #the calculated mse where mtry = p
+      col = "green", 
+      type = "l", 
+      xlab = "Number of Trees", 
+      ylab = "Test Classification Error (MSE)", 
+      ylim = c(10, 19),
+      main= "Test error resulting for different Random Forest scenarios")
+#Graph the second line, were mtry = p.2
+lines(1:max_tree, rf.boston.p.2$test$mse, col = "red", type = "l")
+#Graph the third line, were mtry = p.sq
+lines(1:max_tree, rf.boston.p.sq$test$mse, col = "blue", type = "l")
+legend( "topright", c("Random Forest: m=1", "Random Forest: m=p/2", "Random Forest: m=sqrt(p)"), 
+        col = c("green", "red", "blue"), cex = 1, lty = 1)
+```
+
+Exercise 8: The aim is to predict Sales using regression trees and related approaches, treating the response as a quantitative variable.
+
+In this exercise, it is assumed that the Sales, Price and CompPrice unit is $, as this is not specified explicitly in '?Carseats'. 
+
+a) Split the dataset into a training and a test set
+```{r answer_w9_e8a}
+#Load the libraries
+library(ISLR)
+library(tree)
+#reload the original dataset to start from a clean position
+data("Carseats")
+detach(Carseats)
+#The database is searched by R when evaluating a variable, 
+#so objects in the database can be accessed by simply giving their names.
+attach(Carseats)
+
+#Vector containing 50% of the Carset dataset rows
+train = sample(dim(Carseats)[1], dim(Carseats)[1]*0.5)
+#Set the training set 
+Carseats.train = Carseats[train, ]
+#Set the test set
+Carseats.test = Carseats[-train, ]
+```
+
+b) Fit the regression tree to the training set. Plot the tree, and interpret the results. Calculate the test MSE.
+
+The tree provides the following information: 
+
+The highest sales is $11,590 when the ShelveLoc is Good and the Price is strictly less than $123.5. 
+
+The lowest sales is $3,092 when the ShelveLoc is Bad, the CompPrice is strictly less than $124.5, the Price is greater or equal to $133. 
+
+The MSE (i.e. the model prediction error) is 4.42%.
+
+```{r answer_w9_e8b}
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+#The tree function() fits the predictor variables against the Sales predicted variable with the training dataset Carseats.train 
+tree.carseats = tree(Sales ~ ., data = Carseats.train)
+#Plot the tree
+plot(tree.carseats)
+#Force the tree labels to show on the tree
+text(tree.carseats, pretty = 0,cex = 0.5)
+#The predict function is used to evaluate the model performance on the test dataset.
+#type="Class" is not set as we are not interested in returning class prediction.
+pred.carseats = predict(tree.carseats, Carseats.test)
+#Generate the Test MSE => MSE = mean((actual_y - predicted_y)^2), therefore:
+mean((Carseats.test$Sales - pred.carseats)^2)
+```
+
+c) Use cross-validation to determine the optimal level of tree complexity. Does pruning the tree improve the test MSE.
+
+From the plot, we can deduce the tree size that minimise deviance (i.e. the number of misclassifications)  is 14.  
+
+According to the result, pruning the tree does not improve the test MSE, on the contrary it makes is worst at 4.75%.
+
+```{r answer_w9_e8c}
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+#The cv.tree() function is used to check whether pruning the tree will help with improving the model performance.
+#The FUN variable is already defaulted to prune.tree, so no need to add it
+cv.carseats = cv.tree(tree.carseats)
+plot(cv.carseats$size, cv.carseats$dev, type = "b", xlab = "Tree Size", ylab = "Deviance", main = "Model complexity: Tree size Vs Deviance")
+#Let's prune now by setting the size of the internal nodes to the number found a above
+pruned.carseats = prune.tree(tree.carseats, best = 14)
+#Recalculate the MSE based on the pruned tree
+pred.pruned = predict(pruned.carseats, Carseats.test)
+mean((Carseats.test$Sales - pred.pruned)^2)
+```
+
+d) Use the bagging approach to analyse this data. What is the test MSE obtained? Use the importance() function to determine which variables 
+are most important.
+
+The Original test MSE following bagging is 2.33%. This is so far the best model performance, compared to the results obtained previously in b) and c).
+
+The most important variables are given by the IncNodePurity column (the higher the better). It measures the total decrease in node impurity using the residual sum of square (for a regression model). Therefore, the variables retained with the first two highest IncNodePurity are Price and ShelveLoc .Then to a lesser extent, in descending order:  CompPrice, Age and Advertising.
+
+```{r answer_w9_e8d}
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+#The randomForest() function is used in this case to perform bagging, with mtry =10 to take into consideration all predictors.
+#Importance is set to TRUE, as it needs to be assessed.
+bag.carseats = randomForest(Sales ~ ., data = Carseats.train, mtry = 10, importance = TRUE)
+#The predict function is used to evaluate the model performance on the test dataset.
+bag.pred = predict(bag.carseats, Carseats.test)
+#Generate the MSE
+mean((Carseats.test$Sales - bag.pred)^2)
+#The importance() function extract the variable importance measures as produced by the random forest
+importance(bag.carseats)
+```
+
+e) Use the random forest approach to analyse this data. What is the test MSE obtained? Use the importance() function to determine which variables 
+are most important.
+
+The test MSE obtained with the Random Forest model is 2.51% (mtry=5). 
+
+The variables retained in order of importance are Price (436.16) and ShelveLoc (330.46). Then to a lesser extent: Age (197.49), CompPrice (169.56) and Advertising (146.13)
+
+As shown below the increase (decrease) of mtry (between 1 and 10), decrease (increase) the test MSE. The best test MSE performance seems to be when the Random Forest is set with mtry=9 (MSE=2.34%). This is a slightly better result than the bagging (test MSE = 2.33%)
+
+```{r answer_w9_e8e}
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+rf.carseats = randomForest(Sales ~ ., data = Carseats.train, mtry = 5, importance = TRUE)
+rf.pred = predict(rf.carseats, Carseats.test)
+mean((Carseats.test$Sales - rf.pred)^2)
+
+#The importance() function extract the variable importance measures as produced by the random forest
+importance(rf.carseats)
+
+#We now generate the MSE at different level of mtry=1
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+rf.carseats = randomForest(Sales ~ ., data = Carseats.train, mtry = 1, importance = TRUE)
+rf.pred = predict(rf.carseats, Carseats.test)
+mean((Carseats.test$Sales - rf.pred)^2)
+
+#We now generate the MSE at different level of mtry=3
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+rf.carseats = randomForest(Sales ~ ., data = Carseats.train, mtry = 3, importance = TRUE)
+rf.pred = predict(rf.carseats, Carseats.test)
+mean((Carseats.test$Sales - rf.pred)^2)
+
+#We now generate the MSE at different level of mtry=7
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+rf.carseats = randomForest(Sales ~ ., data = Carseats.train, mtry = 7, importance = TRUE)
+rf.pred = predict(rf.carseats, Carseats.test)
+mean((Carseats.test$Sales - rf.pred)^2)
+
+#We now generate the MSE at different level of mtry=9
+#We set the seed of the random number generator to ensure the results are repeatable.
+set.seed(1)
+rf.carseats = randomForest(Sales ~ ., data = Carseats.train, mtry = 9, importance = TRUE)
+rf.pred = predict(rf.carseats, Carseats.test)
+mean((Carseats.test$Sales - rf.pred)^2)
+```
+
+Exercise 9: In this section, the OJ data is studied
+
+a) Create a training set of 800 entries and a test set with the remaining entries
+```{r answer_w9_e9a}
+library(ISLR)
+data("OJ")
+detach(OJ)
+attach(OJ)
+set.seed(1)
+train = sample(dim(OJ)[1], 800)
+OJ.train = OJ[train, ]
+OJ.test = OJ[-train, ]
+```
+
+b) Fit a tree to the training data, with Purchase as the response and the other variables as predictors.
+Use the Summary() function to produce summary statistics about the tree, and describe the results obtained.
+What is the training error rate? How many terminal nodes does the tree have?
+
+The variables in use in tree are LoyalCH, PriceDiff, SpeacialCH and ListPriceDiff.
+
+There are 8 terminal nodes
+
+The training error rate is 16.5%
+
+```{r answer_w9_e9b}
+library(tree)
+set.seed(1)
+OJ.tree = tree(Purchase ~ ., data = OJ.train)
+summary(OJ.tree)
+```
+
+c) Type in the name of the tree object in order to get a detailed text output. Pick one of the terminal nodes, and interpret the information displayed.
+
+The node 20 has been chosen: 
+
+- SpecialCH is a terminal node as it displays a (*) 
+
+- SpecialCH is the splitting variable at value = 0.5.
+
+- 70 records in this set have a value strictly less than 0.5, the rest is above.
+
+- The deviance of all point under the node 20 is 60.89.
+
+- The prediction at this node is MM.
+
+- Looking at the data, using fix(OJ), we can see that there are only 2 prediction possible MM and CH. From the node 20, it can be deduced that approximately 15.7% of the recorset have a value MM and 84.3% of recordset have a value CH.
+
+```{r answer_w9_e9c}
+library(tree)
+set.seed(1)
+
+#Print the tree as a textouput
+OJ.tree
+
+#Set the training and test dataset
+train = sample(dim(OJ)[1], dim(OJ)[1] *0.5)
+OJ.train = OJ[train, ] #50% training data
+OJ.test = OJ[-train, ] #50% test data
+
+```
+
+d) Create a plot of three and interpret the results.
+
+Out of the 8 nodes, 5 nodes are CH and the 3 others are MM.
+High level analysis: when the LoyalCH is greater or equal to 0.264232 and strictly less than 0.508643, two nodes predict CH, and one node predict MM.
+
+Strictly below 0.264232, two nodes predict MM. When LoyalCH is greater or equal to 0.508643, three nodes predicts MM. 
+If need be a more, a granular analysis can be made using the PriceDiff variable that further splits the tree. 
+
+```{r answer_w9_e9d}
+library(tree)
+set.seed(1)
+plot(OJ.tree)
+text(OJ.tree, pretty = 0, cex=0.5)
+```
+
+e) Predict the response on the test data, and produce a confusion matrix comparing the test labels to the predicted test labels.
+Provide the test error rate.
+
+From the confusion matrix provided below (i.e. table() function), we can deduce the model correctly predicts that purchase would be
+classified as CH 304 of times, and as MM 124 of times, for a total of 428 (304+26) purchases. 
+
+This model test error rate is 20.0% 
+
+```{r answer_w9_e9e}
+library(tree)
+set.seed(1)
+#Test MSE
+
+OJ.pred = predict(OJ.tree, OJ.test, type = "class")
+table(OJ.test$Purchase, OJ.pred)
+cat ("Test error: ", 100 * (26+81)/(304+124+81+26), '%', sep="" )
+
+```
+
+f) Apply the cv.tree() function to the training set in order to determine the optimal tree size.
+
+Looking at the results of cv.oj, the tree with 2 terminal nodes has the lowest cross-validation classification, and the lowest complexity level, with 100 cross-validation errors.
+
+```{r answer_w9_e9f}
+set.seed(1)
+#The function cv.tree()  performs cross-validation in order to determine the optimal level of tree complexity.
+#The cost complexity pruning is used in order to select a sequence of trees for consideration.
+#The argument 'rune.misclass' is used to indicate that the classification error rate should guide the cross-validation
+#and pruning process, rather than the default for cv.tree() function, which is the deviance.
+cv.oj = cv.tree(OJ.tree, FUN = prune.misclass)
+cv.oj
+```
+
+g) Produce a plot with three size on the x-axis and cross-validated classification error rate.
+
+```{r answer_w9_e9g}
+set.seed(1)
+plot(cv.oj$size, cv.oj$dev, type = "b", xlab = "Tree Size", ylab = "Cross-validated classification error rate", main="Tree Size Vs Cross-validated Classification Error Rate")
+```
+
+h) Which tree size corresponds to the lowest cross-validated classification error rate?
+
+Looking at the graph, it looks like tree sizes 2,5 and 8 have a similar cross-validated classificaiton error rate, at 100. 
+The aim is the reduce complexity of the model and therefore, minimise the tree size. A tree size of 2 is therefore retained. 
+This is the same result as question f).
+ 
+i) Produce a pruned tree corresponding to the optimal tree size obtained using cross-validation. If the cross-validation does not lead to
+selection of a pruned tree, then create a pruned tree with 5 terminal nodes.
+
+The tree size set to 2, with cross-validation, does not lead to the selection of a pruned tree (i.e. too much information is lost), therefore the tree has been created with 5 terminal nodes. 
+
+```{r answer_w9_e9i}
+set.seed(1)
+
+#tree size is set to 2
+prune.OJ = prune.misclass(OJ.tree, best=2)
+plot(prune.OJ)
+text(prune.OJ, pretty=0, cex =0.5)
+
+#tree size is set to 5
+prune.OJ = prune.misclass(OJ.tree, best=5)
+plot(prune.OJ)
+text(prune.OJ, pretty=0, cex =0.5)
+```
+
+j) Compare the training error rates between the pruned and unpruned trees. Which is better? 
+
+The training error rates for the unpruned tree is 16.5%, see question b) above
+The training error rates for the pruned tree (size = 5) is 16.5%
+
+The training error rate are the same in both cases. 
+
+```{r answer_w9_e9j}
+set.seed(1)
+
+OJ.train_pred = predict(prune.OJ,OJ.train, type = "class" )
+#Training error rate produce before pruning
+summary(prune.OJ)
+```
+
+k) Compare the test error rates between the pruned and unpruned trees. Which is higher? 
+
+The test error with a tree size = 5 is 20.00%
+
+The test error rates are the same with both the unpruned and pruned tree with cross-validation at tree size = 5.
+
+```{r answer_w9_e9k}
+set.seed(1)
+OJ.test_pred = predict(prune.OJ,OJ.test, type = "class" )
+table(OJ.test$Purchase, OJ.test_pred)
+cat ("Test error: ", 100* (26+81)/(304+124+81+26), '%', sep="" )
+```
+
+Conclusion: according to these results, pruning the tree has neither improved the training nor the test error rate. However, pruning has reduced the complexity of the model by reducing the number of node from 8 to 5. Therefore, the pruned model should be preferred.
+
+
+Exercise 10: In this section, Boosting is used to predict Salary in the Hitters data set
+
+a) Remove the observations for whom the salary information is unknown, and then log-transform the salaries
+
+```{r answer_w9_e10a}
+library(ISLR)
+data("Hitters")
+#Remove the unknown salary information
+Hitters = Hitters[-which(is.na(Hitters$Salary)), ]
+#Log transform
+Hitters$Salary = log(Hitters$Salary)
+```
+
+b) Create a training set of 200 observations, and the test set consisting of the remaining observations
+
+```{r answer_w9_e10b}
+train = 1:200
+Hitters.train = Hitters[train, ]
+dim(Hitters.train)
+Hitters.test = Hitters[-train, ]
+dim(Hitters.test)
+```
+
+c) Perform Boosting on the training set with 1,000 trees for a range of values of the shrinkage parameter lambda.
+Produce a plot with different shrinkage values on the x-axis and the corresponding training set MSE on the y-axis.
+
+```{r answer_w9_e10c}
+library(gbm)
+set.seed(1)
+#Generate a vector of sequence of staring from 0.1 and going to 1.0, with a 0.1 step
+seqs = seq(0.1, 1, by = 0.1)
+len = length(lambdas)
+#Init the training error vector of length 'len' with NA elements 
+train.errors = rep(NA, len)
+for (i in 1:length(lambdas)) {
+    #This is a regression problem. Therefore, the distribution is set to "gaussian".
+    #The gbm() function fit the salary variable against all other predictors on the training set Hitters.
+    #Train with a tree number set to 1000 and an shrinkage element from the lambdas list
+    boost.hitters = gbm(Salary ~ ., data = Hitters.train, distribution = "gaussian", n.trees = 1000, shrinkage = lambdas[i])
+    #Train the model
+    train.pred = predict(boost.hitters, Hitters.train, n.trees = 1000)
+    #Generate the training errors
+    train.errors[i] = mean((Hitters.train$Salary - train.pred)^2)
+}
+
+#Plot the 'lambdas' on the x-axis, the training errors on the y-axis
+plot(lambdas, train.errors, type = "b", xlab = "Shrinkage (a.k.a. Lambda)", ylab = "Training MSE", col = "blue", pch =20, main="Boosting on Traning data for the Salary predicted variable (1000 trees)")
+
+```
+
+d) Produce a plot with different shrinkage values on the x-axis and the corresponding test set MSE on the y-axis.
+
+```{r answer_w9_e10d}
+library(gbm)
+set.seed(1)
+#Generate a vector of sequence of staring from 0.1 and going to 1.0, with a 0.1 step
+seqs = seq(0.1, 1, by = 0.1)
+len = length(lambdas)
+#Init the test error vector of length 'len' with NA elements 
+test.errors = rep(NA, len)
+for (i in 1:len) {
+    #This is a regression problem. Therefore, the distribution is set to "gaussian".
+    #The gbm() function fit the salary variable against all other predictors on the training set Hitters.
+    #Train with a tree number set to 1000 and an shrinkage element from the lambdas list
+    boost.hitters = gbm(Salary ~ ., data = Hitters.train, distribution = "gaussian", n.trees = 1000, shrinkage = lambdas[i])
+    #Test the model
+    test.pred = predict(boost.hitters, Hitters.test, n.trees = 1000)
+    #Generate the test errors
+    test.errors[i] = mean((Hitters.test$Salary - test.pred)^2)
+}
+
+#Plot the 'lambdas' on the x-axis, the test errors on the y-axis
+plot(lambdas, test.errors, type = "b", xlab = "Shrinkage (a.k.a. Lambda)", ylab = "Test MSE", col = "blue", pch =20, main="Boosting on Test data for the Salary predicted variable (1000 trees)")
+
+```
+
+
+e) Compare the test MSE of Boosting with the test MSE of the best linear regression model that you can build
+
+The Boosting best test MSE is approximately 25.06%
+
+Now let's build the best regression model. 
+
+Step 1- Use the Backward elimination process on the training dataset, setting the alpha critical at 5%. 
+The process is as follows:
+
+1. Start with all the predictors in the model. 
+
+2. Remove the predictor with highest abs(p-value) greater than the defined alpha critical. 
+
+3. Re-test the model and goto 2 
+
+4. Stop when all abs(p-value) are less than ??crit. 
+
+From the backward selection process, we keep on following list of predictors: AtBat, Hits, Walks, Years, CRuns, PutOuts as they display abs(p-value) < 5%.
+
+The generated test MSE is: 48.87%
+
+Step 2- Let's try to improve on this by adding some interaction on the variables such as square, polynominal and removing the less impacting variables. 
+
+Conclusion: The scenarios of step2 do not improve on the linear regression test MSE. They are all above 48.87%.
+
+General Conclusion: Best linear regression test MSE is 48.87%, whereas the Boosting generates a test MSE of 25.06%. Therefore, Boosting seems to a better model. However, the error rate is quite large.  
+
+```{r answer_w9_e10e1}
+#######
+####### Boosting test MSE
+#######
+set.seed(1)
+boosting.error = min(test.errors)
+paste ("The Boosting test error is:", 100*boosting.error, "%", sep = " ")
+
+#######
+####### Linear Regression Backward selection test MSE
+#######
+#Start with all variables and check predictors p-values"
+lm.fit = lm(formula = Salary ~., data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => CHmRun =  0.906335, check predictors p-values")
+lm.fit = lm(formula = Salary ~. - CHmRun, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor. It should be NewLeagueN with 0.84135, but for some reason it does not show in the ?Hittern dataset description. NewLeague will be removed instead as it seems to be the equivalent column
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague, data = Hitters.train)
+summary(lm.fit)
+
+#I will therefore ignore it for the moment and remove the next highest p-value predicator => Runs = 0.623396)
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague - Runs, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => RBI = 0.675108, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague - Runs - RBI, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => HmRun = 0.57981, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague - Runs - RBI - HmRun, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => CAtBat =  0.539682, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague - Runs - RBI - HmRun - CAtBat, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => Errors =  0.323281, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors, data = Hitters.train)
+summary(lm.fit) 
+
+#Remove highest p-value predictor => League = 0.184373, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors - League, data = Hitters.train)
+summary(lm.fit) 
+
+#Remove highest p-value predictor => CRBI = 0.17698, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors - League - CRBI, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => CHits = 0.229235, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors - League - CRBI - CHits, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => CWalks = 0.066616, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors - League - CRBI - CHits-CWalks, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => Assists = 0.29646, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors - League - CRBI - CHits-CWalks-Assists, data = Hitters.train)
+summary(lm.fit)
+
+#Remove highest p-value predictor => Division = 0.097770, check predictors p-values")
+lm.fit = lm(formula = Salary ~. -CHmRun - NewLeague  - Runs - RBI - HmRun - CAtBat - Errors - League - CRBI - CHits-CWalks-Assists-Division, data = Hitters.train)
+summary(lm.fit)
+
+lm.pred = predict(lm.fit, Hitters.test)
+mean((Hitters.test$Salary - lm.pred)^2)
+
+#######
+####### Attempt to improve on Linear Regression Backward selection test MSE
+#######
+
+lm.fit = lm(formula = Salary ~ +Hits, data = Hitters.train)
+summary(lm.fit)
+lm.pred = predict(lm.fit, Hitters.test)
+mean((Hitters.test$Salary - lm.pred)^2)
+
+lm.fit = lm(formula = Salary ~ +Hits+Years+PutOuts, data = Hitters.train)
+summary(lm.fit)
+lm.pred = predict(lm.fit, Hitters.test)
+mean((Hitters.test$Salary - lm.pred)^2)
+
+lm.fit = lm(formula = Salary ~ +Hits^2+Years^2+PutOuts+AtBat+Walks+CRuns, data = Hitters.train)
+summary(lm.fit)
+lm.pred = predict(lm.fit, Hitters.test)
+mean((Hitters.test$Salary - lm.pred)^2)
+
+lm.fit = lm(formula = Salary ~ (Hits*Years)+PutOuts+AtBat+Walks+CRuns, data = Hitters.train)
+summary(lm.fit)
+lm.pred = predict(lm.fit, Hitters.test)
+mean((Hitters.test$Salary - lm.pred)^2)
+
+lm.fit = lm(formula = Salary ~ +poly(Hits)+Years+PutOuts+AtBat+Walks+CRuns, data = Hitters.train)
+summary(lm.fit)
+lm.pred = predict(lm.fit, Hitters.test)
+mean((Hitters.test$Salary - lm.pred)^2)
+```
+
+
+f) Which variable appear to be the most important predictors in the boosted model?
+
+Assuming we are interested in keeping the three most important predictor variables (the highest relative influence), then we would retain: CAtBat (20.80%), CWalks(10.68%) and CRuns(9.21%) 
+
+```{r answer_w9_e10f}
+set.seed(1)
+boost.best = gbm(Salary ~ ., data = Hitters.train, distribution = "gaussian", n.trees = 1000, shrinkage = lambdas[which.min(test.errors)])
+summary(boost.best)
+```
+
+g) Apply bagging to the training set. What is the test set MSE for this approach?
+
+The test MSE has been tested with different values of ntree, ranging from 500 to 2000, as shown below.
+The one generating the smallest test MSE is ntree = 1000, with test MSE = 22.93%
+
+```{r answer_w9_e10g}
+library (randomForest)
+set.seed(1)
+
+#Generate a random forest model on the training data, with a number of trees set to 1500,
+#and the number of variables randonly sampled as candidates (mtry) set to 19 (dim(Hitters.train)[2]-1)
+rf.hitters = randomForest(Salary ~ ., data = Hitters.train, ntree = 500, mtry = dim(Hitters.train)[2]-1)
+#Generate prediction of the model based on the test set
+rf.pred = predict(rf.hitters, Hitters.test)
+#Get the test error rate
+mean((Hitters.test$Salary - rf.pred)^2)
+
+#Generate a random forest model on the training data, with a number of trees set to 1500,
+#and the number of variables randonly sampled as candidates (mtry) set to 19 (dim(Hitters.train)[2]-1)
+rf.hitters = randomForest(Salary ~ ., data = Hitters.train, ntree = 1000, mtry = dim(Hitters.train)[2]-1)
+#Generate prediction of the model based on the test set
+rf.pred = predict(rf.hitters, Hitters.test)
+#Get the test error rate
+mean((Hitters.test$Salary - rf.pred)^2)
+
+#Generate a random forest model on the training data, with a number of trees set to 1500,
+#and the number of variables randonly sampled as candidates (mtry) set to 19 (dim(Hitters.train)[2]-1)
+rf.hitters = randomForest(Salary ~ ., data = Hitters.train, ntree = 1500, mtry = dim(Hitters.train)[2]-1)
+#Generate prediction of the model based on the test set
+rf.pred = predict(rf.hitters, Hitters.test)
+#Get the test error rate
+mean((Hitters.test$Salary - rf.pred)^2)
+
+#Generate a random forest model on the training data, with a number of trees set to 1500,
+#and the number of variables randonly sampled as candidates (mtry) set to 19 (dim(Hitters.train)[2]-1)
+rf.hitters = randomForest(Salary ~ ., data = Hitters.train, ntree = 2000, mtry = dim(Hitters.train)[2]-1)
+#Generate prediction of the model based on the test set
+rf.pred = predict(rf.hitters, Hitters.test)
+#Get the test error rate
+mean((Hitters.test$Salary - rf.pred)^2)
+```
+
+General Conclusion: looking at the results provided by the bagging, Boosting and linear regression, it looks like the Bagging model provides the best prediction power, with a test MSE at 22.93%. 
+
+
+Exercise 11: In this section, Boosting on the Caravan dataset 
+
+a) Create a training set containing 1,000 observations, and a test set containing the res.
+
+```{r answer_w9_e11a}
+library(ISLR)
+data("Caravan")
+
+#As the Bernouilli requires the response to be in {0,1},
+#Then the following piece of code transform the Yes to 1 and No to 0
+Caravan$Purchase = ifelse(Caravan$Purchase == "Yes", 1, 0)
+
+#Create the training set with the first 1000 observations 
+train = 1:1000
+Caravan.train = Caravan[train, ]
+dim(Caravan.train)
+#The test set contains the rest of the data
+Caravan.test = Caravan[-train, ]
+dim(Caravan.test)
+```
+
+b) Fit the Boosting model to the training set with Purchase as the response and the other variables as predictors.
+Use 1000 trees, and a shrinkage value of 0.01. Which predictors appear to be the most important?
+
+Looking at the summary() function results, and assuming we want to retain only the three main predictors (highest level of influence), then the most influential predictors are: PPERSAUT (14.63), MKOOPKLA(9.47) and MOPLHOOG(7.31).
+
+```{r answer_w9_e11b}
+library(gbm)
+set.seed(1)
+#As this is a classification problem, the distribution is set to "bernoulli", for a regression problem it would be set to 'gaussian'
+#The gbm() function fit the purchase variable against all other predictors on the training set Caravan.Train, with a tree number set to 1000
+#and a shrinkage of 0.01
+boost.caravan = gbm(Purchase ~ ., data = Caravan.train, n.trees = 1000, shrinkage = 0.01, distribution = "bernoulli")
+#The summary() function prodives ordered list of most influencial to least influencial predictors.
+summary(boost.caravan)
+```
+
+c) Use the Boosting model to predict the response on the test data.
+Predict that a person will make a purchase if the estimated probability of purchase is greater than 20%.
+Form a confusion matrix.
+What fraction of the people predicted to make a purchase do in fact make one?
+How does this compare with the results obtained from applying KNN or Logisitic Regression to this data set?
+
+Looking at the confusion matrix for the Boosting model, it can be deduced that 'people predicted to make a purchase do in fact make one'
+represents 21.15%
+
+Looking at the confusion matrix for the Logistic Regression model, it can be deduced that 'people predicted to make a purchase do in fact make one' represents 14.22%
+
+```{r answer_w9_e11c}
+set.seed(1)
+#This is the Boosting model to predict the response on the test data
+boost.prob = predict(boost.caravan, Caravan.test, n.trees = 1000, type = "response")
+#Predict that a person will make a purchase if the estimated probability of purchase is greater than 20%.
+boost.pred = ifelse(boost.prob > 0.2, 1, 0)
+#Generate the confusion matrix
+table(Caravan.test$Purchase, boost.pred)
+cat("Boosting purchase prediction: ",  100 * 33/(123+33),"%")
+
+#Now applying a Logistic Regression
+#Model training
+lm.caravan = glm(Purchase ~ ., data = Caravan.train, family = binomial)
+#Model prediction
+lm.prob = predict(lm.caravan, Caravan.test, type = "response")
+lm.pred = ifelse(lm.prob > 0.2, 1, 0)
+#Generate the confusion matrix
+table(Caravan.test$Purchase, lm.pred)
+cat("Boosting purchase prediction: ",  100 * 58/(350+58),"%")
+```
+
+Week 10: Build a Ridge and a Lasso model for the problem considered in Excercise 10 from Chapter 8 of Tibshirani's ISLR book, with particular values of the models' parameters chosen by you. 
+Then tune/optimise the models with cross validation. Compare your optimised Ridge and Lasso models with the models you developed in point (e) of the above mentioned exercise, and choose the best one justifying your choice. 
+
+PART A - THE RIDGE REGRESSION MODEL
+
+Ridge model creation & computation of the MSEs based on a number of manually selected lambdas.
+The results show that the test MSE of 36.3% is obtained with a lambda = 0.01.  
+
+```{r answer_w10_ridge_p1}
+library(glmnet)
+library(ISLR)
+cat ("Nb of predictors:", length(Hitters)-1)
+set.seed(1)
+
+#The model() function is used to create x. It produces two things:
+#1) a matrix of corresponding 19 predictors
+#2) it transforms any quantitative variables into dummy variables (this is important as glmnet can only take numerical variables) 
+x = model.matrix(Salary ~ ., data = Hitters)[,-1]
+#This is represents the log(Salary), as it was generated above in the Exercise 10 a)
+y = Hitters$Salary
+
+#Define training and test set in line with exercise 10 
+#The first 200 rows belong to the training dataset, the rest to the test set
+train = sample(1:nrow(x),200)
+test = (-train)
+y.test = y[test]
+
+#The gmnlet() function takes an alpha argument (alpha = 0: ridge regression model, alpha = 1:  lasso regression model)
+#The gmnlet() function set by default to standardize=TRUE which ensures all variables are on the same scale.
+#The gmnlet() function performs ridge regression for an automatically selected range of lambda values. However, in this
+#case the lambda range has been selected between 10^10 and 10^-2. This range covers the full range of scenarios
+#from the null model containing only the intercept, to the least square fit.
+#The ridge regression is performed on the training set
+grid = 10^seq(10,-2,length=100)
+ridge.mod = glmnet(x[train,],y[train],alpha=0,lambda = grid)
+#Associated with each value of lambda, there is a vector of ridge regression coefficients, stored in a matrix accessed by the coef() mehod. In this case, a 20X100 matrix, 20 rows (one for each predictor and the intercept) and 100 columns (one for each value of lambda) 
+dim(coef(ridge.mod))
+
+cat("Print MSE for a number of selected lambdas")
+generate_ridge_mse_from_selected_lambda = function(index) {
+  lambda = ridge.mod$lambda[index]
+  ridge.pred = predict(ridge.mod,s=lambda, newx=x[test,])
+  mse = mean((ridge.pred-y.test)^2)
+  cat("Ridge MSE: ", 100*mse,"% for lambda = ", lambda )
+}
+
+generate_ridge_mse_from_selected_lambda(1)
+generate_ridge_mse_from_selected_lambda(25)
+generate_ridge_mse_from_selected_lambda(50)
+generate_ridge_mse_from_selected_lambda(75)
+generate_ridge_mse_from_selected_lambda(100)
+```
+
+Cross-validation best lambda selection to optimise the model
+The results that the best selected lambda by cross-validation is 0.2461. This is the lambda value that minimise the MSE. 
+This is observable on the graph as well.
+
+```{r answer_w10_ridge_p3}
+#By default the cv.glmnet() function performs a ten-fold cross-validation
+set.seed(1)
+cv.out = cv.glmnet(x[train,], y[train], alpha=0)
+plot(cv.out)
+bestlambda=cv.out$lambda.min
+cat ("Best selected lambda by cross-validation: ", bestlambda)
+```
+
+The test MSE can be generated With the best selected lambda. 
+The min MSE is 34.40% for the best lambda = 0.2461 in a Ridge Regression setting.
+
+```{r answer_w10_ridge_p4}
+set.seed(1)
+ridge.pred = predict(ridge.mod,s=bestlambda, newx=x[test,])
+mean((ridge.pred-y.test)^2)
+```
+
+PART B - THE LASSO REGRESSION MODEL
+
+The below section builds the lasso regression model
+
+Lasso model creation & computation of the MSEs based on a number of manually selected lambdas.
+The results show that the test MSE of 36.15% is obtained with a lambda = 0.01.  
+
+```{r answer_w10_lasso_p1}
+set.seed(1)
+#The gmnlet() function takes an alpha argument (alpha = 0: ridge regression model, alpha = 1:  lasso regression model)
+#The gmnlet() function set by default standardize=TRUE which ensure all variables are on the same scale.
+#The gmnlet() function performs ridge regression for an automatically selected range of lambda values. However, in this
+#case the lambda range has been selected between 10^10 and 10^-2. This range covers the full range of scenarios from the null model containing only the intercept, to the least square fit.
+#The ridge regression is performed on the training set
+grid = 10^seq(10,-2,length=100)
+lasso.mod = glmnet(x[train,],y[train],alpha=1,lambda = grid)
+#Associated with each value of lambda, there is a vector of ridge regression coefficients, stored in a matrix accessed by the coef() mehod. In this case, a 20X100 matrix, 20 rows (one for each predictor and the intercept) and 100 columns (one for each value of lambda) 
+dim(coef(lasso.mod))
+
+cat("Print MSE for a number of selected lambdas")
+generate_lasso_mse_from_selected_lambda = function(index) {
+  lambda = lasso.mod$lambda[index]
+  lasso.pred = predict(lasso.mod,s=lambda, newx=x[test,])
+  mse = mean((lasso.pred-y.test)^2)
+  cat("Lasso MSE : ", 100*mse,"% for lambda = ", lambda )
+}
+
+generate_lasso_mse_from_selected_lambda(1)
+generate_lasso_mse_from_selected_lambda(25)
+generate_lasso_mse_from_selected_lambda(50)
+generate_lasso_mse_from_selected_lambda(75)
+generate_lasso_mse_from_selected_lambda(100)
+```
+
+Cross-validation best lambda selection to optimise the model
+The results that the best selected lambda by cross-validation is 0.02349477. This is the lambda value that minimise the MSE.
+
+```{r answer_w10_lasso_p3}
+#The variables/vectors train, test and y.test are defined in PART A
+#By default the cv.glmnet() function performs a ten-fold cross-validation
+set.seed(1)
+
+#Generate the lasso regression model (alpha=1)
+cv.out_lasso = cv.glmnet(x[train,], y[train], alpha=1)
+plot(cv.out_lasso)
+bestlambda_lasso=cv.out_lasso$lambda.min
+cat ("Best selected lambda by cross-validation: ", bestlambda_lasso)
+```
+
+The test MSE can be generated with the best selected lambda 
+The MSE is 35.61% for a lambda = 0.2349 in a Lasso setting
+```{r answer_w10_lasso_p4}
+set.seed(1)
+lasso.pred = predict(lasso.mod,s=bestlambda_lasso, newx=x[test,])
+mean((lasso.pred-y.test)^2)
+```
+
+Conclusion: 
+
+Comparing all the models developed here and in exercise 10, we obtained the following test MSE performance ranking:
+Linear Regression (48.57%), Lasso model (CV test MSE = 35.61%), Ridge model (CV test MSE = 34.40%), Boosting (25.06%) and Bagging (22.93%) 
+
+It looks like the Bagging model is the winner with a test MSE at 22.93%.</p>
+
+As mentioned before, this error rate is still large. Predicting correctly the salary level, on average at 77.1% based on all predictors might be acceptable for this use case. However, this indicates that important factors are not taken into account. It would be interesting to add more predictors that might have an impact on the Salary regressor, and establish whether we can improve the model.</p>
+
+## File Location:
+```{r set}
+setwd("C:\\Users\\Fred\\Desktop\\Studies\\MSc-DataScience\\Statistical Learning\\Assignments\\Assignment1")
+```
+
+#Un-comment below line to generate html
+render("Assignment_MLSDM_v6_Frederic_Marechal_md.Rmd")
