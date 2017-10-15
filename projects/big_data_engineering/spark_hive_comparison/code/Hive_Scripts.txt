@@ -1,0 +1,209 @@
+#************************************************
+#Step 1 - Data Defintion Langiage (DDL)
+#************************************************
+#Create the airport_flights database
+CREATE DATABASE airport_flights LOCATION '/user/fmare001/airport_flights';
+
+#Show the list of existing databases
+SHOW DATABASES;
+
+#Create the ontime table within the airport_flights database
+CREATE TABLE airport_flights.ontime(
+  Year INT,
+  Month INT,
+  DayofMonth INT,
+  DayOfWeek INT,
+  DepTime  INT,
+  CRSDepTime INT,
+  ArrTime INT,
+  CRSArrTime INT,
+  UniqueCarrier VARCHAR(5),
+  FlightNum INT,
+  TailNum VARCHAR(8),
+  ActualElapsedTime INT,
+  CRSElapsedTime INT,
+  AirTime INT,
+  ArrDelay INT,
+  DepDelay INT,
+  Origin VARCHAR(3),
+  Dest VARCHAR(3),
+  Distance INT,
+  TaxiIn INT,
+  TaxiOut INT,
+  Cancelled INT,
+  CancellationCode VARCHAR(1),
+  Diverted VARCHAR(1),
+  CarrierDelay INT,
+  WeatherDelay INT,
+  NASDelay INT,
+  SecurityDelay INT,
+  LateAircraftDelay INT
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TextFile;
+
+#Create the aiports table within the airport_flights database
+CREATE TABLE airport_flights.airports(
+  Iata VARCHAR(3),
+  Airport VARCHAR(50),
+  City VARCHAR(50),
+  State VARCHAR(2),
+  Country  VARCHAR(50),
+  lat FLOAT,
+  long FLOAT
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TextFile;
+
+#Create the carriers table within the airport_flights database
+CREATE TABLE airport_flights.carriers(
+  Code VARCHAR(10),
+  Description VARCHAR(100)
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TextFile;
+
+#Create the plane_data table within the airport_flights database
+CREATE TABLE airport_flights.plane_data(
+  Tailnum VARCHAR(10),
+  Type VARCHAR(50),
+  Manufacturer VARCHAR(100),
+  Issue_Date VARCHAR(10),
+  Model VARCHAR(50),
+  Status VARCHAR(20),
+  Aircraft_Type VARCHAR(50),
+  Engine_Type VARCHAR(100),
+  Year INT
+) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TextFile;
+
+#Check tables have been created
+SHOW TABLES;
+
+#************************************************
+#Step 2- Load the data into the different tables 
+#************************************************
+#Delete any potentially existing data 
+TRUNCATE TABLE airport_flights.ontime;
+#Load the new data
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2008.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2007.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2006.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2005.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2004.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2003.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2002.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2001.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/2000.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1999.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1998.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1997.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1996.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1995.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1994.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1993.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1992.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1991.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1990.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1989.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1988.csv' INTO TABLE airport_flights.ontime;
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/1987.csv' INTO TABLE airport_flights.ontime;
+
+#Delete any potentially existing data 
+TRUNCATE TABLE airport_flights.plane_data;
+#Load the new data
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/airports.csv' INTO TABLE airport_flights.airports;
+
+#Delete any potentially existing data 
+TRUNCATE TABLE airport_flights.carriers;
+#Load the new data
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/carriers.csv'  INTO TABLE airport_flights.carriers;
+
+#Delete any potentially existing data 
+TRUNCATE TABLE airport_flights.plane_data;
+#Load the new data
+LOAD DATA LOCAL INPATH '/home/fmare001/bigdata/plane-data.csv' INTO TABLE airport_flights.plane_data;
+
+#************************************************
+#Step 2- Data Manipulation Language (DML) 
+#************************************************
+
+#Force result query column name display 
+SET hive.cli.print.header=TRUE;
+ 
+#QUERY 1 - What route most suffer from delays (Top 10 / broken down bby year)
+#Create a view to encapsulate complexity
+DROP VIEW airport_flights.ontime_cancelled_view;
+CREATE VIEW airport_flights.ontime_cancelled_view AS   
+SELECT Year, Origin, Dest, SUM(Cancelled) AS Sum_Cancelled 
+FROM airport_flights.ontime 
+GROUP BY Year, Origin, Dest 
+ORDER BY Sum_Cancelled DESC;  
+#Define the report query
+SELECT cancelled.Year, cancelled.Origin, apOrigin.Airport, cancelled.Dest, apDest.Airport, cancelled.Sum_Cancelled 
+FROM airport_flights.ontime_cancelled_view AS cancelled
+LEFT JOIN airport_flights.airports AS apOrigin  ON cancelled.Origin = apOrigin.Iata 
+LEFT JOIN  airport_flights.airports AS apDest ON  cancelled.Dest = apDest.Iata
+LIMIT 10;
+
+#QUERY 2 -  What destinations most often suffer delays (Top 10 / broken down bby year)?
+#Create a view to encapsulate complexity
+DROP VIEW airport_flights.ontime_dep_delay_view;
+CREATE VIEW airport_flights.ontime_dep_delay_view AS   
+SELECT Year, Dest, SUM(DepDelay) AS Sum_DepDelay
+FROM airport_flights.ontime GROUP BY Year, Dest 
+ORDER BY Sum_DepDelay DESC;  
+#Define the report query
+SELECT dep_delay.Year, dep_delay.Dest, ap.Airport,dep_delay.Sum_DepDelay  
+FROM airport_flights.ontime_dep_delay_view AS dep_delay
+LEFT JOIN airport_flights.airports AS ap  ON dep_delay.dest = ap.IATA
+LIMIT 10;
+
+#QUERY 3 -  What are the airlines that suffer from the longest delays (Top 10 / broken down bby year)?
+#Create a view to encapsulate complexity
+DROP VIEW airport_flights.ontime_dep_delay_by_carrier_view;
+CREATE VIEW airport_flights.ontime_dep_delay_by_carrier_view AS   
+SELECT Year, UniqueCarrier, SUM(DepDelay) AS Sum_DepDelay
+FROM airport_flights.ontime GROUP BY Year, UniqueCarrier 
+ORDER BY Sum_DepDelay, UniqueCarrier DESC; 
+#Define the report query
+SELECT dep_delay_by_carrier.Year, dep_delay_by_carrier.UniqueCarrier, ca.Description, dep_delay_by_carrier.Sum_DepDelay  
+FROM airport_flights.ontime_dep_delay_by_carrier_view AS dep_delay_by_carrier
+LEFT JOIN airport_flights.carriers AS ca  ON dep_delay_by_carrier.UniqueCarrier = ca.Code
+WHERE Year IS NOT NULL;
+LIMIT 10;
+
+#QUERY 4 -  When is  best i)year, ii) month of year, ii) day of month or iii) day of week to fly to minimise delays (Top 5)?
+#Define multiple report queries
+SELECT Year, SUM(DepDelay) AS Sum_DepDelay 
+FROM airport_flights.ontime
+GROUP BY Year 
+HAVING Year IS NOT NULL
+ORDER BY Sum_DepDelay ASC
+LIMIT 5;
+ 
+SELECT Month, SUM(DepDelay) AS Sum_DepDelay 
+FROM airport_flights.ontime
+GROUP BY Month 
+HAVING Month IS NOT NULL
+ORDER BY Sum_DepDelay ASC 
+LIMIT 5; 
+
+SELECT DayOfMonth, SUM(DepDelay) AS Sum_DepDelay 
+FROM airport_flights.ontime
+GROUP BY DayOfMonth 
+HAVING DayOfMonth IS NOT NULL
+ORDER BY Sum_DepDelay ASC
+LIMIT 5; 
+
+SELECT DayOfWeek, SUM(DepDelay) AS Sum_DepDelay 
+FROM airport_flights.ontime
+GROUP BY DayOfWeek 
+HAVING DayOfWeek IS NOT NULL
+ORDER BY Sum_DepDelay ASC
+LIMIT 5; 
+
+#QUERY 5 -  Do older planes suffer more delays?
+#Define the report query
+SELECT pd.Year, SUM(ot.DepDelay) AS Sum_DepDelay 
+FROM airport_flights.ontime ot LEFT JOIN airport_flights.plane_data AS pd ON pd.Tailnum = ot.Tailnum 
+GROUP BY pd.Year
+HAVING pd.Year IS NOT NULL
+ORDER BY Sum_DepDelay DESC
+LIMIT 20; 
+
+#Reset result query column name display 
+SET hive.cli.print.header=FALSE; 

@@ -1,5 +1,22 @@
 var big_data_engineering_projects =
     [
+        [ 	"Programming" ,
+            "Airlines on-time performance. <p></p> A comparative study of Hadoop solutions.",
+            "Implementation and comparison of a Hive and a Spark solution to answer airport delays and cancellations related questions.",
+            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/k_means_clustering/docs/airlines_ontime_performance_summary.pdf" +
+            "|Report|/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/k_means_clustering/docs/airlines_ontime_performance.pdf",
+            "Spark/Hive",
+            "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/spark_hive_comparison/k_means_clustering/code",
+            "Apr-2017",
+            "FR"],
+        [ 	"Programming",
+            "K-means clustering with MapReduce." ,
+            "Implementation of a K-means clustering algorithm into a series of Hadoop MapReduce tasks." ,
+            "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/map_reduce/k_means_clustering/docs/kmeans_clustering_with_mapreduce.pdf" ,
+            "Python" ,
+            "/ProjectPortfolio_2.0/tree/master/projects/big_data_engineering/map_reduce/k_means_clustering/docs/code",
+            "Feb-2017",
+            "EN"],
         [ 	"Programming",
             "Telecom Companies Report in Spark SQL" ,
             "Detailed report explaining the design/build and implementation of a reporting solution to find the top 10 customers facing frequent call drops." ,
