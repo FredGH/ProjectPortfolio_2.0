@@ -2,7 +2,7 @@ var post_grad_thesis =
     [
         [ 	"MSc Data Science Thesis" ,
             "A constituent sentiment approach to stock market trend prediction" ,
-            "The aims are to establish the sentiment prediction power on both the XLE index's trend and volatility " ,
+            "The aim is to establish the sentiment prediction power on both the XLE index's trend and volatility " ,
             "TBA" +
             "" ,
             "Python/R" ,
