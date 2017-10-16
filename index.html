@@ -609,8 +609,8 @@
         ReactDOM.render(
             <ModelView  title = "Business Cases"
                     modal_id = "kaggleChallengesModal"
-                    summary_text =  "This section lists the proposed solutions to Kaggle Challenges."
-                    dependecy_text =  "For the code to run successfully, the following software dependencies need to be present in your environment; the R/RStudio/Caret libs and all required R ML dependencies listed in the individual projects."
+                    summary_text =  "This section lists the proposed solutions to a small list of Kaggle Challenges."
+                    dependecy_text = ""  //"For the code to run successfully, the following software dependencies need to be present in your environment; the R/RStudio/Caret libs and all required R ML dependencies listed in the individual projects."
                     table_id = "kaggleChallengesDataTable"
                     table_jqery_name = '#kaggleChallengesDataTable'
                     project_data = {kaggle_challenges_projects} />,
@@ -620,8 +620,8 @@
         ReactDOM.render(
             <ModelView  title = "machine learning"
                         modal_id = "machineLearningModal"
-                        summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements as well as the well documented resolution. It also contains the corresponding code solution that you can run locally on your box."
-                        dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'Python 2.7' and the latest versions of 'Jupyter', 'Scikit-Learn', 'Seaborn', 'Numpy', 'Pandas', 'Feedparser', 'Pygame','Eclipse Luna'. The Deep Learning project requires an installation of TensorFlow."
+                        summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                        dependecy_text = "" //"For the code to run successfully, the following software dependencies need to be present on your environement, namely 'Python 2.7' and the latest versions of 'Jupyter', 'Scikit-Learn', 'Seaborn', 'Numpy', 'Pandas', 'Feedparser', 'Pygame','Eclipse Luna'. The Deep Learning project requires an installation of TensorFlow."
                         table_id = "machineLearningDataTable"
                         table_jqery_name = '#machineLearningDataTable'
                         project_data = {machine_learning_projects} />,
@@ -631,8 +631,8 @@
         ReactDOM.render(
             <ModelView  title = "natural language processing"
                         modal_id = "naturalLanguageProcessingModal"
-                        summary_text =  "TBA"
-                        dependecy_text =  "TBA"
+                        summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                        dependecy_text =  "" // "TBA"
                         table_id = "naturalLanguageProcessingTable"
                         table_jqery_name = '#naturalLanguageProcessingTable'
                         project_data = {natural_language_processing_projects} />,
@@ -642,8 +642,8 @@
         ReactDOM.render(
             <ModelView  title = "artificial intelligence"
                         modal_id = "artificialIntelligenceModal"
-                        summary_text =  "TBA"
-                        dependecy_text =  "TBA"
+                        summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                        dependecy_text = ""// "TBA"
                         table_id = "artificialIntelligenceTable"
                         table_jqery_name = '#artificialIntelligenceTable'
                         project_data = {artificial_intelligence_projects} />,
@@ -653,8 +653,8 @@
         ReactDOM.render(
             <ModelView  title = "neural networks"
                         modal_id = "neuralNetworksModal"
-                        summary_text =  "TBA"
-                        dependecy_text =  "TBA"
+                        summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                        dependecy_text = ""// "TBA"
                         table_id = "neuralnetworksTable"
                         table_jqery_name = '#neuralnetworksTable'
                         project_data = {neural_networks_projects} />,
@@ -664,8 +664,8 @@
         ReactDOM.render(
             <ModelView  title = "big data engineering"
                         modal_id = "bigDataEngineeringModal"
-                        summary_text =  "Each project listed in the table below contains a '.pdf' that defines the problem domain requirements. It also contains the corresponding code solutions."
-                        dependecy_text =  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'JDK 1.7.0_6', 'Eclipse Luna', 'Hadoop 2.2.0', 'Hive 0.13.1', 'Spark 1.5.2', 'Scala 2.10.4', 'Sbt 0.13. 8'."
+                        summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                        dependecy_text = "" //  "For the code to run successfully, the following software dependencies need to be present on your environement, namely 'JDK 1.7.0_6', 'Eclipse Luna', 'Hadoop 2.2.0', 'Hive 0.13.1', 'Spark 1.5.2', 'Scala 2.10.4', 'Sbt 0.13. 8'."
                         table_id = "bigBataEngneeringDataTable"
                         table_jqery_name = '#bigBataEngneeringDataTable'
                         project_data = {big_data_engineering_projects} />,
@@ -675,8 +675,8 @@
         ReactDOM.render(
                 <ModelView  title = "NoSql"
                 modal_id = "noSqlModal"
-                summary_text =  "TBA"
-                dependecy_text =  "TBA"
+                summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                dependecy_text =  "" //"TBA"
                 table_id = "noSqlDataTable"
                 table_jqery_name = '#noSqlDataTable'
                 project_data = {no_sql_projects} />,
@@ -686,8 +686,8 @@
         ReactDOM.render(
                 <ModelView  title = "Data Wranggling"
                 modal_id = "dataWrangglingModal"
-                summary_text =  "TBA"
-                dependecy_text =  "TBA"
+                summary_text =  "Each project listed in the table below defines the problem domain requirements and the proposed solution. The later contains a detailed report and the corresponding code."
+                dependecy_text =  "" //"TBA"
                 table_id = "dataWrangglingDataTable"
                 table_jqery_name = '#dataWrangglingDataTable'
                 project_data = {data_wranggling_projects} />,
@@ -709,7 +709,7 @@
         ReactDOM.render(
             <ModelView  title = "post graduate thesis"
                         modal_id = "postGradThesisModal"
-                        summary_text =  ""
+                            summary_text =  ""
                         dependecy_text =  ""
                         table_id = "postGradThesisDataTable"
                         table_jqery_name = '#postGradThesisDataTable'
