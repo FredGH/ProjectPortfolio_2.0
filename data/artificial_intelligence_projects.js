@@ -14,7 +14,7 @@ var artificial_intelligence_projects =
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/basic/docs/inference_engine_fwd_chaining.pdf" ,
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/basic/code" ,
-            "Dec-2016",
+            "Dec-2017",
             "EN"],
         [ 	"Markov Decision Process" ,
             "Self-driving smartcab" ,
