@@ -1,9 +1,9 @@
 var artificial_intelligence_projects =
     [
-        [ 	"Forward Chaining Strategy)" ,
+        [ 	"Forward Chaining Strategy" ,
             "Creation of an Inference Engine" ,
             "Implementation an inference engine for a rule-based system using a propositional representation language that operates according to the forward chaining strategy." ,
-            "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/inference_engine_fwd_chaining.pdf" ,
+            "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/docs/inference_engine_fwd_chaining.pdf" ,
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/code" ,
             "Dec-2016",
