@@ -7,7 +7,8 @@ var kaggle_challenges_projects =
             "R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/santander_customer_satisfaction_competition/code" ,
             "Sep-2017",
-            "EN"],
+            "EN",
+            2],
         [ 	"Supervised Classification Machine Learning" ,
             "Orange Customer Satisfaction Prediction" ,
             "Help Orange to predict the propensity of customers to switch provider (churn)/buy new products (appetency)  or upgrade (up-selling). <p></p> http://www.kdd.org/kdd-cup/view/kdd-cup-2009" ,
@@ -16,5 +17,6 @@ var kaggle_challenges_projects =
             "R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/kaggle_challenges/orange_customer_satisfaction_competition/code" ,
             "May-2017",
-            "FR"]
+            "FR",
+            1]
     ];

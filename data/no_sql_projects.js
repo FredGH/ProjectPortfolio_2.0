@@ -7,7 +7,8 @@ var no_sql_projects =
             "CQL/Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/no_sql/cassandra_java/code",
             "Sep-2016",
-            "EN"],
+            "EN",
+            2],
         [ 	"Notes",
             "High Level Cassandra Concepts" ,
             "Summarise some important concepts relating to the Cassandra database" ,
@@ -15,5 +16,6 @@ var no_sql_projects =
             "" ,
             "",
             "Sep-2016",
-            "EN"]
+            "EN",
+            1]
     ];

@@ -7,5 +7,6 @@ var neural_networks_projects =
             "Tensorflow/Python" ,
             "/ProjectPortfolio_2.0/tree/master/projects/neural_networks/deep_learning/live_camera_app/code" ,
             "Sep-2016",
-            "EN"]
+            "EN",
+            1]
     ];

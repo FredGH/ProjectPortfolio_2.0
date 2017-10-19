@@ -7,7 +7,8 @@ var artificial_intelligence_projects =
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/unification/code" ,
             "Apr-2017",
-            "EN"],
+            "EN",
+            3],
         [ 	"Forward Chaining Strategy" ,
             "Creation of an Inference Engine" ,
             "Implementation an inference engine for a rule-based system  that operates according to the forward chaining strategy (first-breath search)." ,
@@ -15,7 +16,8 @@ var artificial_intelligence_projects =
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/inference_engine_fwd_chaining/basic/code" ,
             "Jan-2017",
-            "EN"],
+            "EN",
+            2],
         [ 	"Markov Decision Process" ,
             "Self-driving smartcab" ,
             "Use reinforcement learning to train a smartcab how to drive." ,
@@ -23,5 +25,6 @@ var artificial_intelligence_projects =
             "Python" ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/markov_decision_processes/train_a_smart_cab_to_drive/code" ,
             "Jun-2016",
-            "EN"]
+            "EN",
+            1]
     ];
