@@ -14,7 +14,7 @@ var data_wranggling_projects =
             "Perform data wrangling on an Airbnb dataset" ,
             "/ProjectPortfolio_2.0/tree/master/projects/data_wrangling/python/airbnb/docs/requirements.pdf" ,
             "Python" ,
-            "/ProjectPortfolio_2.0/tree/master/projects/data_wrangling/python/code",
+            "/ProjectPortfolio_2.0/tree/master/projects/data_wrangling/python/airbnb/code",
             "Nov-2016",
             "EN",
             2],
