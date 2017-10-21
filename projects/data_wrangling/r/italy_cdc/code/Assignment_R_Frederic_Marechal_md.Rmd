@@ -1,0 +1,266 @@
+---
+title: "Analysis of the Call Details Records from  telecomitalia"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Disclaimer:
+The data for this assignment comes "from BigDataChallenge contest" (http://www.telecomitalia.com/tit/en/bigdatachallenge.html), specifically https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/EGZHFV  
+
+## Software Dependencies:
+The code is compatible with:
+R - Version 3.3.2
+R Studio - Version 0.99.903  
+
+## Library Dependencies:
+The user needs to install the following packages (if not already present):
+* install.packages('knitr')
+* install.packages('rmarkdown')
+* install.packages('plyr')
+
+## File Location:
+* The user needs to save the "sms-call-internet-mi-2013-1-01.csv" file in the directory of his/her choice:
+e.g. "C:\\Users\\Fred\\Desktop\\Studies\\MSc-DataScience\\DataProgramming\\R\\Assignment".
+* Then s/he needs to set the setwd (the markdown working directory to the same directory )
+```{r setwd}
+setwd("C:\\Users\\Fred\\Desktop\\Studies\\MSc-DataScience\\DataProgramming\\R\\Assignment")
+```
+
+## Loading the Dependent Libraries:
+```{r lib_loading}
+library(knitr)
+library(rmarkdown)
+library(plyr)
+```
+
+## Part A
+
+Question a):  Write the R code to return the first 10 rows in the dataset.
+
+* Looking at the data in the csv file, the data is comma deliminated. 
+* Furtermore, the comma-delimited fields do not use decimal points as a commas.
+* Therefore there is no need to use read.csv2, read.csv is sufficient
+* In the csv() function call, I pass respectively: i) the file path location and ii) the fact that I want to retrieve the header (header=TRUE).
+All the other default parameters are unchanged as they fit with the requirement.
+
+```{r df}
+df <- read.csv("sms-call-internet-mi-2013-11-01.csv", header = TRUE)
+df_original = df
+kable (df[1:10,], caption = "The first 10 rows of data are shown below:" )
+```
+
+Question b) Determine how many unique country codes are contained in the data.
+
+* The unique() function is used to provide unique records of present in the countrycode column. 
+* The nrow() function returns the number of rows  present in the dataset passed as a parameter.
+``` {r count_country_code1}
+count_country_code <- NROW(unique(df$countrycode))
+cat("The number of unique country code (when 0 is included) is: ", count_country_code)
+```
+
+* The user may consider to exluded "0", as this is not valid country code, in that case:
+``` {r count_country_code2}
+cat("The number of unique country code (when 0 is excluded) is: ", count_country_code-1)
+```
+
+Question c) Plot the distribution of country codes in the data. 
+The distribution plot is the number of rows with a given country code (y-axis) vs country code (x-axis). 
+Note, a country code of 0 implies there is no country code either due to being unknown or privacy restrictions.
+All of the information need to be visualised in the same figure.
+
+* The count() function is part of the 'plyr' package. It takes the dataframe (df),
+and the column to count ('countrycode') as a second parameter
+* The result is stored in the varaible called country_dist
+``` {r country_dist}
+country_dist <- count(df, 'countrycode')
+``` 
+* Display the result
+``` {r print_country_dist}
+kable (country_dist, caption = "The distribution of country codes" )
+```
+
+* 'Attach' means that the database is searched by R when evaluating a variable, 
+so objects in the database can be accessed by simply giving their names.
+``` {r attach_country_dist}
+attach(country_dist)
+```
+
+* Force the graphs to show non scientific data on the x-axis
+``` {r options_scipen}
+options(scipen=10000) 
+```
+
+* This plot the country code vs the country code count using log scales
+* The red line shows the fitted normal distribution curve
+``` {r plot_countrycode}
+plot(countrycode,
+     log(freq),
+     col="blue",
+     main="Scatter plot of the distribution of country codes (log scale)", 
+     xlab="Country Code", 
+     ylab="Count (log scale)")
+# Extra: Add a Normal Curve (Thanks to Peter Dalgaard)
+xfit<-seq(min(freq),max(freq),length=40) 
+yfit<-dnorm(xfit,mean=mean(freq),sd=sd(freq)) 
+yfit<- yfit*diff(h$mids[1:2])*length(freq) 
+lines(xfit, yfit, col="red", lwd=1)
+```
+
+* This is the same representation as above but using a histogram bins this time. 
+* The red line shows the fitted normal distribution curve
+``` {r plot_hist}
+h <- hist(countrycode,
+          log(freq),
+          main="Histogram of the distribution of country codes", 
+          xlab="Country Code", 
+          ylab="Count (log scale)",
+          border="blue", 
+          col="green", 
+          xlim=c(0,100000), 
+          las=1, 
+          breaks=count_country_code, # bin of 246
+          prob =  FALSE)
+
+# Extra: Add a Normal Curve (Thanks to Peter Dalgaard)
+xfit<-seq(min(freq),max(freq),length=40) 
+yfit<-dnorm(xfit,mean=mean(freq),sd=sd(freq)) 
+yfit<- yfit*diff(h$mids[1:2])*length(freq) 
+lines(xfit, yfit, col="red", lwd=1)
+```
+
+* From observation, it looks like the first graph is clearer compared to the second one. I have added the second one to demonstrate skills in R.
+
+Question d) Add a new column to your data called "totalsms" that contains
+the sum of smsin and smsout. Similarly, add a new column to your data
+called "totalcalls" that contains the sum of callin and callout.
+
+* First ensure the smsin.smsout, callin and callout columns with NA records are set to 0  
+``` {r reset_na_to_zero}
+df$smsin[is.na(df$smsin)] <- 0
+df$smsout[is.na(df$smsout)] <- 0
+df$callin[is.na(df$callin)] <- 0
+df$callout[is.na(df$callout)] <- 0
+df$internet[is.na(df$internet)] <- 0
+```
+
+* Then create of two new columns as follows:
+``` {r totals}
+df$totalsms <- df$smsin + df$smsout
+df$totalcalls <- df$callin + df$callout
+#Finally, check the new col has been added and that the result is as expected for the fist 10 rows
+df[1:10,]
+```
+
+Question e) Plot the total of the "totalsms" column over the country code
+
+* Group by the column 'countrycode' and sum the column 'totalcalls'
+
+``` {r groupby_plot}
+agg_by_country_code <- aggregate(df$totalsms, by=list(Category=df$countrycode), FUN=sum)
+agg_by_country_code
+
+plot(agg_by_country_code$Category,
+     log(agg_by_country_code$x),
+     col="blue",
+     xlab="Country Code",
+     ylab="totalSms (log scale)",
+     main="Totalsms calls broken down by country Code" )
+```
+
+## Part B
+
+Question f) Make a heatmap. The heat map should visualize the mean of
+the smsin, smsout, callin, callout, and internet data columns computed
+over the hour of the day.
+
+* First add the 'hour' column and convert to a numeric.
+``` {r df_original$the_hour}
+df_original$the_hour <- as.numeric(format(as.POSIXct(df_original$datetime, format="%Y-%m-%d %H:%M"), format="%H"))
+``` 
+
+
+* Aggregate (i.e. group by) the mean of the column listed in the cbind() function, by the column 'hour' in the df dataset.
+* The RowMeans() function is set with the dims = 1 and na.rm=TRUE. 
+  It means respectively that the columns will be averaged and the NA rows are not taken into account
+* The sapply() function in this case converts all column types into numeric types, as required by the aggregate function
+``` {r agg_by_hour}
+#agg_by_hour<- aggregate( cbind(smsin,smsout, callin, callout, internet)~the_hour,
+#                         rowMeans(sapply(df_original, as.numeric), dims=1, na.rm = TRUE) )
+
+#display the first 10 rows result of the aggregated dataset
+agg_by_hour[1:10,]
+```
+
+* create a heat map based on the agg_by_hour with thefollowing parameters.
+``` {r df_heatmap}
+df_heatmap <- heatmap( data.matrix(agg_by_hour[,2:NCOL(agg_by_hour)]),  # display from col 2 to the end
+                        Rowv=NA, # to suppress any row dendrogram (and reordering
+                        Colv=NA, # to suppress any col dendrogram (and reordering
+                        col= cm.colors(256), #cyan (colder) to purple (hotter) heatmap 
+                        scale="column", # scale by the col (i.e. vertical ratio) not by the row (i.e. orizontal ratio)
+                        margins=c(5,10), #margins for column and row names
+                        cexRow=0.7, # ratio size  of the row label
+                        cexCol=0.7, # ratiosize of the col label
+                        xlab= "Average",
+                        ylab= "Hour",
+                        main="Heat map of smsin, smsout, callin, callout, and internet average per hour")
+```
+
+## Part C - Missing data // Run some analysis on the missing data.
+
+Question g) Which CellID has the most amount of missing data for the internet column?
+
+* First create a new col that sets the internet na records per row (it will be set to 0 or 1).
+* Initialise it to 0
+``` {r internet_is_na}
+df_original$internet_is_na <- 0
+```
+
+* If the internet column is set to NA, then set the internet_is_na to 1
+``` {r internet_is_na1}
+df_original$internet_is_na[is.na(df_original$internet)] <- 1
+```
+
+* display the result to 10 first rows
+``` {r df_original[1:10,]}
+df_original[1:10,]
+```
+
+* Group the df_original by CellId and sum over the internet_is_na column
+``` {r internet_is_na_grouped}
+internet_is_na_grouped <- aggregate( cbind(internet_is_na) ~ CellID, df_original, sum )
+internet_is_na_grouped
+```
+
+* Find the highest internet_is_na sum and dislpay it
+``` {r the_max}
+the_max <- max (internet_is_na_grouped$internet_is_na)
+cat ("The highest CellId na count is: ", the_max);
+```
+
+* Deduce the CellID by filtering the grouped data 'internet_is_na' column for the found above maximum
+``` {r the_result_row}
+the_result_row <- internet_is_na_grouped[internet_is_na_grouped$internet_is_na == the_max,]
+#display the result
+cat ("The CellID that has the most amount of missing data for the internet column is: ", the_result_row$CellID);
+```
+
+Question h) Impute the internet data column by replacing the missing values with the mean of internet column.
+
+* First calculate the mean of the internet column, only taking into account rows with non na values
+``` {r non_na_rows}
+internet_non_na_rows <-  df_original[df_original$internet_is_na == 0,] 
+mean_internet_non_na_rows <- mean(internet_non_na_rows$internet) 
+```
+* Now reset the internet column where rows is set to na to the mean internet rows as calculated previously
+``` {r df_original[1:100,]}
+df_original[df_original$internet_is_na == 1,]$internet <- mean_internet_non_na_rows
+#Display the first 100 rows
+df_original[1:100,]
+```
+
+#Un-comment below line to generate html
+#render("Assignment_R_Frederic_Marechal_md.Rmd")
