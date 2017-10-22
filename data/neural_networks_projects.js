@@ -4,7 +4,7 @@ var neural_networks_projects =
             "Build a basic incremental MLP" ,
             "Build a basic incremental MLP and show its performance profile." ,
             "/ProjectPortfolio_2.0/tree/master/projects/neural_networks/mlp/basic/docs/basic_mlp.pdf" ,
-            "Tensorflow/Python" ,
+            "MATLAB" ,
             "/ProjectPortfolio_2.0/tree/master/projects/neural_networks/mlp/basic/code" ,
             "Dec-2016",
             "EN",
