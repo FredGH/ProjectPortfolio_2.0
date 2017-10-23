@@ -1,6 +1,16 @@
 var neural_networks_projects =
     [
         [ 	"Multilayer Perceptron (MLP)" ,
+            "MLP with Second Order Training" ,
+            "Build a Second Order Training  MLP and show its performance profile." ,
+            "Main|/ProjectPortfolio_2.0/tree/master/projects/neural_networks/mlp/mllp_second_order_training/docs/second_order_newton_algo.pdf" +
+            "|Complementary|/ProjectPortfolio_2.0/tree/master/projects/neural_networks/mlp/mllp_second_order_training/docs/second_order_newton_algo_extra.pdf"
+            "MATLAB" ,
+            "/ProjectPortfolio_2.0/tree/master/projects/neural_networks/mlp/mllp_second_order_training/code" ,
+            "Apr-2017",
+            "EN",
+            3],
+        [ 	"Multilayer Perceptron (MLP)" ,
             "Build a basic incremental MLP" ,
             "Build a basic incremental MLP and show its performance profile." ,
             "/ProjectPortfolio_2.0/tree/master/projects/neural_networks/mlp/basic/docs/basic_mlp.pdf" ,

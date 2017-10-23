@@ -11,7 +11,7 @@ var artificial_intelligence_projects =
             4],
         [ 	"Search Algorithm" ,
             "A Comparison of the Astar and Jump Point Search (JPS) algorithms" ,
-            "Implementation and performance comparison of two informed search algorithms: Astar and JPS." ,
+            "Implementation and performance comparison of two informed search algorithms: Astar and JSP." ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/search_algorithms/docs/astar_jps_comparison.pdf" ,
             "Java" ,
             "/ProjectPortfolio_2.0/tree/master/projects/artificial_intelligence/search_algorithms/basic/code" ,
