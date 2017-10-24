@@ -17,7 +17,7 @@ var natural_language_processing_projects =
             "/ProjectPortfolio_2.0/tree/master/projects/natural_language_processing/intro_concepts/code" ,
             "Nov-2016",
             "EN",
-            2]
+            2],
         [ 	"General Discussion" ,
             "Topic discussion",
             "Discussion of some of the challenges presented by Twitter and other social media as well as the use of mathematical models in Linguistics." ,
