@@ -12,7 +12,7 @@ var natural_language_processing_projects =
         [ 	"NLTK" ,
             "Introduction to grammar rule and NLTK",
             "NLTK data wranggling" ,
-            "",
+            "/ProjectPortfolio_2.0/tree/master/projects/natural_language_processing/intro_concepts/docs/empty.txt",
             "Python" ,
             "/ProjectPortfolio_2.0/tree/master/projects/natural_language_processing/intro_concepts/code" ,
             "Nov-2016",
