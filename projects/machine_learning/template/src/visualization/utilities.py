@@ -1,3 +1,4 @@
+from IPython.display import display
 import numpy as np
 import pandas as pd
 import seaborn as sbn
@@ -7,12 +8,14 @@ import matplotlib.gridspec as gridspec
 from geopy.geocoders import Nominatim
 import folium
 
-def get_cat_cols(data):
-    return data.select_dtypes(exlcude=[np.number])
-
 
 def get_num_cols(data):
     return data.select_dtypes(include=[np.number])
+
+
+def get_cat_cols(data):
+    return data.select_dtypes(exclude=[np.number])
+
 
 
 def get_col_names(data):
@@ -110,33 +113,30 @@ def generate_scatter_plots(data, size_inches=10):
     plt.show()
 
 
-def generate_histogram_cat(grid_spec, index, data, column_name):
-    x = pd.Series(data[column_name], name=column_name)
-    ax = sbn.distplot(x, color="r")
-    plt.subplot(grid_spec[index])
+def generate_histogram_cat(names, values, item, width, length):
+    fig, axs = plt.subplots(figsize=(width, length))
+    axs.bar(names, values)
+    fig.suptitle(item)
+    plt.show()
 
 
-def generate_histograms_cat(grid_spec, data):
-    cat_data = data.select_dtypes(exclude=[np.number])
-    cat_col_headers = cat_data.columns
-    for index, item in enumerate(cat_col_headers):
+def generate_histograms_cat(data, width=30, length=10):
+    cat_columns = data.select_dtypes(exclude=[np.number]).columns
+    for index, item in enumerate(cat_columns):
         count = data.groupby(item)[item].count()
-        cat_data_count = pd.concat([count], axis=1, keys=['Count'])
-        generate_histogram_cat(grid_spec, index,cat_data_count, 'Count')
+        res = pd.concat([count], axis=1, keys=['Count']).sort_values(['Count'], ascending=[0])
+        names = res.transpose().columns.values.tolist()
+        values = np.hstack(res.values).tolist()
+        generate_histogram_cat(names, values, item, width, length)
+
 
 
 def describe_cat(data):
     cat_columns = data.select_dtypes(exclude=[np.number]).columns
     for index, item in enumerate(cat_columns):
         count = data.groupby(item)[item].count()
-        res = pd.concat([count], axis=1, keys=['Count'])
-        print("******************")
-        print("*********")
-        print("index: {}, name: {}".format(index, item))
-        print("*********")
-        print(res.sort_values(['Count'], ascending=[0]))
-        print("*********")
-
+        res = pd.concat([count], axis=1, keys=['Count']).sort_values(['Count'], ascending=[0])
+        display(res)
 
 def missing_data_values(data):
     missing = data.isnull().sum().sort_values(ascending=False)
