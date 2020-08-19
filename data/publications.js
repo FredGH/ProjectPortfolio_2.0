@@ -1,21 +1,13 @@
 var publications_projects =
-    [
-        [ 	"Programming" ,
-            "The Neighborhood Map" ,
-            "Single-page application featuring a map of my neighborhood." ,
-            "/NeighborhoodMap/master/README.md" ,
-            "Knockout/Javascript/CSS" ,
-            "/NeighborhoodMap/master/index.html" ,
-            "Jun-2016",
-            "EN",
-            2],
-        [ 	"Programming" ,
-            "Frogger" ,
-            "Code player, enemies, and other game entities in JavaScript in object-oriented pseudo-classical style, given the art assets and game engines.",
-            "/Frogger/master/README.md" ,
-            "Javascript/CSS" ,
-            "/Frogger/master/index.html" ,
-            "Apr-2016",
+   [
+        [ 	"Conference Publication" ,
+            "On XLE index constituents’ social media based sentiment informing the index trend and volatility prediction" ,
+            "Paper available from http://research.gold.ac.uk/24130/" ,
+            "",
+            "" ,
+            "" ,
+            "Aug-2018",
             "EN",
             1]
     ];
+    
