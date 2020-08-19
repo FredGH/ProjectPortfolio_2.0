@@ -1,4 +1,4 @@
-var publications_projects =
+var publications =
    [
         [ 	"Conference Publication" ,
             "On XLE index constituents’ social media based sentiment informing the index trend and volatility prediction" ,
