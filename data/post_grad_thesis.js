@@ -4,7 +4,7 @@ var post_grad_thesis =
         [ 	"MSc Data Science Thesis" ,
             "A constituent sentiment approach to stock market trend prediction" ,
             "The aim is to establish the sentiment prediction power on both the XLE index's trend and volatility " ,
-            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/machine_learning/stock_mkt_trend_pred/docs/web_poster.pdf" +
+            "Presentation|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/machine_learning/stock_mkt_trend_pred/docs/Presentation.pdf" +
             "|Full Thesis|/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/machine_learning/stock_mkt_trend_pred/docs/MSc.Thesis.Frederic.Marechal.pdf" ,
             "Python/R" ,
             "/ProjectPortfolio_2.0/tree/master/projects/post_grad_thesis/machine_learning/stock_mkt_trend_pred/code" ,
