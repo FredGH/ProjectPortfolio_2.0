@@ -522,11 +522,18 @@
                                 }
                                 return hl;
                             }
-                            else{
+                             else{
                                 //simple case... only one hyperlink
-                                uri = base_uri + row[idx];
+								var part_uri =  row[idx]
+								if (part_uri.includes("http")){
+									uri = part_uri
+								}
+								else {
+									uri = base_uri + part_uri
+								}
                                 return '<a target="_blank" href=' + uri + '>' + msg + '</a>'
                             }
+
                          }
 
                         //should never get here...
