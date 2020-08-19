@@ -128,6 +128,8 @@
             </div>
             <!-- display project list -->
             <div class="row">
+				<div id="portfolio-item-publications"></div>
+				<div id="portfolio-item-post-grad-thesis"></div>
                 <div id="portfolio-item-kaggle-challenges"></div>
                 <div id="portfolio-item-machine-learning"></div>
                 <div id="portfolio-item-natural-language-processing"></div>
@@ -137,7 +139,6 @@
                 <div id="portfolio-item-no-sql"></div>
                 <div id="portfolio-item-data-wranggling"></div>
                 <div id="portfolio-item-web-technologies"></div>
-                <div id="portfolio-item-post-grad-thesis"></div>
             </div>
         </div>
     </section>
@@ -203,6 +204,7 @@
     </div>
 
     <!-- Portfolio Modals -->
+	<div id="modal-view-publications"></div>
     <div id="modal-view-kaggle-challenges"></div>
     <div id="modal-view-machine-learning"></div>
     <div id="modal-view-natural-language-processing"></div>
@@ -213,13 +215,14 @@
     <div id="modal-view-data-wranggling"></div>
     <div id="modal-view-web-technologies"></div>
     <div id="modal-view-post-grad-thesis"></div>
-
+	
 	<!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 	<!-- DataTable -->
  	<script type="text/javascript" src="https://cdn.datatables.net/r/bs-3.3.5/jqc-1.11.3,dt-1.10.8/datatables.min.js"></script>
 
     <!-- Project list details -->
+	<script src="data/publications.js"></script>
     <script src="data/kaggle_challenges_projects.js"></script>
     <script src="data/machine_learning_projects.js"></script>
     <script src="data/natural_language_processing_projects.js"></script>
@@ -230,6 +233,7 @@
     <script src="data/data_wranggling_projects.js"></script>
     <script src="data/web_technologies_projects.js"></script>
     <script src="data/post_grad_thesis.js"></script>
+	
 
     <!-- JSX components-->
     <!-- All inlined instead of broken down
@@ -380,6 +384,11 @@
                 );
             }
         });
+		
+		ReactDOM.render(
+                <PortfolioItem title = "" img_src="img/portfolio/pb2.jpg" item_href="#publicationsModal"  />,
+            document.getElementById('portfolio-item-publications')
+        );
 
         ReactDOM.render(
         <PortfolioItem title="" img_src="img/portfolio/kc2.jpg" item_href="#kaggleChallengesModal"  />,
@@ -430,7 +439,7 @@
                 <PortfolioItem title = "" img_src="img/portfolio/ts2.png" item_href="#postGradThesisModal"  />,
             document.getElementById('portfolio-item-post-grad-thesis')
         );
-
+		
         var NavItem = React.createClass({
             getDefaultProps: function(){
                 return {
@@ -607,6 +616,18 @@
                 );
             }
         });
+		
+		
+		ReactDOM.render(
+            <ModelView  title = "publications"
+                        modal_id = "publicationsModal"
+                            summary_text =  ""
+                        dependecy_text =  ""
+                        table_id = "publicationsDataTable"
+                        table_jqery_name = '#publicationsDataTable'
+                        project_data = {publications_projects} />,
+            document.getElementById('modal-view-publications')
+        );
 
         ReactDOM.render(
             <ModelView  title = "Business Cases"
@@ -718,7 +739,6 @@
                         project_data = {post_grad_thesis} />,
             document.getElementById('modal-view-post-grad-thesis')
         );
-
 
 
     </script>

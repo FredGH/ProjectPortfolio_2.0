@@ -1,1 +1,1 @@
-Green - template1.jpg - #18bc9c - rgb(24, 188, 156)
+Green - template1.jpg - #18bc9c - rgb(24, 188, 156) - Calibri - size = 36
