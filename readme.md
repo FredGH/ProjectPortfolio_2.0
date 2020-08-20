@@ -3,7 +3,8 @@
 
 * After spending 15+ years as a Software Engineer in top tier investment banks, I grew a passion for data. 
 * My decision to become a Data Scientist became evident, as I could easily couple my project development experience with the ability to discover patterns, classify customer behaviours and forecast future trends.
-* Strong of a French Master in Banking and Finance (Merit), a MSc in Software Development (Merit), a MSc in Data Science (Distinction) and a full time position as an Innovation Manager (Full Stack Data Scientist) in a Commercial Bank's Customer Insights Analytics department.
+* I hold a few degrees spanning across multiple domains French Master in Banking and Finance (Merit), a MSc in Software Development (Merit), a MSc in Data Science (Distinction) 
+* I am a full time Innovation Manager (Full Stack Data Scientist) in a Commercial Bank's Customer Insights Analytics department.
 
 ### GitHub Content
 
@@ -51,7 +52,7 @@
 |NLTK	| Introduction to grammar rule and NLTK	| NLTK playground. | Nov-2016|
 |General| Discussion |Discussion of some of the challenges presented by Twitter and other social media as well as the use of mathematical models in Linguistics.| Oct-2016|
 
-### Artificial Inteliigence
+### Artificial Intelligence
 
 |Category   |Name   |Description  |Date   |
 |---|---|---|---|
@@ -96,7 +97,7 @@
 |Programming|	Airbnb data analysis |	Perform data wrangling on an Airbnb dataset|Nov-2016|
 |Programming|	Telecom Companies Report in Spark SQL |	Detailed report explaining the design/build and implementation of a reporting solution to find the top 10 customers facing frequent call drops.|Aug-2016|
 
-### Web Technoligies
+### Web Technologies
 
 |Category   |Name   |Description  |Date   |
 |---|---|---|---|
