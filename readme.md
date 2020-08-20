@@ -4,7 +4,7 @@ https://rawgit.com/FredGH/ProjectPortfolio_2.0/master/index.html
 ### Publications
 
 |Category   |Name   |Description   |Document   |Date   |Language   |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|
 | Conference Papers| Predicting SP500 based on its constituents and their social media derived sentiment  |  This work proposes, for the first time, an approach to predicting SP500 based on the closing stock prices and sentiment data of the SP500 constituents. One of the significant complexities of our framework is due to the high dimensionality of the dataset to analyse, which is based on a large number of constituents and their sentiments, and their lagging. | http://research.gold.ac.uk/26368/  | May-2019 | EN |
 | Conference Papers | On XLE index constituents’ social media based sentiment informing the index trend and volatility prediction  | This research investigates the predictive information of sentiment on the XLE index market trend and volatility, based on a novel robust machine learning approach. While we demonstrate that sentiment does not have any impact on any of the trend prediction scenarios investigated here, the sentiment’s impact on volatility predictions is significant. | http://research.gold.ac.uk/24130/   | Aug-2018  |  EN  |
 
@@ -16,6 +16,10 @@ https://rawgit.com/FredGH/ProjectPortfolio_2.0/master/index.html
 | Memoire de Maitrise Banque Finance Assurance| Credit Value-at-Risk (VaR)  | Description and implementation of the VaR applied to a credit portfolio and review of the methodology limitations | Jun-1998 | FR |
 
 ### Kaggle Challenges
+|Category   |Name   |Description  |Date   |Language   |
+|---|---|---|---|---|
+| Supervised Classification Machine Learning| Santander Customer Satisifaction Prediction |  Help Santander identify dissatisfied customers early in their relationship to take proactive steps to improve customers' happiness. | Sep-2017 | EN |
+| Supervised Classification Machine Learning| Orange Customer Satisfaction Prediction |  Help Orange to predict the propensity of customers to switch provider (churn)/buy new products (appetency) or upgrade (up-selling). | May-2017 | EN |
 
 ### Machine Learning
 
