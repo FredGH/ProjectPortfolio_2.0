@@ -1,4 +1,10 @@
 
+### Bio
+After spending 15+ years as a Software Engineer in top tier investment banks, I grew a passion for data. My decision to become a Data Scientist became evident, as I could easily couple my project development experience with the ability to discover patterns, classify customer behaviours and forecast future trends.
+Strong of a French Master in Banking and Finance (Merit), a MSc in Software Development (Merit), a MSc in Data Science (Distinction) and a full time position as an Innovation Manager (Full Stack Data Scientist) in a Commercial Bank's Customer Insights Analytics department.
+
+
+
 https://rawgit.com/FredGH/ProjectPortfolio_2.0/master/index.html
 
 ### Publications
@@ -40,9 +46,9 @@ https://rawgit.com/FredGH/ProjectPortfolio_2.0/master/index.html
 ### Artificial Inteliigence
 |Category   |Name   |Description  |Date   |
 |---|---|---|---|
-|Forward Chaining| Strategy| 	Creation of an Inference Engine using unification|	Implementation an inference engine for a rule-based system that operates according to the forward chaining (first-depth search) strategy and unification.|	Apr-2017|
+|Forward Chaining| Creation of an Inference Engine using unification|	Implementation an inference engine for a rule-based system that operates according to the forward chaining (first-depth search) strategy and unification.|	Apr-2017|
 |Search Algorithm|	A Comparison of the Astar and Jump Point Search (JPS) algorithms|	Implementation and performance comparison of two informed search algorithms: Astar and JSP.	|Jan-2017|
-|Forward Chaining| Strategy |	Creation of an Inference Engine	Implementation an inference engine for a rule-based system that operates according to the forward chaining strategy (first-breath search).| Dec-2016|
+|Forward Chaining| Creation of an Inference Engine |	Implementation an inference engine for a rule-based system that operates according to the forward chaining strategy (first-breath search).| Dec-2016|
 |Markov Decision Process|	Self-driving smartcab |	Use reinforcement learning to train a smartcab how to drive.|Jun-2016|
 
 ### Neural Networks
