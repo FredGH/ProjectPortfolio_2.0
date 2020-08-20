@@ -9,7 +9,8 @@
 ### GitHub Content
 
  * This Github repo contains the details of my current publications, post-grad theses, Kaggle challenges I have participated in, as well as  a number of ML/AI related projects I have been working on in the past few years.
- * The below sections provides a summary description of these project. You can acces the projects' documentation and code via this interactive website https://rawgit.com/FredGH/ProjectPortfolio_2.0/master/index.html
+ * The below sections provides a summary description of these project. You can acces the projects' documentation and code via either i) this interactive website https://rawgit.com/FredGH/ProjectPortfolio_2.0/master/index.html
+ or ii) directly from https://github.com/FredGH/ProjectPortfolio_2.0/tree/master/projects.
  * Please do not hesitate to contact me on freddy.marechal@gmail.com should you have any questions or comments.
 
 ### Publications
