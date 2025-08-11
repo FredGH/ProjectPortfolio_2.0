@@ -23,7 +23,7 @@
     font-weight:bold;
     padding:11px 23px;
     text-decoration:none;
-    text-shadow:0px -1px 0px #18BC9C;
+    text-shadow:0px -1px 0px #000000;
     margin-bottom: 5%;
     margin-top: 1%;
 }
@@ -35,7 +35,7 @@
     background:-ms-linear-gradient(top, #18BC9C 5%, #18BC9C 100%);
     background:linear-gradient(to bottom, #18BC9C 5%, #18BC9C 100%);
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#6c7c7c', endColorstr='#768d87',GradientType=0);
-    background-color:#18BC9C;
+    background-color:#000000;
 }
 .customButton:active {
     position:relative;
